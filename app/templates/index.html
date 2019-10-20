@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1> {{ user.username }}! Привет, Бро!</h1>
-
+    <img src={{ url_for('static', filename = 'images/new_plot.png')}} alt="Chart" >
     {% for game in games %}
         <div>
         {{ game.date }}
