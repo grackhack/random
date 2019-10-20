@@ -2,7 +2,34 @@
 
 {% block content %}
     <h1> {{ user.username }}! Привет, Бро!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
-    {% endfor %}
+
+    {% for game in games %}
+        <div>
+        {{ game.date }}
+            {% if  game.de1==True %}1{% else %}0{% endif %}
+            {% if  game.de2==True %}1{% else %}0{% endif %}
+            {% if  game.de3==True %}1{% else %}0{% endif %}
+            {% if  game.de4==True %}1{% else %}0{% endif %}
+            {% if  game.de5==True %}1{% else %}0{% endif %}
+            {% if  game.de6==True %}1{% else %}0{% endif %}
+            {% if  game.de7==True %}1{% else %}0{% endif %}
+            {% if  game.de8==True %}1{% else %}0{% endif %}
+            {% if  game.de9==True %}1{% else %}0{% endif %}
+            {% if  game.de10==True %}1{% else %}0{% endif %}
+            {% if  game.de11==True %}1{% else %}0{% endif %}
+            {% if  game.de12==True %}1{% else %}0{% endif %}
+            {% if  game.de13==True %}1{% else %}0{% endif %}
+            {% if  game.de14==True %}1{% else %}0{% endif %}
+            {% if  game.de15==True %}1{% else %}0{% endif %}
+            {% if  game.de16==True %}1{% else %}0{% endif %}
+            {% if  game.de17==True %}1{% else %}0{% endif %}
+            {% if  game.de18==True %}1{% else %}0{% endif %}
+            {% if  game.de19==True %}1{% else %}0{% endif %}
+            {% if  game.de20==True %}1{% else %}0{% endif %}
+            {% if  game.de21==True %}1{% else %}0{% endif %}
+            {% if  game.de22==True %}1{% else %}0{% endif %}
+            {% if  game.de23==True %}1{% else %}0{% endif %}
+            {% if  game.de24==True %}1{% else %}0{% endif %}
+        </div>
+    {%  endfor %}
 {% endblock %}
