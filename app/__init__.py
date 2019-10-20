@@ -25,9 +25,9 @@ from app import routes, models
 # Afterwards, point your browser to http://localhost:5000, then check out the
 # source.
 
-from flask import Flask
-from flask_appconfig import AppConfig
-from flask_bootstrap import Bootstrap
+# from flask import Flask
+# from flask_appconfig import AppConfig
+# from flask_bootstrap import Bootstrap
 
 # from .frontend import frontend
 # from .nav import nav
