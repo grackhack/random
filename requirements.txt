@@ -1,4 +1,6 @@
 alembic==1.2.1
+certifi==2019.9.11
+chardet==3.0.4
 Click==7.0
 decorator==4.4.0
 dominate==2.4.0
@@ -11,6 +13,7 @@ flask-nav==0.6
 Flask-SQLAlchemy==2.4.1
 Flask-WTF==0.14.2
 gunicorn==19.9.0
+idna==2.8
 inflection==0.3.1
 itsdangerous==1.1.0
 Jinja2==2.10.3
@@ -20,11 +23,13 @@ pbr==5.4.3
 psycopg2==2.8.3
 python-dateutil==2.8.0
 python-editor==1.0.4
+requests==2.22.0
 six==1.12.0
 SQLAlchemy==1.3.10
 sqlalchemy-migrate==0.12.0
 sqlparse==0.3.0
 Tempita==0.5.2
+urllib3==1.25.6
 visitor==0.1.3
 Werkzeug==0.16.0
 WTForms==2.2.1
