@@ -20,6 +20,7 @@ def index():
         }
     ]
     games = Game.query.all()
+    print('*' * 30, games, '*' * 30, )
     return render_template('index.html', title='Home', user=user, posts=posts, games=games)
 
 
