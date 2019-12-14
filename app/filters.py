@@ -8,3 +8,15 @@ def format_datetime(value, format="%d.%b_%H:%M"):
     if value is None:
         return ""
     return value.date.strftime(format)
+
+
+@app.template_filter('is_numeric')
+def is_digit(value):
+    if str(value).isdigit():
+        return True
+    return False
+
+
+@app.template_filter('hex_color')
+def hex_color(value):
+    return "%0.2X" % (255 - int(value) * 10)

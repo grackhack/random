@@ -6,25 +6,30 @@
     <hr>
 
     <table class="table table-striped table-sm table-hover">
-        <thead>
-        <th></th>
-        {% for d in dates %}
-            <th><div style="-webkit-writing-mode: vertical-rl; writing-mode:tb-rl;">{{ d|formatdatetime }}</div></th>
-        {% endfor %}
-        </thead>
-        <tbody>
+        <tbody >
+        <tr>
+            <td></td>
+            {% for d in dates %}
+                <td>
+                    <div style="-webkit-writing-mode: vertical-rl; writing-mode:tb-rl;">{{ d|formatdatetime }}</div>
+                </td>
+            {% endfor %}
+        </tr>
+
         {% for game in games %}
             <tr>
-                <td><div class="text-danger">{{ game.digit }}</div></td>
+                <td style="background-color:#61d666">
+                    <div class="text-danger">{{ game.digit }}</div>
+                </td>
                 {% for g in game.game %}
-                    <td>
-                        {{ g }}
-                    </td>
+                    <td align="center"
+                        {% if g|is_numeric %}style="background-color:#{{ g|hex_color }}{{ g|hex_color }}FF"{% endif %}
+                    >{% if g|is_numeric %}{{ g }}{% else %}.{% endif %}</td>
                 {% endfor %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
 
 {% endblock %}

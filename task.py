@@ -22,7 +22,7 @@ def _convert_items(items):
 
 
 def _get_draw(data):
-    results = None
+    results = ()
     text = data.replace('\n', ''
                         ).replace('  ', ' '
                                   ).replace('\t', ''

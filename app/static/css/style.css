@@ -1,10 +1,4 @@
-.verticalTableHeader {
-    float: left;
-    white-space:nowrap;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-
+.table-sm td, .table-sm th {
+    padding: 0px;
+    font-size: small;
 }
