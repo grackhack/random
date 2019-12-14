@@ -2,7 +2,7 @@ from typing import List
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from flask import render_template, flash, redirect, url_for, jsonify
+from flask import render_template, flash, redirect, url_for, jsonify, request
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
@@ -31,16 +31,17 @@ def build_plot():
     plt.savefig('new_plot.png', ax=ax)
 
 
-def get_play_history(row: List[int]) -> List[str]:
+def get_play_history(row: List[int], positive=True) -> List[str]:
+    play = 0 if positive == '1' else 1
     ng = False
     res = []
     cnt = 1
     for i in row:
-        if i == 0 and not ng:
+        if i == play and not ng:
             cnt = 1
             ng = True
             res.append(str(cnt))
-        elif i == 0 and ng:
+        elif i == play and ng:
             cnt += 1
             res.append(str(cnt))
         else:
@@ -49,7 +50,7 @@ def get_play_history(row: List[int]) -> List[str]:
     return res[::-1]
 
 
-def get_digit_row(digit):
+def get_digit_row(digit, play):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     connection = engine.raw_connection()
     df = pd.read_sql_query("""
@@ -58,7 +59,7 @@ def get_digit_row(digit):
         """.format(digit), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
-    history = get_play_history(row)
+    history = get_play_history(row, positive=play)
 
     return history
 
@@ -77,17 +78,17 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-
+    play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
     dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(500)
     # build_plot()
     games = []
     result = []
     for digit in range(1, 25):
-        result = get_digit_row(digit)
+        result = get_digit_row(digit, play)
         games.append({'digit': f'{digit:3}', 'game': result})
     return render_template('index.html', title='Stat', user=user, max_date=max_date, games=games,
-                           url='new_plot.png', count_games=len(result), dates=dates)
+                           url='new_plot.png', count_games=len(result), dates=dates, play=play)
 
 
 @app.route('/login', methods=['GET', 'POST'])
