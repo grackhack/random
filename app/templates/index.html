@@ -3,6 +3,7 @@
 
 {% block content %}
     <h4>Обновлено {{ max_date }} Количество игр: {{ count_games }}</h4>
+    <button type="button" class="btn btn-primary" onclick="get_games()">Обновить</button>
     <hr>
 
     <table class="table table-striped table-sm table-hover">
@@ -31,5 +32,6 @@
         </tbody>
     </table>
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
 
 {% endblock %}

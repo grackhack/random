@@ -2,7 +2,7 @@ from typing import List
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
@@ -10,6 +10,7 @@ from app import app
 from app import db
 from app.forms import LoginForm
 from app.models import Game
+from app.work_with_games import refresh_game_stat
 from config import Config
 
 
@@ -96,3 +97,12 @@ def login():
         flash(f'Привет, бро! remember_me={form.remember_me.data}')
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/collect_games', methods=['POST'])
+def collect_games():
+    try:
+        refresh_game_stat()
+    except:
+        return jsonify({'data': 'error'})
+    return jsonify({'data': 'ok'})
