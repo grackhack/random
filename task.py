@@ -6,6 +6,7 @@ import requests
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 from app.models import Game
 from config import Config
@@ -62,7 +63,7 @@ def get_all_data():
 
 
 if __name__ == '__main__':
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, pool_size=20, max_overflow=0)
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     Session = sessionmaker(bind=engine)
     db = Session()
     games = get_all_data()
