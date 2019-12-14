@@ -78,14 +78,15 @@ def index():
     ]
 
     max_date = db.session.query(db.func.max(Game.date)).scalar()
+    dates = db.session.query(Game.date).order_by(Game.date.desc())
     # build_plot()
     games = []
     result = []
     for digit in range(1, 25):
         result = get_digit_row(digit)
-        games.append(f'{digit:3} :  ' + ''.join(result))
+        games.append({'digit': f'{digit:3}', 'game': result})
     return render_template('index.html', title='Stat', user=user, max_date=max_date, games=games,
-                           url='new_plot.png', count_games=len(result))
+                           url='new_plot.png', count_games=len(result), dates=dates)
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -1,11 +1,30 @@
 {% extends "base.html" %}
 
+
 {% block content %}
     <h4>Обновлено {{ max_date }} Количество игр: {{ count_games }}</h4>
     <hr>
-    {% for game in games %}
 
-        <div>{{ game }}</div>
-        <br>
-    {% endfor %}
+    <table class="table table-striped table-sm table-hover">
+        <thead>
+        <th></th>
+        {% for d in dates %}
+            <th><div style="-webkit-writing-mode: vertical-rl; writing-mode:tb-rl;">{{ d|formatdatetime }}</div></th>
+        {% endfor %}
+        </thead>
+        <tbody>
+        {% for game in games %}
+            <tr>
+                <td><div class="text-danger">{{ game.digit }}</div></td>
+                {% for g in game.game %}
+                    <td>
+                        {{ g }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+
 {% endblock %}
