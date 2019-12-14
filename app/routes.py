@@ -53,7 +53,7 @@ def get_digit_row(digit):
     connection = engine.raw_connection()
     df = pd.read_sql_query("""
         select de{}
-        from game order by date ;        
+        from game order by date limit 500;        
         """.format(digit), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
@@ -78,7 +78,7 @@ def index():
     ]
 
     max_date = db.session.query(db.func.max(Game.date)).scalar()
-    dates = db.session.query(Game.date).order_by(Game.date.desc())
+    dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(500)
     # build_plot()
     games = []
     result = []
