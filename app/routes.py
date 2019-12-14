@@ -7,7 +7,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 from app import app
+from app import db
 from app.forms import LoginForm
+from app.models import Game
 from config import Config
 
 
@@ -75,7 +77,7 @@ def index():
         }
     ]
 
-    max_date = 5#db.session.query(db.func.max(Game.date)).scalar()
+    max_date = db.session.query(db.func.max(Game.date)).scalar()
     # build_plot()
     games = []
     result = []
