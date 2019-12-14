@@ -3,11 +3,11 @@ from typing import List
 import matplotlib.pyplot as plt
 import pandas as pd
 from flask import render_template, flash, redirect, url_for
-from sqlalchemy import func
+from sqlalchemy import create_engine
+from sqlalchemy.pool import NullPool
 
-from app import app, db
+from app import app
 from app.forms import LoginForm
-from app.models import Game
 from config import Config
 
 
@@ -47,13 +47,16 @@ def get_play_history(row: List[int]) -> List[str]:
 
 
 def get_digit_row(digit):
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    connection = engine.raw_connection()
     df = pd.read_sql_query("""
         select de{}
-        from game order by date 
-        """.format(digit), Config.SQLALCHEMY_DATABASE_URI)
+        from game order by date ;        
+        """.format(digit), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
     history = get_play_history(row)
+
     return history
 
 
@@ -72,7 +75,7 @@ def index():
         }
     ]
 
-    max_date = db.session.query(db.func.max(Game.date)).scalar()
+    max_date = 5#db.session.query(db.func.max(Game.date)).scalar()
     # build_plot()
     games = []
     result = []
