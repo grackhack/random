@@ -62,8 +62,8 @@ def get_all_data():
 
 
 if __name__ == '__main__':
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-    Session = sessionmaker(bind=engine, pool_size=20, max_overflow=0)
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, pool_size=20, max_overflow=0)
+    Session = sessionmaker(bind=engine)
     db = Session()
     games = get_all_data()
     histoty = db.query(Game.date).all()
