@@ -4,3 +4,17 @@
 }
 
 .search-table-outter { overflow-x: scroll; }
+
+.navbar {
+  height: 30px;
+}
+
+.navbar-brand{
+    display: inline-block;
+    padding-top: .0rem;
+    padding-bottom: 0rem;
+    margin-right: 1rem;
+    font-size: 0.7rem;
+    line-height: inherit;
+    white-space: nowrap;
+}

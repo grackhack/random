@@ -3,8 +3,12 @@
 
 {% block content %}
     <div id="msg"></div>
-    <h4>Обновлено: {{ max_date }} Количество игр: {{ count_games }}</h4>
-    <hr>
+    <div class="row">
+    <div class="col-md-6"><b>{{ max_date }} </b></div>
+    <div class="col-md-6">Игр: <b>{{ count_games }} </b></div>
+    </div>
+
+
     <div style="overflow-x: scroll;">
         <table class="table table-striped table-sm table-hover">
             <tbody>
