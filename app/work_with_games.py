@@ -3,12 +3,11 @@ import json
 import re
 
 import requests
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-import constants
+from app import constants
 from app.models import Game
 from config import Config
 

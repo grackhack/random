@@ -11,9 +11,8 @@ from app import app
 from app import db
 from app.forms import LoginForm
 from app.models import Game
-from app.work_with_games import refresh_game_stat
+from app.work_with_games import refresh_game_stat, get_digit_info
 from config import Config
-from work_with_games import get_digit_info
 
 
 def build_plot():
