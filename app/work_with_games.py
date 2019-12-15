@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
+import constants
 from app.models import Game
 from config import Config
 
@@ -74,3 +75,28 @@ def refresh_game_stat(date):
             game = Game(game)
             db.add(game)
     db.commit()
+
+
+S1 = re.compile(r'[^|0]1[0|$]')
+S2 = re.compile(r'[^|0]1[0|$]')
+
+
+def get_digit_info(digit):
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    result = engine.execute("""
+        select array(select (case when de{} = TRUE then '1' else '0' end)
+             from game
+             order by date desc)
+        """.format(digit))
+    result = result.fetchone()
+    str_res = ''.join(result[0])
+    series = {}
+    series_win = {}
+    series_los = {}
+    for d in constants.SW:
+        series_win[d] = [m.start() for m in re.finditer(constants.SW[d], str_res)]
+        series_los[d] = [m.start() for m in re.finditer(constants.SL[d], str_res)]
+
+    series['W'] = series_win
+    series['L'] = series_los
+    return series

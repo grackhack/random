@@ -13,6 +13,7 @@ from app.forms import LoginForm
 from app.models import Game
 from app.work_with_games import refresh_game_stat
 from config import Config
+from work_with_games import get_digit_info
 
 
 def build_plot():
@@ -108,3 +109,18 @@ def settings():
     rows = result.fetchall()
 
     return render_template('settings.html', result=rows)
+
+
+@app.route('/get_info', methods=['POST'])
+def get_info():
+    try:
+        digit = request.values.get('digit').strip()
+        series = get_digit_info(digit)
+    except:
+        return jsonify({'data': 'error'})
+    return jsonify({'series': series})
+
+
+@app.route('/charts')
+def charts():
+    return render_template('charts.html')

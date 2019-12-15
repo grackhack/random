@@ -10,7 +10,6 @@ function get_games() {
                 $("#msg").addClass("alert alert-danger");
                 $("#msg").html("<p> Fail!</p>");
             });
-
 }
 
 function update_by_date(date) {
@@ -25,6 +24,18 @@ function update_by_date(date) {
                 $("#msg").addClass("alert alert-danger");
                 $("#msg").html("<p> Fail!</p>");
             });
-
 }
 
+function get_info(digit) {
+    $.post('/get_info', {
+                digit: digit
+            }).done(function(response) {
+                location.reload();
+                $("#msg").addClass("alert alert-success");
+                $("#msg").html("<p> Refresh done!</p>");
+            }).fail(function() {
+                location.reload();
+                $("#msg").addClass("alert alert-danger");
+                $("#msg").html("<p> Fail!</p>");
+            });
+}
