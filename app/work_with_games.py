@@ -41,9 +41,8 @@ def _get_draw(data):
     return results
 
 
-def get_all_data():
-    date = datetime.datetime.now().strftime("%d.%m.%Y")
-    yesterday = (datetime.date.today() - datetime.timedelta(days=2)).strftime("%d.%m.%Y")
+def get_all_data(date=datetime.datetime.now().strftime("%d.%m.%Y")):
+    yesterday = (datetime.datetime.strptime(date, "%d.%m.%Y") - datetime.timedelta(days=2)).strftime("%d.%m.%Y")
     base_link = 'https://www.stoloto.ru/draw-results/12x24/load'
     data = {
         'mode': 'date',
@@ -52,7 +51,7 @@ def get_all_data():
         'to': date,
     }
     games = []
-    for page in range(1, 2):
+    for page in range(1, 3):
         data['page'] = str(page),
         r = requests.post(base_link, data=data)
         if r.status_code == 200:
@@ -62,11 +61,11 @@ def get_all_data():
     return games
 
 
-def refresh_game_stat():
+def refresh_game_stat(date):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     Session = sessionmaker(bind=engine)
     db = Session()
-    games = get_all_data()
+    games = get_all_data(date)
     histoty = db.query(Game.date).all()
 
     for game in games:

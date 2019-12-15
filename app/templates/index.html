@@ -2,11 +2,11 @@
 
 
 {% block content %}
+    <div id="msg"></div>
     <h4>Обновлено {{ max_date }} Количество игр: {{ count_games }}</h4>
     <hr>
-    <div id="msg"></div>
     <table class="table table-striped table-sm table-hover">
-        <tbody >
+        <tbody>
         <tr>
             <td></td>
             {% for d in dates %}
@@ -31,22 +31,19 @@
         </tbody>
     </table>
     <div class="row">
-    <div class="col-md-4">
-        <button type="button" class="btn btn-primary" onclick="get_games()">Обновить</button>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-primary" onclick="get_games()">Обновить</button>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            {% if play == '0' %}
+                <a href="/index?play=1" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Показать
+                    серии невыпадений</a>
+            {% else %}
+                <a href="/index?play=0" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Показать
+                    серии выпадений</a>
+            {% endif %}
+        </div>
     </div>
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        {% if play == '0' %}
-        <a href="/index?play=1" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Показать серии невыпадений</a>
-        {% else %}
-        <a href="/index?play=0" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Показать серии выпадений</a>
-        {% endif %}
-    </div>
-    </div>
-
-
-
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
 
 {% endblock %}

@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -66,17 +67,6 @@ def get_digit_row(digit, play):
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'username': 'Miguel'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
     play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
     dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(500)
@@ -86,7 +76,7 @@ def index():
     for digit in range(1, 25):
         result = get_digit_row(digit, play)
         games.append({'digit': f'{digit:3}', 'game': result})
-    return render_template('index.html', title='Stat', user=user, max_date=max_date, games=games,
+    return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=len(result), dates=dates, play=play)
 
 
@@ -102,7 +92,19 @@ def login():
 @app.route('/collect_games', methods=['POST'])
 def collect_games():
     try:
-        refresh_game_stat()
+        date = request.values.get('day', datetime.datetime.now().strftime("%d.%m.%Y"))
+        refresh_game_stat(date)
     except:
         return jsonify({'data': 'error'})
     return jsonify({'data': 'ok'})
+
+
+@app.route('/settings')
+def settings():
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    result = engine.execute("""
+    select COUNT(*) as count, date_trunc('day', date) as day FROM game GROUP BY day ORDER BY day desc
+    """)
+    rows = result.fetchall()
+
+    return render_template('settings.html', result=rows)
