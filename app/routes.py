@@ -54,9 +54,8 @@ def get_digit_row(digit, play):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     connection = engine.raw_connection()
     df = pd.read_sql_query("""
-        select de{}
-        from game order by date limit 500;        
-        """.format(digit), connection)
+        select de{d:} from (select date,de{d:}  from game order by date desc limit 500) a order by date;       
+        """.format(d=digit), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
     history = get_play_history(row, positive=play)
