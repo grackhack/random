@@ -1,6 +1,6 @@
-/*.table-sm td, .table-sm th {*/
-/*    padding: 0px;*/
-/*    font-size: small;*/
-/*}*/
+.table-sm td, .table-sm th {
+    padding: 0px;
+    font-size: small;
+}
 
 .search-table-outter { overflow-x: scroll; }
