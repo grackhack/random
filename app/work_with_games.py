@@ -67,7 +67,7 @@ def refresh_game_stat(date):
     db = Session()
     games = get_all_data(date)
     histoty = db.query(Game.date).all()
-
+    print(date, len(games))
     for game in games:
         game_date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
         if (game_date,) not in histoty:
