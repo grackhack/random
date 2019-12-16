@@ -71,6 +71,7 @@ def refresh_game_stat(date):
     for game in games:
         game_date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
         if (game_date,) not in histoty:
+            print(game_date)
             game = Game(game)
             db.add(game)
     db.commit()

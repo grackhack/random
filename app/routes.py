@@ -133,7 +133,10 @@ def get_info():
                     diff = [j - i for i, j in zip(sort_tmp[:-1], sort_tmp[1:])]
                     avg = round(sum(diff) / len(diff))
                     full_series[pl][str(i) + 'avg'] = avg
-                    next_ser = sort_tmp[0] - avg
+                    if sort_tmp[0] == 1:
+                        next_ser = sort_tmp[1] - avg
+                    else:
+                        next_ser = sort_tmp[0] - avg
                     if next_ser <= 0:
                         full_series[pl][str(i) + 'next'] = f'Примерно через {abs(next_ser)} игр'
                     else:
