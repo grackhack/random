@@ -114,8 +114,8 @@ def settings():
 def get_info():
     try:
         digit = request.values.get('digit').strip()
-        series = get_digit_info(digit)
-        stat = render_template('stat.html', series=series)
+        series, cnt = get_digit_info(digit)
+        stat = render_template('stat.html', series=series, cnt=cnt, digit=digit)
     except:
         return jsonify({'data': 'error'})
     return jsonify({'stat': stat})

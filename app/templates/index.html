@@ -23,20 +23,18 @@
             </tr>
 
             {% for game in games %}
-                <tr>
+                <tr onclick="get_info('{{ game.digit }}')">
                     <td id="r{{ game.digit }}" data-toggle="popover" data-placement="auto" data-content=""
                             {% if play == '0' %}
                         style="background-color: #6dfc7d"
                             {% else %}
                         style="background-color: #ff7f5d"
                             {% endif %}
-
-                        onclick="get_info('{{ game.digit }}')">
+                       >
                         <div>{{ game.digit }}</div>
                     </td>
                     {% for g in game.game %}
-                        <td {% if g|is_numeric %}style="background-color:#
-                                {{ g|hex_color }}{{ g|hex_color }}FF"{% endif %}
+                        <td {% if g|is_numeric %}style="background-color:#{{ g|hex_color }}{{ g|hex_color }}FF"{% endif %}
                             align="center">{% if g|is_numeric %}{{ g }}{% else %}.{% endif %}</td>
                     {% endfor %}
                 </tr>
@@ -62,7 +60,9 @@
                     серии выпадений</a>
             {% endif %}
         </div>
+        <div id="stat"></div>
     </div>
+
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 

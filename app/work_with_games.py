@@ -85,6 +85,7 @@ def get_digit_info(digit):
         """.format(digit))
     result = result.fetchone()
     str_res = ''.join(result[0])
+    count_games = len(str_res)
     series = {}
     series_win = {}
     series_los = {}
@@ -94,4 +95,4 @@ def get_digit_info(digit):
 
     series['W'] = series_win
     series['L'] = series_los
-    return series
+    return series, count_games
