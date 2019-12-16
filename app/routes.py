@@ -75,7 +75,7 @@ def index():
     result = []
     for digit in range(1, 25):
         result = get_digit_row(digit, play)
-        games.append({'digit': f'{digit:3}', 'game': result})
+        games.append({'digit': digit, 'game': result})
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=len(result), dates=dates, play=play)
 
@@ -115,9 +115,10 @@ def get_info():
     try:
         digit = request.values.get('digit').strip()
         series = get_digit_info(digit)
+        stat = render_template('stat.html', series=series)
     except:
         return jsonify({'data': 'error'})
-    return jsonify({'series': series})
+    return jsonify({'stat': stat})
 
 
 @app.route('/charts')

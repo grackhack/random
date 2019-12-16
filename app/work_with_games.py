@@ -76,10 +76,6 @@ def refresh_game_stat(date):
     db.commit()
 
 
-S1 = re.compile(r'[^|0]1[0|$]')
-S2 = re.compile(r'[^|0]1[0|$]')
-
-
 def get_digit_info(digit):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute("""
@@ -93,8 +89,8 @@ def get_digit_info(digit):
     series_win = {}
     series_los = {}
     for d in constants.SW:
-        series_win[d] = [m.start() for m in re.finditer(constants.SW[d], str_res)]
-        series_los[d] = [m.start() for m in re.finditer(constants.SL[d], str_res)]
+        series_win[d] = [m.start() + 1 for m in re.finditer(constants.SW[d], str_res)]
+        series_los[d] = [m.start() + 1 for m in re.finditer(constants.SL[d], str_res)]
 
     series['W'] = series_win
     series['L'] = series_los
