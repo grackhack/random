@@ -23,7 +23,7 @@
             </tr>
 
             {% for game in games %}
-                <tr onclick="get_info('{{ game.digit }}')">
+                <tr onclick="get_info('{{ game.digit }}','{{ play }}')">
                     <td id="r{{ game.digit }}" data-toggle="popover" data-placement="auto" data-content=""
                             {% if play == '0' %}
                         style="background-color: #6dfc7d"

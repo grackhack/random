@@ -1,13 +1,42 @@
-<div>Всего игр: {{ cnt }} </div>
-<div>Серии невыпадений для <b>{{ digit }}</b> </div>
-{% for  k, v in series.W.items() %}
-{% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' %}
-    <div>{{ k }}: {{ v }}<div>
-    {% endif %}
-{% endfor %}
-<div>Серии выпадений для <b>{{ digit }}</b> </div>
-{% for  k, v in series.L.items() %}
-{% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' %}
-    <div>{{ k }}: {{ v }}<div>
-    {% endif %}
-{% endfor %}
+{% if play=='1' %}
+    <div>Серии невыпадений для <b>{{ digit }}</b></div>
+    {% for  k, v in full_series.W.items() %}
+        {% if k=='6' or k=='7' %}
+            <div>{{ k }}+:{{ v }}</div>
+        {% endif %}
+        {% if k=='6avg' or k=='7avg' %}
+                <div>Среднее: {{ v }}</div>
+        {% endif %}
+        {% if k=='6next' or k=='7next' %}
+                <div>Следущая серия: {{ v }}</div>
+                <br>
+        {% endif %}
+    {% endfor %}
+    <br>
+    {% for  k, v in series.W.items() %}
+        {% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' %}
+            <div>{{ k }}:{{ v }}</div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <div>Серии выпадений для <b>{{ digit }}</b></div>
+    {% for  k, v in full_series.L.items() %}
+        {% if k=='6' or k=='7' %}
+            <div>{{ k }}+:{{ v }}</div>
+        {% endif %}
+        {% if k=='6avg' or k=='7avg' %}
+                <div>Среднее: {{ v }}</div>
+        {% endif %}
+        {% if k=='6next' or k=='7next' %}
+                <div>Следущая серия: {{ v }}</div>
+                <br>
+        {% endif %}
+    {% endfor %}
+    <br>
+    {% for  k, v in series.L.items() %}
+        {% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' %}
+            <div>{{ k }}:{{ v }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div>Всего игр:<b> {{ cnt }}</b></div>

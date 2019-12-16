@@ -9,6 +9,7 @@ from sqlalchemy.pool import NullPool
 
 from app import app
 from app import db
+from app import constants
 from app.forms import LoginForm
 from app.models import Game
 from app.work_with_games import refresh_game_stat, get_digit_info
@@ -113,10 +114,33 @@ def settings():
 @app.route('/get_info', methods=['POST'])
 def get_info():
     try:
+        full_series = {}
         digit = request.values.get('digit').strip()
+        play = request.values.get('play', '1').strip()
         series, cnt = get_digit_info(digit)
-        stat = render_template('stat.html', series=series, cnt=cnt, digit=digit)
-    except:
+        for pl, item in series.items():
+            full_series[pl] = {}
+            for i in range(6, constants.CNT_REGEX):
+                tmp = []
+                full_series[pl][str(i)] = {}
+                for d, v in item.items():
+                    if int(d) >= i:
+                        tmp.extend(v)
+                sort_tmp = sorted(tmp)
+                full_series[pl][str(i)] = sort_tmp
+                if len(tmp) > 1:
+
+                    diff = [j - i for i, j in zip(sort_tmp[:-1], sort_tmp[1:])]
+                    avg = round(sum(diff) / len(diff))
+                    full_series[pl][str(i) + 'avg'] = avg
+                    next_ser = sort_tmp[0] - avg
+                    if next_ser <= 0:
+                        full_series[pl][str(i) + 'next'] = f'Примерно через {abs(next_ser)} игр'
+                    else:
+                        full_series[pl][str(i) + 'next'] = f'Должна была быть {next_ser} игр назад'
+
+        stat = render_template('stat.html', series=series, cnt=cnt, digit=digit, play=play, full_series=full_series)
+    except Exception as e:
         return jsonify({'data': 'error'})
     return jsonify({'stat': stat})
 

@@ -26,9 +26,10 @@ function update_by_date(date) {
     });
 }
 
-function get_info(digit) {
+function get_info(digit, play) {
     $.post('/get_info', {
-        digit: digit
+        digit: digit,
+        play: play
     }).done(function (response) {
         // $('[id^="r"]').popover('dispose');
         // var p = $(`#r${digit}`);
