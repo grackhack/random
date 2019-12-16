@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone, timedelta
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -93,7 +94,9 @@ def login():
 @app.route('/collect_games', methods=['POST'])
 def collect_games():
     try:
-        date = request.values.get('day', datetime.datetime.now().strftime("%d.%m.%Y"))
+        offset = timezone(timedelta(hours=3))
+        now_day = datetime.datetime.now(offset)
+        date = request.values.get('day', now_day.strftime("%d.%m.%Y"))
         refresh_game_stat(date)
     except:
         return jsonify({'data': 'error'})
