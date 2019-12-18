@@ -13,9 +13,8 @@ from app import db
 from app import constants
 from app.forms import LoginForm
 from app.models import Game
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series
+from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series,get_count_series
 from config import Config
-from work_with_games import get_count_series
 
 
 def build_plot():
