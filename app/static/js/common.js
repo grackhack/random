@@ -45,3 +45,5 @@ function get_info(digit, play) {
         $("#msg").html("<p> Fail!</p>");
     });
 }
+
+

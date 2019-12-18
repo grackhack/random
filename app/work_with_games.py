@@ -2,6 +2,7 @@ import datetime
 import json
 import re
 
+import numpy as np
 import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -91,9 +92,68 @@ def get_digit_info(digit):
     series_win = {}
     series_los = {}
     for d in constants.SW:
-        series_win[d] = [m.start() + 1 for m in re.finditer(constants.SW[d], str_res)]
-        series_los[d] = [m.start() + 1 for m in re.finditer(constants.SL[d], str_res)]
+        series_win[d] = [m.start() + 2 for m in re.finditer(constants.SW[d], str_res)]
+        series_los[d] = [m.start() + 2 for m in re.finditer(constants.SL[d], str_res)]
 
     series['W'] = series_win
     series['L'] = series_los
     return series, count_games
+
+
+def get_diff_series(series):
+    full_series = {}
+    for pl, item in series.items():
+        full_series[pl] = {}
+        for i in range(6, constants.CNT_REGEX):
+            tmp = []
+            full_series[pl][str(i)] = {}
+            for d, v in item.items():
+                if int(d) >= i:
+                    tmp.extend(v)
+            sort_tmp = sorted(tmp)
+            full_series[pl][str(i)] = sort_tmp
+            if len(tmp) > 1:
+
+                diff = [j - i for i, j in zip(sort_tmp[:-1], sort_tmp[1:])]
+                avg = round(sum(diff) / len(diff))
+                full_series[pl][str(i) + 'avg'] = avg
+                if sort_tmp[0] == 1:
+                    next_ser = sort_tmp[1] - avg
+                else:
+                    next_ser = sort_tmp[0] - avg
+                if next_ser <= 0:
+                    full_series[pl][str(i) + 'next'] = f'Примерно через {abs(next_ser)} игр'
+                else:
+                    full_series[pl][str(i) + 'next'] = f'Должна была быть {next_ser} игр назад'
+    return full_series
+
+
+def get_count_series(digit):
+    series, cnt = get_digit_info(digit)
+    line_x = sorted([i for i in range(cnt, 0, -constants.XRNG)])
+    line_x = [line_x[0] - constants.XRNG] + line_x
+    full_series = {}
+    for pl, item in series.items():
+        full_series[pl] = {}
+        for d, v in item.items():
+            count, division = np.histogram(v, bins=line_x)
+            full_series[pl][d] = count.tolist()
+    dataset = prepare_dataset(full_series, line_x)
+    return dataset
+
+
+def prepare_dataset(data, labels):
+    all_data = {}
+    colors = ['#007bff', '#28a745', '#444444', '#ffc107', '#dc3545', '#6c757d', '#6f42c1']
+    for pl, item in data.items():
+        dataset = {}
+        dataset['labels'] = labels
+        dataset['datasets'] = []
+        for d, row in item.items():
+            if 3 < int(d) < 11:
+                dataset['datasets'].append({'data': row,
+                                            'backgroundColor': colors[int(d) - 4]
+                                            })
+
+        all_data[pl] = dataset
+    return all_data
