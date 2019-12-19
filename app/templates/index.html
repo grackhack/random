@@ -34,9 +34,7 @@
                         <div>{{ game.digit }}</div>
                     </td>
                     {% for g in game.game %}
-                        <td {% if g|is_numeric %}style="background-color:#
-                                {{ g|hex_color }}{{ g|hex_color }}FF"{% endif %}
-                            align="center">{% if g|is_numeric %}{{ g }}{% else %}.{% endif %}</td>
+                        <td {% if g|is_numeric %}style="background-color:#{{ g|hex_color }}{{ g|hex_color }}FF"{% endif %} align="center">{% if g|is_numeric %}{{ g }}{% else %}.{% endif %}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}

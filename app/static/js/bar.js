@@ -2,11 +2,12 @@ function hist(digit) {
     $.post('/get_hist', {
         digit: digit,
     }).done(function (response) {
-        $("#hw").html(`Серии не выпадений числа: ${digit}. Инфо`);
-        $("#hl").html(`Серии выпадений числа: ${digit}. Инфо`);
-        $("#lost_games").html(response.dataset.lost_games);
+        // $("#hw").html(`Серии не выпадений числа: ${digit}. Инфо`);
+        // $("#hl").html(`Серии выпадений числа: ${digit}. Инфо`);
 
         show_bar(response.dataset)
+        $("#lost_games").html(response.dataset.lost_games);
+
     }).fail(function () {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");

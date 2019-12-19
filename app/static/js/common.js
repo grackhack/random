@@ -31,20 +31,12 @@ function get_info(digit, play) {
         digit: digit,
         play: play
     }).done(function (response) {
-        // $('[id^="r"]').popover('dispose');
-        // var p = $(`#r${digit}`);
-        // p.popover({
-        //     html: true,
-        //     content: response.stat,
-        //     delay: { "show": 500, "hide": 100 }
-        //
-        // }).popover('show')
-        hist(digit)
         $('#stat').html(response.stat)
     }).fail(function () {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");
     });
+     hist(digit)
 }
 
 
