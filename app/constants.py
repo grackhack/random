@@ -4,6 +4,7 @@ CNT_REGEX = 25
 XRNG = 1000
 XTICK = 10
 MIN_SERIES = 6
+TBL_COL = 85
 
 def gen_regexs():
     sw = {}

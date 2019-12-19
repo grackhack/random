@@ -57,8 +57,8 @@ def get_digit_row(digit, play):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     connection = engine.raw_connection()
     df = pd.read_sql_query("""
-        select de{d:} from (select date,de{d:}  from game order by date desc limit 500) a order by date;       
-        """.format(d=digit), connection)
+        select de{d:} from (select date,de{d:}  from game order by date desc limit {tbl:}) a order by date;       
+        """.format(d=digit, tbl=constants.TBL_COL), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
     history = get_play_history(row, positive=play)
@@ -71,7 +71,7 @@ def get_digit_row(digit, play):
 def index():
     play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
-    dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(500)
+    dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(constants.TBL_COL)
     # build_plot()
     games = []
     result = []
