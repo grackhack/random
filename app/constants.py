@@ -1,7 +1,8 @@
 import re
 
 CNT_REGEX = 25
-XRNG = 500
+XRNG = 1000
+XTICK = 10
 MIN_SERIES = 6
 
 def gen_regexs():

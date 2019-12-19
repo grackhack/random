@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+from itertools import zip_longest
 
 import numpy as np
 import requests
@@ -130,30 +131,35 @@ def get_diff_series(series):
 
 def get_count_series(digit):
     series, cnt = get_digit_info(digit)
-    line_x = sorted([i for i in range(cnt, 0, -constants.XRNG)])
-    line_x = [line_x[0] - constants.XRNG] + line_x
+    step = (cnt + constants.XTICK) // constants.XTICK
+
+    line_x = sorted([i for i in range(cnt, 0, -step)])
+    line_x = [line_x[0] - step] + line_x
     full_series = {}
     for pl, item in series.items():
         full_series[pl] = {}
         for d, v in item.items():
             count, division = np.histogram(v, bins=line_x)
             full_series[pl][d] = count.tolist()
-    dataset = prepare_dataset(full_series, line_x)
+    dataset = prepare_dataset(full_series)
+    dataset['lost_games'] = f'Осталось {abs(line_x[0])} игр в срезе по {step}'
     return dataset
 
 
-def prepare_dataset(data, labels):
+def prepare_dataset(data):
     all_data = {}
     colors = ['#007bff', '#28a745', '#16f1f1', '#ffc107', '#dc3545', '#f51ada', '#6f42c1']
     for pl, item in data.items():
         dataset = {}
-        dataset['labels'] = labels
         dataset['datasets'] = []
+        tmp_avg = [0] * constants.XTICK
         for d, row in item.items():
             if 3 < int(d) < 11:
                 dataset['datasets'].append({'data': row,
-                                            'backgroundColor': colors[int(d) - 4]
+                                            'backgroundColor': colors[int(d) - 4],
                                             })
+                tmp_avg = [sum(i) for i in zip_longest(tmp_avg, row, fillvalue=0)]
 
         all_data[pl] = dataset
+        dataset['labels'] = tmp_avg
     return all_data

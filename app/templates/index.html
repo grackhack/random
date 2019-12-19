@@ -53,13 +53,18 @@
         </div>
         <div class="row">
             {% if play == '0' %}
+                <canvas id="chBarL" width="400" height="200"></canvas>
+
                 <a href="/index?play=1" class="btn btn-secondary btn-lg btn-block" role="button" aria-pressed="true">Показать
                     серии невыпадений</a>
+
             {% else %}
+                <canvas id="chBarW" width="400" height="200"></canvas>
                 <a href="/index?play=0" class="btn btn-secondary btn-lg btn-block" role="button" aria-pressed="true">Показать
                     серии выпадений</a>
             {% endif %}
         </div>
+        <div id="lost_games"></div>
         <div id="stat"></div>
     </div>
 

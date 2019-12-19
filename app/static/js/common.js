@@ -39,6 +39,7 @@ function get_info(digit, play) {
         //     delay: { "show": 500, "hide": 100 }
         //
         // }).popover('show')
+        hist(digit)
         $('#stat').html(response.stat)
     }).fail(function () {
         $("#msg").addClass("alert alert-danger");

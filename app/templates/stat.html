@@ -1,14 +1,14 @@
 {% if play=='1' %}
     <div>Серии невыпадений для <b>{{ digit }}</b></div>
     {% for  k, v in full_series.W.items() %}
-        {% if k=='6' or k=='7' %}
-            <div>{{ k }}+:{{ v }}</div>
-        {% endif %}
+{#        {% if k=='6' or k=='7' %}#}
+{#            <div>{{ k }}+:{{ v }}</div>#}
+{#        {% endif %}#}
         {% if k=='6avg' or k=='7avg' %}
-                <div>Среднее: {{ v }}</div>
+                <div>{{ k }} : {{ v }}</div>
         {% endif %}
         {% if k=='6next' or k=='7next' %}
-                <div>Следущая серия: {{ v }}</div>
+                <div>Следущая серия {{ k }}: {{ v }}</div>
                 <br>
         {% endif %}
     {% endfor %}
@@ -21,14 +21,14 @@
 {% else %}
     <div>Серии выпадений для <b>{{ digit }}</b></div>
     {% for  k, v in full_series.L.items() %}
-        {% if k=='6' or k=='7' %}
-            <div>{{ k }}+:{{ v }}</div>
-        {% endif %}
+{#        {% if k=='6' or k=='7' %}#}
+{#            <div>{{ k }}+:{{ v }}</div>#}
+{#        {% endif %}#}
         {% if k=='6avg' or k=='7avg' %}
                 <div>Среднее: {{ v }}</div>
         {% endif %}
         {% if k=='6next' or k=='7next' %}
-                <div>Следущая серия: {{ v }}</div>
+                <div>Следущая серия {{ k }}: {{ v }}</div>
                 <br>
         {% endif %}
     {% endfor %}
