@@ -11,8 +11,8 @@ def gen_regexs():
     sl = {}
 
     for i in range(1, CNT_REGEX):
-        sw[str(i)] = r'(?:^|1)0{{{d:}}}(?:$|1)'.format(d=i)
-        sl[str(i)] = r'(?:^|0)1{{{d:}}}(?:$|0)'.format(d=i)
+        sw[str(i)] = r'(1)0{{{d:}}}(?:$|1)'.format(d=i)
+        sl[str(i)] = r'(0)1{{{d:}}}(?:$|0)'.format(d=i)
 
     return sw, sl
 
