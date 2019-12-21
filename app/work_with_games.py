@@ -148,7 +148,9 @@ def get_count_series(digit):
 
 def prepare_dataset(data):
     all_data = {}
-    colors = ['#007bff', '#28a745', '#16f1f1', '#ffc107', '#dc3545', '#f51ada', '#6f42c1']
+
+    colors = ['#16f1f1', '#ffc107', '#ff60eb', '#28a745', '#dc3545', '#007bff', '#6f42c1', ]
+
     for pl, item in data.items():
         dataset = {}
         dataset['datasets'] = []
