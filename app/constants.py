@@ -31,7 +31,17 @@ PL_GAME_RES = 'select de{de:} from game where date> %s order by date limit 1'
 UPDATE_SUM = 'update play set game_result = %s where id = %s'
 
 WIN_SUM = """
-select sum(game_result)-sum(game_bet) as win from play p join play_game pg on p.id = pg.game_id where user_id=%s and p.game_result is not null
+select case
+           when sum(game_result) is null then 0
+           else sum(game_result) end -
+       case
+           when sum(game_bet) is null then 0
+           else sum(game_bet)
+           end as win
+from play p
+         join play_game pg
+              on p.id = pg.game_id
+where user_id = %s
 """
 
 BALANCE = """select balance from "user" where id =%s"""
