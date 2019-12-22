@@ -188,5 +188,5 @@ def get_balance(user):
     win_sum = result.fetchone()[0]
     result = engine.execute(constants.BALANCE, (user,))
     balance = result.fetchone()[0]
-    balance = balance - win_sum
+    balance = balance + win_sum
     return balance
