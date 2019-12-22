@@ -169,17 +169,21 @@ def prepare_dataset(data):
 
 def calculate_bets(user):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
-    result = engine.execute(constants.PL_GAMES, (user,))
-    pl_games = result.fetchall()
-    for gid, dt, digit, win, bet, sum in pl_games:
-        res = engine.execute(constants.PL_GAME_RES.format(de=digit), (dt,))
-        data_res = res.fetchone()
-        if data_res:
-            if win == data_res[0]:
-                sum = round(constants.KOEF * bet, 2)
-            else:
-                sum = 0
-            engine.execute(constants.UPDATE_SUM, (sum, gid))
+
+    result = engine.execute(constants.USERS_ID)
+    users = result.fetchall()
+    for (user,) in users:
+        result = engine.execute(constants.PL_GAMES, (user,))
+        pl_games = result.fetchall()
+        for gid, dt, digit, win, bet, sum in pl_games:
+            res = engine.execute(constants.PL_GAME_RES.format(de=digit), (dt,))
+            data_res = res.fetchone()
+            if data_res:
+                if win == bool(data_res[0]):
+                    sum = round(constants.KOEF * bet, 2)
+                else:
+                    sum = 0
+                engine.execute(constants.UPDATE_SUM, (sum, gid))
 
 
 def get_balance(user):

@@ -45,3 +45,5 @@ where user_id = %s
 """
 
 BALANCE = """select balance from "user" where id =%s"""
+
+USERS_ID = 'select id from "user"'

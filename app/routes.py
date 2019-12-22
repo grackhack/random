@@ -16,7 +16,8 @@ from app import db
 from app import constants
 from app.forms import LoginForm, RegistrationForm
 from app.models import Game, User, Play, PlayGame
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets,get_balance
+from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
+    get_balance
 from config import Config
 
 
@@ -177,7 +178,7 @@ def create_play():
         play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win)
         db.session.add(play)
         db.session.flush()
-        play_game = PlayGame(user_id=user, game_num=game_number, game_id=play.id)
+        play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)
         db.session.add(play_game)
 
     except Exception as e:
@@ -190,8 +191,15 @@ def create_play():
 @app.route('/history')
 @login_required
 def history():
+    all = request.values.get('all', '0')
     user = current_user.id
-    calculate_bets(user)
-    user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(Play.game_time.desc()).all()
-    return render_template('history.html', result=user_games)
+    if all == '0':
+        user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
+            Play.game_time.desc()).filter(PlayGame.user_id == user)
+    else:
+        user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
+            Play.game_time.desc()).all()
 
+    calculate_bets(user)
+
+    return render_template('history.html', result=user_games)
