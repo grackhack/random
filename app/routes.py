@@ -16,7 +16,7 @@ from app import db
 from app import constants
 from app.forms import LoginForm, RegistrationForm
 from app.models import Game, User, Play, PlayGame
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series
+from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets
 from config import Config
 
 
@@ -188,6 +188,8 @@ def create_play():
 @app.route('/history')
 @login_required
 def history():
+    user = current_user.id
+    calculate_bets(user)
     user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(Play.game_time.desc()).all()
     return render_template('history.html', result=user_games)
 

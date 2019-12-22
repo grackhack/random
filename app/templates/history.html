@@ -14,27 +14,35 @@
         </thead>
         <tbody>
         {% for game in result %}
-
-            <tr>
-                <th scope="row">{{ game.Play.game_time }}</th>
-                <td>{{ game.Play.game_digit }}</td>
-                <td>
-                    {% if game.Play.game_win %}
-                        Выпадет
+            <tr
+                    {% if game.Play.game_result == None %}
+                        bgcolor="#add8e6"
+                    {% elif game.Play.game_result == 0.0 %}
+                        bgcolor="#fa8072"
                     {% else %}
-                        Не выпадет
+                        bgcolor="#90ee90"
                     {% endif %}
-                </td>
-                <td>{{ game.Play.game_bet }}</td>
+            >
+            <th scope="row">{{ game.Play.game_time }}</th>
+            <td>{{ game.Play.game_digit }}</td>
+            <td>
+                {% if game.Play.game_win %}
+                    Выпадет
+                {% else %}
+                    Не выпадет
+                {% endif %}
+            </td>
+            <td>{{ game.Play.game_bet }}</td>
 
-                <td>
-                    {% if game.Play.game_result %}
-                        {{ game.Play.game_result }}
-                    {% else %}
-                        Не расчитана
-                    {% endif %}
+            <td>
+                {% if game.Play.game_result == None %}
+                    Не расчитана
+                {% else %}
 
-                </td>
+                    {{ game.Play.game_result }}
+                {% endif %}
+
+            </td>
             <td>
                 {{ game.PlayGame.user_id }}
             </td>
