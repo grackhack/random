@@ -47,3 +47,48 @@ where user_id = %s
 BALANCE = """select balance from "user" where id =%s"""
 
 USERS_ID = 'select id from "user"'
+
+USERS_BAL = """
+select username, bal, all_bet, win_b, all_bet - win_b - inplay as lose, inplay
+from (
+         select username,
+                bal.balance + win.win as bal,
+                case when all_bet is null then 0 else all_bet end
+                                      as all_bet,
+                case when all_wins.win_bet is null then 0 else all_wins.win_bet end
+                                      as win_b,
+                case when not_play is null then 0 else not_play end
+                                      as inplay
+
+         from (select id, username, balance from "user") bal
+                  join (
+             select user_id,
+                    case
+                        when sum(game_result) is null then 0
+                        else sum(game_result) end -
+                    case
+                        when sum(game_bet) is null then 0
+                        else sum(game_bet)
+                        end as win
+             from play p
+                      join play_game pg
+                           on p.id = pg.game_id
+             group by user_id
+         ) win on bal.id = win.user_id
+                  join (select user_id, count(*) as all_bet
+                        from play p
+                                 join play_game pg on p.id = pg.game_id
+                        group by user_id) all_bet on all_bet.user_id = win.user_id
+                  left join (select user_id, count(*) as win_bet
+                             from play p
+                                      join play_game pg on p.id = pg.game_id
+                             where game_result > 0
+                             group by user_id) all_wins
+                            on all_wins.user_id = all_bet.user_id
+                  left join (select user_id, count(*) as not_play
+                             from play p
+                                      join play_game pg on p.id = pg.game_id
+                             where game_result isnull
+                             group by user_id) play on play.user_id = all_bet.user_id
+     ) tbl;
+"""

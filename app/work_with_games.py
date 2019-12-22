@@ -194,3 +194,9 @@ def get_balance(user):
     balance = result.fetchone()[0]
     balance = balance + win_sum
     return balance
+
+
+def get_all_balance():
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    result = engine.execute(constants.USERS_BAL).fetchall()
+    return result

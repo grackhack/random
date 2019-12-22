@@ -17,7 +17,7 @@ from app import constants
 from app.forms import LoginForm, RegistrationForm
 from app.models import Game, User, Play, PlayGame
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
-    get_balance
+    get_balance, get_all_balance
 from config import Config
 
 
@@ -192,6 +192,7 @@ def create_play():
 @login_required
 def history():
     all = request.values.get('all', '0')
+    bal = request.values.get('bal', '0')
     user = current_user.id
     if all == '0':
         user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
@@ -200,6 +201,9 @@ def history():
         user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
             Play.game_time.desc()).all()
 
-    calculate_bets(user)
+    if bal == '1':
+        result = get_all_balance()
+        return render_template('history.html', balance=result)
 
-    return render_template('history.html', result=user_games)
+    calculate_bets(user)
+    return render_template('history.html', result=user_games, balance='')

@@ -1,65 +1,97 @@
 {% extends "base.html" %}
 {% block content %}
     <ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" href="{{ url_for('history') }}">Мои ставки</a>
-  </li>
-    <li class="nav-item">
-    <a class="nav-link" href="{{ url_for('history') }}?all=1">Все ставки</a>
-  </li>
-
-</ul>
-    <table class="table table-sm">
-        <thead>
-        <tr>
-            <th scope="col">Дата</th>
-            <th scope="col">Число</th>
-            <th scope="col">Пари</th>
-            <th scope="col">Ставка</th>
-            <th scope="col">Результат</th>
-            <th scope="col">User</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        {% for game in result %}
-            <tr
-                    {% if game.Play.game_result == None %}
-                        bgcolor="#add8e6"
-                    {% elif game.Play.game_result == 0.0 %}
-                        bgcolor="#fa8072"
-                    {% else %}
-                        bgcolor="#90ee90"
-                    {% endif %}
-            >
-            <th scope="row">{{ game.Play.game_time }}</th>
-            <td>{{ game.Play.game_digit }}</td>
-            <td>
-                {% if game.Play.game_win %}
-                    Выпадет
-                {% else %}
-                    Не выпадет
-                {% endif %}
-            </td>
-            <td>{{ game.Play.game_bet }}</td>
-
-            <td>
-                {% if game.Play.game_result == None %}
-                    Не расчитана
-                {% else %}
-
-                    {{ game.Play.game_result }}
-                {% endif %}
-
-            </td>
-            <td>
-                {{ game.PlayGame.user_id }}
-            </td>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('history') }}">Мои ставки</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('history') }}?all=1">Все ставки</a>
+        </li>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('history') }}?bal=1">Баланс</a>
+        </li>
+    </ul>
+    {% if balance %}
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Баланс</th>
+                <th scope="col">Всего</th>
+                <th scope="col">Выйграно</th>
+                <th scope="col">Проиграно</th>
+                <th scope="col">В игре</th>
             </tr>
+            </thead>
+            <tbody>
+            {% for (username, bal, all_bet, win_b, lose, inplay) in balance %}
+                <tr>
+                <th scope="row">{{ username }}</th>
+                    <td>{{ bal }}</td>
+                    <td>{{ all_bet }}</td>
+                    <td>{{ win_b }}</td>
+                    <td>{{ lose }}</td>
+                    <td>{{ inplay }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-        {% endfor %}
-        </tbody>
-    </table>
+
+    {% else %}
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th scope="col">Дата</th>
+                <th scope="col">Число</th>
+                <th scope="col">Пари</th>
+                <th scope="col">Ставка</th>
+                <th scope="col">Результат</th>
+                <th scope="col">User</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for game in result %}
+                <tr
+                        {% if game.Play.game_result == None %}
+                            bgcolor="#add8e6"
+                        {% elif game.Play.game_result == 0.0 %}
+                            bgcolor="#fa8072"
+                        {% else %}
+                            bgcolor="#90ee90"
+                        {% endif %}
+                >
+                    <th scope="row">{{ game.Play.game_time }}</th>
+                    <td>{{ game.Play.game_digit }}</td>
+                    <td>
+                        {% if game.Play.game_win %}
+                            Выпадет
+                        {% else %}
+                            Не выпадет
+                        {% endif %}
+                    </td>
+                    <td>{{ game.Play.game_bet }}</td>
+
+                    <td>
+                        {% if game.Play.game_result == None %}
+                            Не расчитана
+                        {% else %}
+
+                            {{ game.Play.game_result }}
+                        {% endif %}
+
+                    </td>
+                    <td>
+                        {{ game.PlayGame.user_id }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 
 
 {% endblock %}
