@@ -188,6 +188,6 @@ def create_play():
 @app.route('/history')
 @login_required
 def history():
-    user_games = db.session.query(Play, PlayGame).all()
+    user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(Play.game_time.desc()).all()
     return render_template('history.html', result=user_games)
 
