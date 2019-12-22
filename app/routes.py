@@ -16,7 +16,7 @@ from app import db
 from app import constants
 from app.forms import LoginForm, RegistrationForm
 from app.models import Game, User, Play, PlayGame
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets
+from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets,get_balance
 from config import Config
 
 
@@ -92,6 +92,8 @@ def get_digit_row(digit, play):
 @app.route('/index')
 @login_required
 def index():
+    user = current_user.id
+    balance = get_balance(user)
     play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
     dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(constants.TBL_COL)
@@ -102,7 +104,7 @@ def index():
         result = get_digit_row(digit, play)
         games.append({'digit': digit, 'game': result})
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
-                           url='new_plot.png', count_games=len(result), dates=dates, play=play)
+                           url='new_plot.png', count_games=len(result), dates=dates, play=play, balance=balance)
 
 
 @app.route('/collect_games', methods=['POST'])

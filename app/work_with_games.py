@@ -180,3 +180,13 @@ def calculate_bets(user):
             else:
                 sum = 0
             engine.execute(constants.UPDATE_SUM, (sum, gid))
+
+
+def get_balance(user):
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    result = engine.execute(constants.WIN_SUM, (user,))
+    win_sum = result.fetchone()[0]
+    result = engine.execute(constants.BALANCE, (user,))
+    balance = result.fetchone()[0]
+    balance = balance - win_sum
+    return balance
