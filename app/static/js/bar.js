@@ -1,4 +1,5 @@
 function hist(digit) {
+    $("#bet_digit").text(digit)
     $.post('/get_hist', {
         digit: digit,
     }).done(function (response) {

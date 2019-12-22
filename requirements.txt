@@ -12,6 +12,7 @@ Flask==1.1.1
 Flask-Bootstrap4==4.0.2
 Flask-CLI==0.4.0
 Flask-Debug==0.4.3
+Flask-Login==0.4.1
 Flask-Migrate==2.5.2
 flask-nav==0.6
 Flask-SQLAlchemy==2.4.1

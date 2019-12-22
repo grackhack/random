@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">Дата</th>
+            <th scope="col">Число</th>
+            <th scope="col">Пари</th>
+            <th scope="col">Ставка</th>
+            <th scope="col">Результат</th>
+            <th scope="col">User</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for game in result %}
+
+            <tr>
+                <th scope="row">{{ game.Play.game_time }}</th>
+                <td>{{ game.Play.game_digit }}</td>
+                <td>
+                    {% if game.Play.game_win %}
+                        Выпадет
+                    {% else %}
+                        Не выпадет
+                    {% endif %}
+                </td>
+                <td>{{ game.Play.game_bet }}</td>
+
+                <td>
+                    {% if game.Play.game_result %}
+                        {{ game.Play.game_result }}
+                    {% else %}
+                        Не расчитана
+                    {% endif %}
+
+                </td>
+            <td>
+                {{ game.PlayGame.user_id }}
+            </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

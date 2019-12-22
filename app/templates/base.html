@@ -1,7 +1,7 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block styles %}
-{{super()}}
+    {{ super() }}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/Chart.min.css') }}">
 
@@ -17,8 +17,13 @@
 {% block navbar %}
     <nav class="navbar navbar-dark bg-primary ">
         <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
-        <a class="navbar-brand" href="{{ url_for('charts') }}">Статистика</a>
+        <a class="navbar-brand" href="{{ url_for('history') }}">Результаты</a>
         <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>
+        {% if current_user.is_anonymous %}
+            <a class="navbar-brand" href="{{ url_for('login') }}">Войти</a>
+        {% else %}
+            <a class="navbar-brand" href="{{ url_for('logout') }}">Выxoд</a>
+        {% endif %}
     </nav>
 
 {% endblock %}
@@ -27,11 +32,23 @@
     <script src="{{ url_for('static', filename='js/common.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bar.js') }}"></script>
-
     {{ super() }}
 {% endblock %}
 
-{% block content %}{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">{{ message }}</div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% block page_content %} {% endblock %}
+{% endblock %}
 
 
 

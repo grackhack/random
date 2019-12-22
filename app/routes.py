@@ -1,37 +1,59 @@
 import datetime
 from datetime import timezone, timedelta
+from random import random
 from typing import List
 
 import matplotlib.pyplot as plt
 import pandas as pd
 from flask import render_template, flash, redirect, url_for, jsonify, request
+from flask_login import login_required
+from flask_login import current_user, login_user, logout_user
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 from app import app
 from app import db
 from app import constants
-from app.forms import LoginForm
-from app.models import Game
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series,get_count_series
+from app.forms import LoginForm, RegistrationForm
+from app.models import Game, User, Play, PlayGame
+from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series
 from config import Config
 
 
-def build_plot():
-    df = pd.read_sql_query("""select date, de1, de2,de3,de4,de5,de6,
-                                    de7, de8,de9,de10,de11,de12,
-                                    de13, de14,de15,de13,de17,de18,
-                                    de19, de20,de21,de22,de23,de24
-                                   from game order by date desc
-                                   """, Config.SQLALCHEMY_DATABASE_URI, index_col='date')
-    df = df.fillna(-1)
-    df = df.replace(True, 1)
-    fig = plt.gcf()
-    fig.set_size_inches(20, 10)
-    ax = plt.gca()
-    df.cumsum().plot(kind='line', ax=ax, grid=True)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plt.savefig('new_plot.png', ax=ax)
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=str(random()))
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Регистрация прошла уcпешно!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
 
 
 def get_play_history(row: List[int], positive=True) -> List[str]:
@@ -68,6 +90,7 @@ def get_digit_row(digit, play):
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def index():
     play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
@@ -80,15 +103,6 @@ def index():
         games.append({'digit': digit, 'game': result})
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=len(result), dates=dates, play=play)
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        flash(f'Привет, бро! remember_me={form.remember_me.data}')
-        return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
 
 
 @app.route('/collect_games', methods=['POST'])
@@ -104,6 +118,7 @@ def collect_games():
 
 
 @app.route('/settings')
+@login_required
 def settings():
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute("""
@@ -130,6 +145,7 @@ def get_info():
 
 
 @app.route('/charts')
+@login_required
 def charts():
     return render_template('charts.html')
 
@@ -140,5 +156,38 @@ def get_hist():
         digit = request.values.get('digit').strip()
         dataset = get_count_series(digit)
     except Exception as e:
-        return jsonify({'data': 'error'})
+        raise
     return jsonify({'dataset': dataset})
+
+
+@app.route('/create_play', methods=['POST'])
+def create_play():
+    try:
+        user = current_user.id
+
+        digit = request.values.get('digit')
+        series = bool(int(request.values.get('play')))
+        # series = request.values.get('play')
+        win = bool(int(request.values.get('win')))
+        bet = request.values.get('bet')
+        after = request.values.get('after')
+        game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
+        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win)
+        db.session.add(play)
+        db.session.flush()
+        play_game = PlayGame(user_id=user, game_num=game_number, game_id=play.id)
+        db.session.add(play_game)
+
+    except Exception as e:
+        raise
+    else:
+        db.session.commit()
+    return render_template('index.html')
+
+
+@app.route('/history')
+@login_required
+def history():
+    user_games = db.session.query(Play, PlayGame).all()
+    return render_template('history.html', result=user_games)
+

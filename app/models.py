@@ -1,9 +1,17 @@
 import datetime
+from app import login
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 
 
-class User(db.Model):
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -11,6 +19,13 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 
 class Game(db.Model):
@@ -53,3 +68,22 @@ class Game(db.Model):
         digits = [de[2:] for de in des if getattr(self, de)]
         digits = ' '.join(digits)
         return f'{self.date}: {digits}'
+
+
+class PlayGame(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    game_id = db.Column(db.Integer, db.ForeignKey('play.id'))
+    game_num = db.Column(db.BigInteger)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
+
+
+class Play(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    game_time = db.Column(db.DateTime)
+    game_digit = db.Column(db.Integer)
+    game_series = db.Column(db.Boolean)
+    game_bet = db.Column(db.Integer)
+    game_result = db.Column(db.Float)
+    game_win = db.Column(db.Boolean)
+    game_stat = db.Column(db.JSON)
