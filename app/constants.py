@@ -6,6 +6,7 @@ XTICK = 10
 MIN_SERIES = 6
 TBL_COL = 85
 KOEF = 1.92
+SERIES_BEGIN_POS = 1
 
 
 def gen_regexs():

@@ -93,8 +93,8 @@ def get_digit_info(digit):
     series_win = {}
     series_los = {}
     for d in constants.SW:
-        series_win[d] = [m.start() + 2 for m in re.finditer(constants.SW[d], str_res)]
-        series_los[d] = [m.start() + 2 for m in re.finditer(constants.SL[d], str_res)]
+        series_win[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SW[d], str_res)]
+        series_los[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SL[d], str_res)]
 
     series['W'] = series_win
     series['L'] = series_los
@@ -118,10 +118,9 @@ def get_diff_series(series):
                 diff = [j - i for i, j in zip(sort_tmp[:-1], sort_tmp[1:])]
                 avg = round(sum(diff) / len(diff))
                 full_series[pl][str(i) + 'avg'] = avg
-                if sort_tmp[0] == 1:
-                    next_ser = sort_tmp[1] - avg
-                else:
-                    next_ser = sort_tmp[0] - avg
+
+                next_ser = sort_tmp[0] - avg
+
                 if next_ser <= 0:
                     full_series[pl][str(i) + 'next'] = f'Примерно через {abs(next_ser)} игр'
                 else:
