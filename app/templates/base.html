@@ -18,7 +18,7 @@
     <nav class="navbar navbar-dark bg-primary ">
         <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
         <a class="navbar-brand" href="{{ url_for('history') }}">Результаты</a>
-        <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>
+{#        <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>#}
         <a class="navbar-brand" href="{{ url_for('charts') }}">Инфо</a>
         {% if current_user.is_anonymous %}
             <a class="navbar-brand" href="{{ url_for('login') }}">Войти</a>
