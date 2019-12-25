@@ -2,14 +2,27 @@
 {% block content %}
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ url_for('history') }}">Мои ставки</a>
+            {% if all_bet!='1' and bal!='1' %}
+                <a class="nav-link active" href="{{ url_for('history') }}">Мои ставки</a>
+
+            {% else %}
+                <a class="nav-link" href="{{ url_for('history') }}">Мои ставки</a>
+            {% endif %}
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('history') }}?all=1">Все ставки</a>
+            {% if all_bet=='1' %}
+                <a class="nav-link active" href="{{ url_for('history') }}?all=1">Все ставки</a>
+            {% else %}
+                <a class="nav-link" href="{{ url_for('history') }}?all=1">Все ставки</a>
+            {% endif %}
         </li>
-        </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('history') }}?bal=1">Баланс</a>
+            {% if bal=='1' %}
+                <a class="nav-link active" href="{{ url_for('history') }}?bal=1">Баланс</a>
+            {% else %}
+                <a class="nav-link" href="{{ url_for('history') }}?bal=1">Баланс</a>
+            {% endif %}
         </li>
     </ul>
     {% if balance %}
@@ -27,7 +40,7 @@
             <tbody>
             {% for (username, bal, all_bet, win_b, lose, inplay) in balance %}
                 <tr>
-                <th scope="row">{{ username }}</th>
+                    <th scope="row">{{ username }}</th>
                     <td>{{ bal }}</td>
                     <td>{{ all_bet }}</td>
                     <td>{{ win_b }}</td>

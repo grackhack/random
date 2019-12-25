@@ -201,10 +201,10 @@ def create_play():
 @app.route('/history')
 @login_required
 def history():
-    all = request.values.get('all', '0')
+    all_bet = request.values.get('all', '0')
     bal = request.values.get('bal', '0')
     user = current_user.id
-    if all == '0':
+    if all_bet == '0':
         user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
@@ -213,7 +213,7 @@ def history():
 
     if bal == '1':
         result = get_all_balance()
-        return render_template('history.html', balance=result)
+        return render_template('history.html', balance=result, bal=bal, all_bet=all_bet)
 
     calculate_bets(user)
-    return render_template('history.html', result=user_games, balance='')
+    return render_template('history.html', result=user_games, balance='', all_bet=all_bet)

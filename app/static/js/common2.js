@@ -49,6 +49,22 @@ function get_info(digit, play) {
     hist(digit)
 }
 
+
+function ins_bet(count) {
+     $("#bet_count").val(count);
+     refresh_bet_sum()
+}
+
+function ins_win(win) {
+    if (win==0) {
+        $("#bet_win").val('Не выпадет');
+    } else {
+        $("#bet_win").val('Выпадет');
+    }
+
+     refresh_bet_sum()
+}
+
 function refresh_bet_sum() {
     var betCount = parseInt($("#bet_count").val());
     var betK = parseFloat($("#bet_k").text().trim());
@@ -64,6 +80,7 @@ function bet() {
     var betWin = $("#bet_win").val();
     var betSeries = $("#bet_series").val();
     var betAfter = $("#bet_after").text().trim();
+    var balance = parseFloat($("#bal").text().trim())
     if (isNaN(betDigit)) {
         $("#err_msg").addClass("alert alert-danger");
         $("#err_msg").html('Не выбрано число');
@@ -74,9 +91,22 @@ function bet() {
         $("#err_msg").html('Не выбрана ставка')
         return
     }
-    if (["0", "1"].indexOf(betWin) < 0) {
+    if (betWin === 'Выпадет') {
+        betWin = 1
+    }
+
+    if (betWin === 'Не выпадет') {
+        betWin = 0
+    }
+
+    if ([0, 1].indexOf(betWin) < 0) {
         $("#err_msg").addClass("alert alert-danger");
         $("#err_msg").html('Не выбран тип ставки')
+        return
+    }
+    if ((balance - betCount)< 0){
+        $("#err_msg").addClass("alert alert-danger");
+        $("#err_msg").html('Нет денег на балансе для ставки')
         return
     }
     $.post('/create_play', {

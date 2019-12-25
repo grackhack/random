@@ -3,7 +3,7 @@
 
 {% block page_content %}
     <div id="msg">
-        {{ max_date }} <b>  Баланс: {{ balance }}</b>
+        {{ max_date }} Баланс: <b id="bal">{{ balance }}</b>
     </div>
 
     <div style="overflow-x: scroll;">
@@ -37,7 +37,7 @@
                     {% for g in game.game %}
                         <td {% if g|is_numeric %}
                             style="background-color:#{{ g|hex_color }}{{ g|hex_color }}FF"{% endif %}
-                                align="center">
+                            align="center">
                             {% if g|is_numeric %}{{ g }}{% else %}.{% endif %}</td>
                     {% endfor %}
                 </tr>
@@ -85,98 +85,120 @@
         <div class="modal-dialog bd-example-modal-sm" role="document">
             <div class="form-control">
                 <div class="modal-content">
-                    <div class="modal-body">
-                        <div id="bet_after">{{ max_date }}</div>
-                        <div class="input-group input-group-sm mb-3">
-                            <button id="bet_digit" class="btn btn-sm dropdown-toggle" type="button"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">?
-                            </button>
-                            <div class="dropdown-menu">
-                                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                                    <div class="btn-group mr-2" role="group" aria-label="First group">
-                                        <button type="button" class="btn btn-secondary" onclick="hist('1')">1
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('2')">2
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('3')">3
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('4')">4
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('5')">5
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('6')">6
-                                        </button>
-                                    </div>
-                                    <div class="btn-group mr-2" role="group" aria-label="First group">
-                                        <button type="button" class="btn btn-secondary" onclick="hist('7')">7
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('8')">8
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('9')">9
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('10')">10
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('11')">11
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('12')">12
-                                        </button>
-                                    </div>
-                                    <div class="btn-group mr-2" role="group" aria-label="First group">
-                                        <button type="button" class="btn btn-secondary" onclick="hist('13')">13
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('14')">14
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('15')">15
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('16')">16
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('17')">17
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('18')">18
-                                        </button>
-                                    </div>
-                                    <div class="btn-group mr-2" role="group" aria-label="First group">
-                                        <button type="button" class="btn btn-secondary" onclick="hist('19')">19
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('20')">20
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('21')">21
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('22')">22
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('23')">23
-                                        </button>
-                                        <button type="button" class="btn btn-secondary" onclick="hist('24')">24
-                                        </button>
-                                    </div>
+
+                    <div id="bet_after">{{ max_date }}</div>
+                    <div class="input-group input-group-sm mb-3">
+                        <button id="bet_digit" class="btn btn-sm dropdown-toggle" type="button"
+                                data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">?
+                        </button>
+                        <div class="dropdown-menu">
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <button type="button" class="btn btn-secondary" onclick="hist('1')">1
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('2')">2
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('3')">3
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('4')">4
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('5')">5
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('6')">6
+                                    </button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <button type="button" class="btn btn-secondary" onclick="hist('7')">7
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('8')">8
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('9')">9
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('10')">10
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('11')">11
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('12')">12
+                                    </button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <button type="button" class="btn btn-secondary" onclick="hist('13')">13
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('14')">14
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('15')">15
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('16')">16
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('17')">17
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('18')">18
+                                    </button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <button type="button" class="btn btn-secondary" onclick="hist('19')">19
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('20')">20
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('21')">21
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('22')">22
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('23')">23
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('24')">24
+                                    </button>
                                 </div>
                             </div>
-                            <select class="form-control" id="bet_win" aria-describedby="inputGroup-sizing-sm"
-                                    onchange="refresh_bet_sum()">
-                                <option selected>?</option>
-                                <option value="0">Не выпадет</option>
-                                <option value="1">Выпадет</option>
-                            </select>
-                            <select class="form-control" id="bet_count" aria-describedby="inputGroup-sizing-sm"
-                                    onchange="refresh_bet_sum()">
-                                <option selected>Ставка</option>
-                                <option value="109">110</option>
-                                <option value="230">230</option>
-                                <option value="480">480</option>
-                                <option value="1000">1000</option>
-                                <option value="2100">2100</option>
-                                <option value="4400">4400</option>
-                                <option value="9150">9150</option>
-                            </select>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="bet_k">1.92</span>
-                            </div>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="bet_sum">?</span>
-                            </div>
-                            <input id="bet_series" type="hidden" value="{{ play }}"/>
                         </div>
+                        <input id="bet_win" class="form-control form-control-sm" type="text" value="?" readonly>
+                        <input id="bet_count" class="form-control form-control-sm" type="text" placeholder="ставка"
+                               onkeyup="refresh_bet_sum()">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="bet_k">1.92</span>
+                        </div>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="bet_sum">?</span>
+                        </div>
+                        <input id="bet_series" type="hidden" value="{{ play }}"/>
+                    </div>
+
+                    <div class="row justify-content-around">
+                        <div class="col-6">
+                           <button type="button" class="btn btn-success btn-sm btn-block" onclick="ins_win(1)">Выпадет</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-danger btn-sm btn-block" onclick="ins_win(0)">Не выпадет</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(9150)">9150</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(4400)">4400</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(2100)">2100</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(1000)">1000</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(480)">480</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(230)">230</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(109)">109</button>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" onclick="ins_bet(50)">50</button>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
 
