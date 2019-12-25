@@ -6,7 +6,7 @@
 .search-table-outter { overflow-x: scroll; }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-  background-color: #CDCDFF;
+  background-color: #16f1f1;
 }
 
 
