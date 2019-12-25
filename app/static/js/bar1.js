@@ -5,7 +5,6 @@ function hist(digit) {
     }).done(function (response) {
         // $("#hw").html(`Серии не выпадений числа: ${digit}. Инфо`);
         // $("#hl").html(`Серии выпадений числа: ${digit}. Инфо`);
-
         show_bar(response.dataset)
         $("#lost_games").html(response.dataset.lost_games);
 
@@ -13,6 +12,7 @@ function hist(digit) {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");
     });
+    trend(digit)
 }
 
 function show_bar(data) {

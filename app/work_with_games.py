@@ -8,6 +8,7 @@ import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
+from typing import Tuple, Dict
 
 from app import constants
 from app.models import Game
@@ -79,22 +80,29 @@ def refresh_game_stat(date):
     db.commit()
 
 
-def get_digit_info(digit):
+def get_raw_data(digit: str) -> str:
+    """Строка 1/0 за все игры для числа и количество"""
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute("""
-        select array(select (case when de{} = TRUE then '1' else '0' end)
-             from game
-             order by date desc)
-        """.format(digit))
+            select array(select (case when de{} = TRUE then '1' else '0' end)
+                 from game
+                 order by date desc)
+            """.format(digit))
     result = result.fetchone()
-    str_res = ''.join(result[0])
-    count_games = len(str_res)
+    raw = ''.join(result[0])
+    return raw
+
+
+def get_digit_info(digit: str) -> Tuple[Dict, int]:
+    """Словарь со количеством серий для каждого числа"""
+    raw = get_raw_data(digit)
+    count_games = len(raw)
     series = {}
     series_win = {}
     series_los = {}
     for d in constants.SW:
-        series_win[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SW[d], str_res)]
-        series_los[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SL[d], str_res)]
+        series_win[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SW[d], raw)]
+        series_los[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SL[d], raw)]
 
     series['W'] = series_win
     series['L'] = series_los
@@ -102,6 +110,7 @@ def get_digit_info(digit):
 
 
 def get_diff_series(series):
+    """Среднее серий для каждого числа от 6+"""
     full_series = {}
     for pl, item in series.items():
         full_series[pl] = {}
@@ -129,6 +138,7 @@ def get_diff_series(series):
 
 
 def get_count_series(digit):
+    """Количество серий для каждого числа"""
     series, cnt = get_digit_info(digit)
     step = (cnt + constants.XTICK) // constants.XTICK
 
@@ -146,24 +156,36 @@ def get_count_series(digit):
 
 
 def prepare_dataset(data):
+    """Даннные для гистограммы """
     all_data = {}
 
     colors = ['#16f1f1', '#ffc107', '#ff60eb', '#28a745', '#dc3545', '#007bff', '#6f42c1', ]
-
     for pl, item in data.items():
         dataset = {}
         dataset['datasets'] = []
         tmp_avg = [0] * constants.XTICK
         for d, row in item.items():
             if 3 < int(d) < 11:
-                dataset['datasets'].append({'data': row,
-                                            'backgroundColor': colors[int(d) - 4],
-                                            })
+                dataset['datasets'].append({'data': row, 'backgroundColor': colors[int(d) - 4]})
                 tmp_avg = [sum(i) for i in zip_longest(tmp_avg, row, fillvalue=0)]
 
         all_data[pl] = dataset
         dataset['labels'] = tmp_avg
     return all_data
+
+
+def get_all_trend(digit):
+    raw = get_raw_data(digit)
+    x = 0
+    data = [x, ]
+    for g in raw[::-1]:
+        if g == '0':
+            x = x - 1
+        else:
+            x = x + 1
+        data.append(x)
+
+    pass
 
 
 def calculate_bets(user):

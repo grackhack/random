@@ -17,7 +17,7 @@ from app import constants
 from app.forms import LoginForm, RegistrationForm
 from app.models import Game, User, Play, PlayGame
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
-    get_balance, get_all_balance
+    get_balance, get_all_balance, get_all_trend
 from config import Config
 
 
@@ -94,7 +94,7 @@ def get_digit_row(digit, play):
 @login_required
 def index():
     user = current_user.id
-    balance = get_balance(user)
+    balance = round(get_balance(user),2)
     play = request.args.get('play', '1')
     max_date = db.session.query(db.func.max(Game.date)).scalar()
     dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(constants.TBL_COL)
@@ -158,6 +158,16 @@ def get_hist():
     try:
         digit = request.values.get('digit').strip()
         dataset = get_count_series(digit)
+    except Exception as e:
+        raise
+    return jsonify({'dataset': dataset})
+
+
+@app.route('/get_trend', methods=['POST'])
+def get_trend():
+    try:
+        digit = request.values.get('digit').strip()
+        dataset = get_all_trend(digit)
     except Exception as e:
         raise
     return jsonify({'dataset': dataset})
