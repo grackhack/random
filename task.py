@@ -10,6 +10,8 @@ from sqlalchemy.pool import NullPool
 
 from app.models import Game
 from config import Config
+from telega import send_msg
+from app.work_with_games import get_last_series
 
 
 def _convert_items(items):
@@ -53,7 +55,7 @@ def get_all_data():
     }
     games = []
     for page in range(1, 2):
-        data['page'] = str(page),
+        data['page'] = str(page)
         r = requests.post(base_link, data=data)
         if r.status_code == 200:
             res = json.loads(r.text)
@@ -76,3 +78,7 @@ if __name__ == '__main__':
             print(game)
             db.add(game)
     db.commit()
+    series = get_last_series()
+    if series:
+        print(series)
+        send_msg(str(series))

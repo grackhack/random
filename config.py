@@ -1,6 +1,8 @@
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+BOT_FATHER = os.environ.get('BOT_FATHER')
+TOKEN = os.environ.get('TOKEN')
 
 
 class Config(object):
