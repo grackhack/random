@@ -7,8 +7,8 @@ MIN_SERIES = 6
 TBL_COL = 85
 KOEF = 1.92
 SERIES_BEGIN_POS = 1
-MIN_TELE_S = 2
-MAX_TELE_S = 3
+MIN_TELE_S = 8
+MAX_TELE_S = 25
 
 
 def gen_regexs():
