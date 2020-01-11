@@ -128,11 +128,11 @@ def get_last_series():
 
 
 def get_diff_series(series):
-    """Среднее серий для каждого числа от 6+"""
+    """Среднее серий для каждого числа от MIN_SERIES+"""
     full_series = {}
     for pl, item in series.items():
         full_series[pl] = {}
-        for i in range(6, constants.CNT_REGEX):
+        for i in range(constants.MIN_SERIES, constants.CNT_REGEX):
             tmp = []
             full_series[pl][str(i)] = {}
             for d, v in item.items():
@@ -183,8 +183,8 @@ def prepare_dataset(data):
         dataset['datasets'] = []
         tmp_avg = [0] * constants.XTICK
         for d, row in item.items():
-            if 3 < int(d) < 11:
-                dataset['datasets'].append({'data': row, 'backgroundColor': colors[int(d) - 4]})
+            if constants.MIN_SERIES <= int(d) < constants.MIN_SERIES + len(colors):
+                dataset['datasets'].append({'data': row, 'backgroundColor': colors[int(d) - len(colors)]})
                 tmp_avg = [sum(i) for i in zip_longest(tmp_avg, row, fillvalue=0)]
 
         all_data[pl] = dataset
