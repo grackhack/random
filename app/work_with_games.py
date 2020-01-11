@@ -149,9 +149,9 @@ def get_diff_series(series):
                 next_ser = sort_tmp[0] - avg
 
                 if next_ser <= 0:
-                    full_series[pl][str(i) + 'next'] = f'Примерно через {abs(next_ser)} игр'
+                    full_series[pl][str(i) + 'next'] = f'Ждать {abs(next_ser)} игр'
                 else:
-                    full_series[pl][str(i) + 'next'] = f'Должна была быть {next_ser} игр назад'
+                    full_series[pl][str(i) + 'next'] = f'Должна {next_ser} игр назад'
     return full_series
 
 
