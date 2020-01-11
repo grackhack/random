@@ -3,7 +3,7 @@ from telegram.ext import Updater
 
 
 def send_msg(message):
-    for i in range(1):
+    for i in range(3):
         try:
             REQUEST_KWARGS = {
                 'proxy_url': 'socks5h://orbtl.s5.opennetwork.cc:999',
@@ -12,7 +12,9 @@ def send_msg(message):
                     'password': 'F2fL3J74',
                 }
             }
-            updater = Updater(config.TOKEN, request_kwargs=REQUEST_KWARGS, use_context=True)
+            updater = Updater(config.TOKEN,
+                              # request_kwargs=REQUEST_KWARGS,
+                              use_context=True)
             updater.bot.send_message(chat_id=config.BOT_FATHER,
                                      text=message,
                                      parse_mode='HTML',
