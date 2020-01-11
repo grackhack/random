@@ -109,6 +109,24 @@ def get_digit_info(digit: str) -> Tuple[Dict, int]:
     return series, count_games
 
 
+def get_last_series():
+    """"Получить последние серии для всех чисел"""
+    current_series = []
+    for digit in range(1, constants.CNT_REGEX):
+        raw = get_raw_data(digit)
+        tmp = raw[:constants.CNT_REGEX]
+        cnt = 0
+        s = tmp[0]
+        for i in tmp:
+            if i == s:
+                cnt += 1
+            else:
+                current_series.append((digit, s, cnt))
+                break
+    series = list(filter(lambda x: constants.MIN_TELE_S <= x[2] <= constants.MAX_TELE_S, current_series))
+    return series
+
+
 def get_diff_series(series):
     """Среднее серий для каждого числа от 6+"""
     full_series = {}
