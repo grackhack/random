@@ -2,6 +2,10 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 BOT_FATHER = os.environ.get('BOT_FATHER')
+ALEX = os.environ.get('ALEX')
+DOZ = os.environ.get('DOZ')
+
+
 TOKEN = os.environ.get('TOKEN')
 
 

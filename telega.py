@@ -17,6 +17,14 @@ def send_msg(message):
                                      text=message,
                                      parse_mode='HTML',
                                      disable_web_page_preview=True)
+            updater.bot.send_message(chat_id=config.ALEX,
+                                     text=message,
+                                     parse_mode='HTML',
+                                     disable_web_page_preview=True)
+            updater.bot.send_message(chat_id=config.DOZ,
+                                     text=message,
+                                     parse_mode='HTML',
+                                     disable_web_page_preview=True)
         except Exception as e:
             print(e)
         else:
