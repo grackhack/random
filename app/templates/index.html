@@ -45,6 +45,19 @@
             </tbody>
         </table>
     </div>
+    <table>
+        <tr>
+            <td id="hw">
+            </td>
+            <td style="background-color:#16f1f1">7</td>
+            <td style="background-color:#ffc107">8</td>
+            <td style="background-color:#ff60eb">9</td>
+            <td style="background-color:#28a745">10</td>
+            <td style="background-color:#dc3545">11</td>
+            <td style="background-color:#007bff">12</td>
+            <td style="background-color:#6f42c1">13</td>
+        <tr>
+    </table>
     {% if play == '0' %}
         <canvas id="chBarL" width="400" height="200"></canvas>
     {% else %}
@@ -76,8 +89,9 @@
         <div class="row">
 
         </div>
-        <div id="lost_games"></div>
+
         <div id="stat"></div>
+        <div id="lost_games"></div>
     </div>
 
     <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -166,10 +180,14 @@
 
                     <div class="row justify-content-around">
                         <div class="col-6">
-                           <button type="button" class="btn btn-success btn-sm btn-block" onclick="ins_win(1)">Выпадет</button>
+                            <button type="button" class="btn btn-success btn-sm btn-block" onclick="ins_win(1)">
+                                Выпадет
+                            </button>
                         </div>
                         <div class="col-6">
-                            <button type="button" class="btn btn-danger btn-sm btn-block" onclick="ins_win(0)">Не выпадет</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-block" onclick="ins_win(0)">Не
+                                выпадет
+                            </button>
                         </div>
                     </div>
                     <div class="modal-footer">

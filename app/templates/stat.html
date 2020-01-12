@@ -1,40 +1,45 @@
 {% if play=='1' %}
     <div>Серии невыпадений для <b>{{ digit }}</b></div>
+    <div>
     {% for  k, v in full_series.W.items() %}
         {#        {% if k=='6' or k=='7' %}#}
         {#            <div>{{ k }}+:{{ v }}</div>#}
         {#        {% endif %}#}
-        {% if k=='6avg' or k=='7avg' or k=='8avg' or k=='9avg' or k=='10avg' or k=='11avg' or k=='12avg'%}
-            <div>{{ k }} : {{ v }}</div>
-        {% endif %}
-        {% if k=='6next' or k=='7next' or k=='8next' or k=='9next' or k=='10next' or k=='11next' or k=='12next' or k=='13next'%}
-            <div>Следущая серия {{ k }}: {{ v }}</div>
 
+        {% if k=='7avg' or k=='8avg' or k=='9avg' or k=='10avg' or k=='11avg' or k=='12avg' or k=='13avg'%}
+            {{ k }} : {{ v }}
         {% endif %}
+        {% if k=='7next' or k=='8next' or k=='9next' or k=='10next' or k=='11next' or k=='12next' or k=='13next'%}
+            <b>{{ v }}</b><br>
+        {% endif %}
+
     {% endfor %}
+    </div>
 
     {% for  k, v in series.W.items() %}
-        {% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' or k=='13' or  k=='14' or k=='15' or k=='16' or k=='17' or k=='18' %}
+        {% if k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' or k=='13' or  k=='14' or k=='15' or k=='16' or k=='17' or k=='18' %}
             <div>{{ k }}:{{ v }}</div>
         {% endif %}
     {% endfor %}
 {% else %}
     <div>Серии выпадений для <b>{{ digit }}</b></div>
+     <div>
     {% for  k, v in full_series.L.items() %}
         {#        {% if k=='6' or k=='7' %}#}
         {#            <div>{{ k }}+:{{ v }}</div>#}
         {#        {% endif %}#}
-        {% if k=='6avg' or k=='7avg' or k=='8avg' or k=='9avg' or k=='10avg' or k=='11avg' or k=='12avg'%}
-            <div>{{ k }} : {{ v }}</div>
+        {% if k=='7avg' or k=='8avg' or k=='9avg' or k=='10avg' or k=='11avg' or k=='12avg'%}
+            {{ k }} : {{ v }}
         {% endif %}
-        {% if k=='6next' or k=='7next' or k=='8next' or k=='9next' or k=='10next' or k=='11next' or k=='12next' or k=='13next'%}
-            <div>Следущая серия {{ k }}: {{ v }}</div>
+        {% if k=='7next' or k=='8next' or k=='9next' or k=='10next' or k=='11next' or k=='12next' or k=='13next'%}
+             <b>{{ v }}</b><br>
 
         {% endif %}
     {% endfor %}
+     </div>
     <br>
     {% for  k, v in series.L.items() %}
-        {% if k=='6' or k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' or k=='13' or  k=='14' or k=='15' or k=='16' or k=='17' or k=='18' %}
+        {% if k=='7' or k=='8' or k=='9' or k=='10' or k=='11' or k=='12' or k=='13' or  k=='14' or k=='15' or k=='16' or k=='17' or k=='18' %}
             <div>{{ k }}:{{ v }}</div>
         {% endif %}
     {% endfor %}

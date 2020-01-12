@@ -115,7 +115,8 @@ def collect_games():
         now_day = datetime.datetime.now(offset)
         date = request.values.get('day', now_day.strftime("%d.%m.%Y"))
         refresh_game_stat(date)
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'data': 'error'})
     return jsonify({'data': 'ok'})
 
