@@ -1,7 +1,8 @@
-function hist(digit) {
+function hist(digit, game_type) {
     $("#bet_digit").text(digit)
     $.post('/get_hist', {
         digit: digit,
+        game_type: game_type
     }).done(function (response) {
         // $("#hw").html(`Серии не выпадений числа: ${digit}. Инфо`);
         // $("#hl").html(`Серии выпадений числа: ${digit}. Инфо`);
@@ -12,7 +13,7 @@ function hist(digit) {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");
     });
-    trend(digit)
+    trend(digit, game_type)
 }
 
 function show_bar(data) {

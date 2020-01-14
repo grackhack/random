@@ -76,12 +76,12 @@ def get_play_history(row: List[int], positive=True) -> List[str]:
     return res[::-1]
 
 
-def get_digit_row(digit, play):
+def get_digit_row(digit, play, game_type: str):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     connection = engine.raw_connection()
     df = pd.read_sql_query("""
-        select de{d:} from (select date,de{d:}  from game order by date desc limit {tbl:}) a order by date;       
-        """.format(d=digit, tbl=constants.TBL_COL), connection)
+        select de{d:} from (select date,de{d:}  from {tbl_name:} order by date desc limit {tbl:}) a order by date;       
+        """.format(d=digit, tbl=constants.TBL_COL, tbl_name=constants.GAME_MAP[game_type]['tbl']), connection)
     df = df.fillna(0)
     row = df.replace(True, 1)[f'de{digit}'].tolist()
     history = get_play_history(row, positive=play)
@@ -94,18 +94,21 @@ def get_digit_row(digit, play):
 @login_required
 def index():
     user = current_user.id
-    balance = round(get_balance(user),2)
+    game_type = request.args.get('game', '1')
+    balance = round(get_balance(user), 2)
     play = request.args.get('play', '1')
-    max_date = db.session.query(db.func.max(Game.date)).scalar()
-    dates = db.session.query(Game.date).order_by(Game.date.desc()).limit(constants.TBL_COL)
+    game_model = constants.GAME_MAP[game_type]['model']
+    max_date = db.session.query(db.func.max(game_model.date)).scalar()
+    dates = db.session.query(game_model.date).order_by(game_model.date.desc()).limit(constants.TBL_COL)
     # build_plot()
     games = []
     result = []
-    for digit in range(1, 25):
-        result = get_digit_row(digit, play)
+    for digit in constants.GAME_MAP[game_type]['range']:
+        result = get_digit_row(digit, play, game_type)
         games.append({'digit': digit, 'game': result})
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
-                           url='new_plot.png', count_games=len(result), dates=dates, play=play, balance=balance)
+                           url='new_plot.png', count_games=len(result), dates=dates,
+                           play=play, balance=balance, game_type=game_type)
 
 
 @app.route('/collect_games', methods=['POST'])
@@ -114,7 +117,8 @@ def collect_games():
         offset = timezone(timedelta(hours=3))
         now_day = datetime.datetime.now(offset)
         date = request.values.get('day', now_day.strftime("%d.%m.%Y"))
-        refresh_game_stat(date)
+        game_type = request.values.get('game_type', '1')
+        refresh_game_stat(date, game_type)
     except Exception as e:
         print(e)
         return jsonify({'data': 'error'})
@@ -124,13 +128,15 @@ def collect_games():
 @app.route('/settings')
 @login_required
 def settings():
+    game_type = request.values.get('game_type', '1')
+    game_tbl = constants.GAME_MAP[game_type]['tbl']
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute("""
-    select COUNT(*) as count, date_trunc('day', date) as day FROM game GROUP BY day ORDER BY day desc
-    """)
+    select COUNT(*) as count, date_trunc('day', date) as day FROM {tbl:} GROUP BY day ORDER BY day desc
+    """.format(tbl=game_tbl))
     rows = result.fetchall()
 
-    return render_template('settings.html', result=rows)
+    return render_template('settings.html', result=rows, game_type=game_type)
 
 
 @app.route('/get_info', methods=['POST'])
@@ -139,7 +145,8 @@ def get_info():
 
         digit = request.values.get('digit').strip()
         play = request.values.get('play', '1').strip()
-        series, cnt = get_digit_info(digit)
+        game_type = request.values.get('game_type', '1').strip()
+        series, cnt = get_digit_info(digit, game_type)
         full_series = get_diff_series(series)
 
         stat = render_template('stat.html', series=series, cnt=cnt, digit=digit, play=play, full_series=full_series)
@@ -158,7 +165,8 @@ def charts():
 def get_hist():
     try:
         digit = request.values.get('digit').strip()
-        dataset = get_count_series(digit)
+        game_type = request.values.get('game_type', '1').strip()
+        dataset = get_count_series(digit, game_type)
     except Exception as e:
         raise
     return jsonify({'dataset': dataset})
@@ -168,7 +176,8 @@ def get_hist():
 def get_trend():
     try:
         digit = request.values.get('digit').strip()
-        dataset = get_all_trend(digit)
+        game_type = request.values.get('game_type', '1').strip()
+        dataset = get_all_trend(digit, game_type)
     except Exception as e:
         raise
     return jsonify({'dataset': dataset})
@@ -185,8 +194,10 @@ def create_play():
         win = bool(int(request.values.get('win')))
         bet = request.values.get('bet')
         after = request.values.get('after')
+        game_type = int(request.values.get('game_type', 1))
+
         game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
-        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win)
+        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win, game_type=game_type)
         db.session.add(play)
         db.session.flush()
         play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)

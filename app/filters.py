@@ -34,4 +34,4 @@ def is_digit(value):
 
 @app.template_filter('hex_color')
 def hex_color(value):
-    return "%0.2X" % (255 - int(value) * 10)
+    return "%0.2X" % (255 - int(value) * 5)

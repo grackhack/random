@@ -2,13 +2,16 @@
 
 {% block content %}
     <div id="msg"></div>
+    <a class="navbar-brand" href="{{ url_for('settings') }}">12x24</a>
+        <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=2">Дуэль</a>
+        <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=3">Топ 3</a>
     <div class="container">
         <ul class="list-group">
             {% for d in result %}
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     {{ d.day|only_date }}
                     {% if d.count!=85 %}
-                        <button type="button" class="btn btn-primary  btn-sm" onclick="update_by_date('{{ d.day|human_date }}')">Обновить</button>
+                        <button type="button" class="btn btn-primary  btn-sm" onclick="update_by_date('{{ d.day|human_date }}', {{ game_type }})">Обновить</button>
                     {% endif %}
                     <span class="badge badge-primary badge-pill">{{ d.count }}</span>
                 </div>

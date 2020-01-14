@@ -61,6 +61,7 @@
                 <th scope="col">Пари</th>
                 <th scope="col">Ставка</th>
                 <th scope="col">Результат</th>
+                <th scope="col">Игра</th>
                 <th scope="col">User</th>
 
             </tr>
@@ -95,6 +96,15 @@
                             {{ game.Play.game_result }}
                         {% endif %}
 
+                    </td>
+                    <td>
+                        {% if game.Play.game_type==2 %}
+                            Дуэль
+                        {% elif game.Play.game_type==3 %}
+                            Топ 3
+                        {% else %}
+                            12х24
+                        {% endif %}
                     </td>
                     <td>
                         {{ game.PlayGame.user_id }}

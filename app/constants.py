@@ -1,14 +1,43 @@
 import re
+from app.models import Game, Game2, Game3
 
-CNT_REGEX = 25
+G1 = '1'
+G2 = '2'
+G3 = '3'
+
+CNT_REGEX = 50
 XRNG = 1000
 XTICK = 10
 MIN_SERIES = 7
-TBL_COL = 85
+TBL_COL = 300
 KOEF = 1.92
 SERIES_BEGIN_POS = 1
 MIN_TELE_S = 7
 MAX_TELE_S = 25
+SHIFT_G2 = 20
+SHIFT_G3 = 6
+
+GAME_MAP = {
+    '1': {
+        'range': range(1, 25),
+        'model': Game,
+        'tbl': 'game',
+        'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
+    },
+    '2': {
+        'range': range(1, 27),
+        'model': Game2,
+        'tbl': 'game2',
+        'base_link': 'https://www.stoloto.ru/draw-results/duel/load',
+
+    },
+    '3': {
+        'range': range(0, 10),
+        'model': Game3,
+        'tbl': 'game3',
+        'base_link': 'https://www.stoloto.ru/draw-results/top3/load',
+    },
+}
 
 
 def gen_regexs():
@@ -25,11 +54,11 @@ def gen_regexs():
 SW, SL = gen_regexs()
 
 PL_GAMES = """
-select  p.id,game_time, game_digit, game_win , game_bet, game_result from play p
+select  p.id,game_time, game_digit, game_win , game_bet, game_result, game_type from play p
 join play_game pg on p.id = pg.game_id where user_id=%s and p.game_result isnull
 """
 
-PL_GAME_RES = 'select de{de:} from game where date> %s order by date limit 1'
+PL_GAME_RES = 'select de{de:} from {tbl:} where date> %s order by date limit 1'
 
 UPDATE_SUM = 'update play set game_result = %s where id = %s'
 

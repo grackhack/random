@@ -24,7 +24,7 @@
             </tr>
 
             {% for game in games %}
-                <tr onclick="get_info('{{ game.digit }}','{{ play }}')">
+                <tr onclick="get_info('{{ game.digit }}','{{ play }}', '{{ game_type }}')">
                     <td id="r{{ game.digit }}" data-toggle="popover" data-placement="auto" data-content=""
                             {% if play == '0' %}
                         style="background-color: #6dfc7d"
@@ -66,16 +66,16 @@
     <div class="container">
         <div class="row justify-content-between">
 
-            <button type="button" class="btn btn-primary btn-sm" onclick="get_games()">Обновить</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="get_games({{ game_type }})">Обновить</button>
             {% if play == '0' %}
 
 
-                <a href="/index?play=1" class="btn btn-secondary btn-sm" role="button" aria-pressed="true">Серии
+                <a href="/index?play=1&game={{ game_type }}" class="btn btn-secondary btn-sm" role="button" aria-pressed="true">Серии
                     невыпадений</a>
 
             {% else %}
 
-                <a href="/index?play=0" class="btn btn-secondary btn-sm " role="button" aria-pressed="true">Серии
+                <a href="/index?play=0&game={{ game_type }}" class="btn btn-secondary btn-sm " role="button" aria-pressed="true">Серии
                     выпадений</a>
             {% endif %}
             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal">Ставка
@@ -109,59 +109,65 @@
                         <div class="dropdown-menu">
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                                 <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <button type="button" class="btn btn-secondary" onclick="hist('1')">1
+                                    <button type="button" class="btn btn-secondary" onclick="hist('0', '{{ game_type }}')">0
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('2')">2
+                                    <button type="button" class="btn btn-secondary" onclick="hist('1', '{{ game_type }}')">1
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('3')">3
+                                    <button type="button" class="btn btn-secondary" onclick="hist('2', '{{ game_type }}')">2
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('4')">4
+                                    <button type="button" class="btn btn-secondary" onclick="hist('3', '{{ game_type }}')">3
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('5')">5
+                                    <button type="button" class="btn btn-secondary" onclick="hist('4', '{{ game_type }}')">4
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('6')">6
+                                    <button type="button" class="btn btn-secondary" onclick="hist('5', '{{ game_type }}')">5
                                     </button>
-                                </div>
-                                <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <button type="button" class="btn btn-secondary" onclick="hist('7')">7
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('8')">8
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('9')">9
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('10')">10
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('11')">11
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('12')">12
+                                    <button type="button" class="btn btn-secondary" onclick="hist('6', '{{ game_type }}')">6
                                     </button>
                                 </div>
                                 <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <button type="button" class="btn btn-secondary" onclick="hist('13')">13
+                                    <button type="button" class="btn btn-secondary" onclick="hist('7', '{{ game_type }}')">7
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('14')">14
+                                    <button type="button" class="btn btn-secondary" onclick="hist('8', '{{ game_type }}')">8
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('15')">15
+                                    <button type="button" class="btn btn-secondary" onclick="hist('9', '{{ game_type }}')">9
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('16')">16
+                                    <button type="button" class="btn btn-secondary" onclick="hist('10', '{{ game_type }}')">10
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('17')">17
+                                    <button type="button" class="btn btn-secondary" onclick="hist('11', '{{ game_type }}')">11
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('18')">18
+                                    <button type="button" class="btn btn-secondary" onclick="hist('12', '{{ game_type }}')">12
                                     </button>
                                 </div>
                                 <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <button type="button" class="btn btn-secondary" onclick="hist('19')">19
+                                    <button type="button" class="btn btn-secondary" onclick="hist('13', '{{ game_type }}')">13
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('20')">20
+                                    <button type="button" class="btn btn-secondary" onclick="hist('14', '{{ game_type }}')">14
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('21')">21
+                                    <button type="button" class="btn btn-secondary" onclick="hist('15', '{{ game_type }}')">15
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('22')">22
+                                    <button type="button" class="btn btn-secondary" onclick="hist('16', '{{ game_type }}')">16
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('23')">23
+                                    <button type="button" class="btn btn-secondary" onclick="hist('17', '{{ game_type }}')">17
                                     </button>
-                                    <button type="button" class="btn btn-secondary" onclick="hist('24')">24
+                                    <button type="button" class="btn btn-secondary" onclick="hist('18', '{{ game_type }}')">18
+                                    </button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <button type="button" class="btn btn-secondary" onclick="hist('19', '{{ game_type }}')">19
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('20', '{{ game_type }}')">20
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('21', '{{ game_type }}')">21
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('22', '{{ game_type }}')">22
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('23', '{{ game_type }}')">23
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('24', '{{ game_type }}')">24
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('25', '{{ game_type }}')">25
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="hist('26', '{{ game_type }}')">26
                                     </button>
                                 </div>
                             </div>
@@ -176,6 +182,7 @@
                             <span class="input-group-text" id="bet_sum">?</span>
                         </div>
                         <input id="bet_series" type="hidden" value="{{ play }}"/>
+                        <input id="bet_game_type" type="hidden" value="{{ game_type }}"/>
                     </div>
 
                     <div class="row justify-content-around">
