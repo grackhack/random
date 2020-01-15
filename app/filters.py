@@ -35,3 +35,8 @@ def is_digit(value):
 @app.template_filter('hex_color')
 def hex_color(value):
     return "%0.2X" % (255 - int(value) * 5)
+
+
+@app.template_filter('rounded')
+def rounded(value):
+    return round(value, 2)
