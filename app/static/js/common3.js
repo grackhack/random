@@ -5,10 +5,10 @@ function clear_msg() {
     $("#msg").html('');
 }
 
-function get_games() {
+function get_games(game_type) {
     clear_msg()
     $.post('/collect_games', {
-        data: 12
+        game_type: game_type
     }).done(function (response) {
         location.reload();
         $("#msg").addClass("alert alert-success");
@@ -20,10 +20,11 @@ function get_games() {
     });
 }
 
-function update_by_date(date) {
+function update_by_date(date, game_type) {
     clear_msg()
     $.post('/collect_games', {
-        day: date
+        day: date,
+        game_type: game_type
     }).done(function (response) {
         location.reload();
         $("#msg").addClass("alert alert-success");
@@ -35,18 +36,19 @@ function update_by_date(date) {
     });
 }
 
-function get_info(digit, play) {
+function get_info(digit, play, game_type) {
     clear_msg()
     $.post('/get_info', {
         digit: digit,
-        play: play
+        play: play,
+        game_type: game_type
     }).done(function (response) {
         $('#stat').html(response.stat)
     }).fail(function () {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");
     });
-    hist(digit)
+    hist(digit, game_type)
 }
 
 
@@ -79,6 +81,7 @@ function bet() {
     var betCount = parseInt($("#bet_count").val());
     var betWin = $("#bet_win").val();
     var betSeries = $("#bet_series").val();
+    var betGameType = $("#bet_game_type").val();
     var betAfter = $("#bet_after").text().trim();
     var balance = parseFloat($("#bal").text().trim())
     if (isNaN(betDigit)) {
@@ -115,6 +118,7 @@ function bet() {
         win: betWin,
         bet: betCount,
         after : betAfter,
+        game_type: betGameType
     }).done(function (response) {
         $("#exampleModal").modal('hide')
         $("#msg").addClass("alert alert-success");

@@ -18,10 +18,15 @@
 
 {% block navbar %}
     <nav class="navbar navbar-dark bg-primary ">
-        <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Дуэль</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Топ 3</a>
         <a class="navbar-brand" href="{{ url_for('history') }}">Результаты</a>
-{#        <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>#}
-        <a class="navbar-brand" href="{{ url_for('charts') }}">Инфо</a>
+    {% if current_user.id==1 %}
+        <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>
+    {%  endif %}
+
+{#        <a class="navbar-brand" href="{{ url_for('charts') }}">Инфо</a>#}
 {#        <a class="navbar-brand" href="{{ url_for('chart') }}">Боке</a>#}
         {% if current_user.is_anonymous %}
             <a class="navbar-brand" href="{{ url_for('login') }}">Войти</a>
@@ -34,11 +39,11 @@
 
 {% block scripts %}
     <script data-require="jquery" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
-    <script src="{{ url_for('static', filename='js/common2.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common3.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/charts2.0.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bar2.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/trend.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bar3.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='js/trend.js') }}"></script>#}
 
 
 

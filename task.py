@@ -1,84 +1,50 @@
 import datetime
-import json
-import re
 
-import requests
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from app.models import Game
+from app import constants
+from app.work_with_games import get_last_series, get_all_data
 from config import Config
 from telega import send_msg
-from app.work_with_games import get_last_series
 
 
-def _convert_items(items):
-    res = []
-    rows = [item.strip().split(' ') for item in items]
-    for item in rows:
-        tmp = [int(i) for i in item]
-        res.append(tmp)
-    return res
-
-
-def _get_draw(data):
-    results = ()
-    text = data.replace('\n', ''
-                        ).replace('  ', ' '
-                                  ).replace('\t', ''
-                                            ).replace('&nbsp;', ' '
-                                                      ).replace('<b>', ''
-                                                                ).replace('</b>', ''
-                                                                          )
-    DDATA = re.compile(r'<div class="draw_date" title="([\d+.]+ [\d\:]+)">[\d+.]+ [\d\:]+</div>')
-    DIGITS = re.compile(r'<span class="zone">([\d ]+)</span>')
-    date_items = DDATA.findall(text)
-    str_dates = [f'{d[6:10]}-{d[3:5]}-{d[:2]} {d[-8:-3]}:00' for d in date_items]
-    draw_items = DIGITS.findall(text)
-    if len(date_items) == len(draw_items):
-        draw_items = _convert_items(draw_items)
-        results = [[a, *b] for a, b in list(zip(str_dates, draw_items))]
-    return results
-
-
-def get_all_data():
-    date = datetime.datetime.now().strftime("%d.%m.%Y")
-    yesterday = (datetime.date.today() - datetime.timedelta(days=2)).strftime("%d.%m.%Y")
-    base_link = 'https://www.stoloto.ru/draw-results/12x24/load'
-    data = {
-        'mode': 'date',
-        'super': 'false',
-        'from': yesterday,
-        'to': date,
-    }
-    games = []
-    for page in range(1, 2):
-        data['page'] = str(page)
-        r = requests.post(base_link, data=data)
-        if r.status_code == 200:
-            res = json.loads(r.text)
-            res = res['data']
-            games.extend(_get_draw(res))
-    return games
+def prepare_msg(series, game_type):
+    msg = []
+    if game_type == '3':
+        gname = 'Топ 3'
+    elif game_type == '2':
+        gname = 'Дуэль'
+    else:
+        gname = '12x24'
+    for digit, win, ser in series:
+        msg.append(f'{gname}. Число: {digit} Серия {ser} игр')
+    return msg
 
 
 if __name__ == '__main__':
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     Session = sessionmaker(bind=engine)
     db = Session()
-    games = get_all_data()
-    histoty = db.query(Game.date).all()
-
-    for game in games:
-        game_date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
-        if (game_date,) not in histoty:
-            game = Game(game)
-            print(game)
-            db.add(game)
-    db.commit()
-    series = get_last_series()
-    if series:
-        print(series)
-        send_msg(str(series))
+    message = []
+    for game_type in (constants.G1, constants.G2, constants.G3):
+        game_model = constants.GAME_MAP[game_type]['model']
+        games = get_all_data(game_type=game_type)
+        histoty = db.query(game_model.date).all()
+        for game in games:
+            game_date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
+            if (game_date,) not in histoty:
+                game = game_model(game)
+                print(game)
+                db.add(game)
+        db.commit()
+        series = get_last_series(game_type=game_type)
+        if series:
+            print(series)
+            msg = prepare_msg(series, game_type)
+            message.extend(msg)
+    if message:
+        message = '\n'.join(message)
+        print(message)
+        send_msg(message)

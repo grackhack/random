@@ -24,7 +24,13 @@ def _convert_items(items):
     return res
 
 
-def _get_draw(data):
+def _get_draw(data, game_type):
+    if game_type == '2':
+        DIGITS = re.compile(
+            r"""<span class="zone"><b class='right'>([\d]+) <b class='right'>([\d]+) </span><span class="zone"><b class='left'>([\d]+) <b class='left'>([\d]+) </span>""")
+    else:
+        DIGITS = re.compile(r'<span class="zone">([\d ]+)</span>')
+
     results = ()
     text = data.replace('\n', ''
                         ).replace('  ', ' '
@@ -34,19 +40,20 @@ def _get_draw(data):
                                                                 ).replace('</b>', ''
                                                                           )
     DDATA = re.compile(r'<div class="draw_date" title="([\d+.]+ [\d\:]+)">[\d+.]+ [\d\:]+</div>')
-    DIGITS = re.compile(r'<span class="zone">([\d ]+)</span>')
     date_items = DDATA.findall(text)
     str_dates = [f'{d[6:10]}-{d[3:5]}-{d[:2]} {d[-8:-3]}:00' for d in date_items]
     draw_items = DIGITS.findall(text)
+    if game_type == '2' and draw_items:
+        draw_items = [' '.join(list(item)) for item in draw_items]
     if len(date_items) == len(draw_items):
         draw_items = _convert_items(draw_items)
         results = [[a, *b] for a, b in list(zip(str_dates, draw_items))]
     return results
 
 
-def get_all_data(date=datetime.datetime.now().strftime("%d.%m.%Y")):
+def get_all_data(date=datetime.datetime.now().strftime("%d.%m.%Y"), game_type='1'):
     yesterday = (datetime.datetime.strptime(date, "%d.%m.%Y") - datetime.timedelta(days=2)).strftime("%d.%m.%Y")
-    base_link = 'https://www.stoloto.ru/draw-results/12x24/load'
+    base_link = constants.GAME_MAP[game_type]['base_link']
     data = {
         'mode': 'date',
         'super': 'false',
@@ -60,42 +67,45 @@ def get_all_data(date=datetime.datetime.now().strftime("%d.%m.%Y")):
         if r.status_code == 200:
             res = json.loads(r.text)
             res = res['data']
-            games.extend(_get_draw(res))
+            parsed_data = _get_draw(res, game_type)
+            games.extend(parsed_data)
     return games
 
 
-def refresh_game_stat(date):
+def refresh_game_stat(date, game_type: str):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     Session = sessionmaker(bind=engine)
     db = Session()
-    games = get_all_data(date)
-    histoty = db.query(Game.date).all()
+    game_model = constants.GAME_MAP[game_type]['model']
+    games = get_all_data(date, game_type)
+    histoty = db.query(game_model.date).all()
     print(date, len(games))
     for game in games:
         game_date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
         if (game_date,) not in histoty:
             print(game_date)
-            game = Game(game)
+            game = game_model(game)
             db.add(game)
     db.commit()
 
 
-def get_raw_data(digit: str) -> str:
+def get_raw_data(digit: str, game_type: str) -> str:
     """Строка 1/0 за все игры для числа и количество"""
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    tbl_name = constants.GAME_MAP[game_type]['tbl']
     result = engine.execute("""
-            select array(select (case when de{} = TRUE then '1' else '0' end)
-                 from game
+            select array(select (case when de{d:} = TRUE then '1' else '0' end)
+                 from {tbl:}
                  order by date desc)
-            """.format(digit))
+            """.format(d=digit, tbl=tbl_name))
     result = result.fetchone()
     raw = ''.join(result[0])
     return raw
 
 
-def get_digit_info(digit: str) -> Tuple[Dict, int]:
-    """Словарь со количеством серий для каждого числа"""
-    raw = get_raw_data(digit)
+def get_digit_info(digit: str, game_type: str) -> Tuple[Dict, int]:
+    """Словарь с количеством серий для каждого числа"""
+    raw = get_raw_data(digit, game_type)
     count_games = len(raw)
     series = {}
     series_win = {}
@@ -109,11 +119,11 @@ def get_digit_info(digit: str) -> Tuple[Dict, int]:
     return series, count_games
 
 
-def get_last_series():
+def get_last_series(game_type: str):
     """"Получить последние серии для всех чисел"""
     current_series = []
-    for digit in range(1, constants.CNT_REGEX):
-        raw = get_raw_data(digit)
+    for digit in constants.GAME_MAP[game_type]['range']:
+        raw = get_raw_data(digit, game_type)
         tmp = raw[:constants.CNT_REGEX]
         cnt = 0
         s = tmp[0]
@@ -123,7 +133,12 @@ def get_last_series():
             else:
                 current_series.append((digit, s, cnt))
                 break
-    series = list(filter(lambda x: constants.MIN_TELE_S <= x[2] <= constants.MAX_TELE_S, current_series))
+    if game_type == constants.G2:
+        series = list(filter(lambda x: constants.MIN_TELE_S + constants.SHIFT_G2 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G2, current_series))
+    elif game_type == constants.G3:
+        series = list(filter(lambda x: constants.MIN_TELE_S + constants.SHIFT_G3 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G3, current_series))
+    else:
+        series = list(filter(lambda x: constants.MIN_TELE_S <= x[2] <= constants.MAX_TELE_S, current_series))
     return series
 
 
@@ -155,9 +170,9 @@ def get_diff_series(series):
     return full_series
 
 
-def get_count_series(digit):
+def get_count_series(digit, game_type):
     """Количество серий для каждого числа"""
-    series, cnt = get_digit_info(digit)
+    series, cnt = get_digit_info(digit, game_type)
     step = (cnt + constants.XTICK) // constants.XTICK
 
     line_x = sorted([i for i in range(cnt, 0, -step)])
@@ -192,8 +207,8 @@ def prepare_dataset(data):
     return all_data
 
 
-def get_all_trend(digit):
-    raw = get_raw_data(digit)
+def get_all_trend(digit, game_type):
+    raw = get_raw_data(digit, game_type)
     x = 0
     data = [x, ]
     for g in raw[::-1]:
@@ -214,8 +229,9 @@ def calculate_bets(user):
     for (user,) in users:
         result = engine.execute(constants.PL_GAMES, (user,))
         pl_games = result.fetchall()
-        for gid, dt, digit, win, bet, sum in pl_games:
-            res = engine.execute(constants.PL_GAME_RES.format(de=digit), (dt,))
+        for gid, dt, digit, win, bet, sum, game_type in pl_games:
+            tbl_name = constants.GAME_MAP[str(game_type) or constants.G1]['tbl']
+            res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
             data_res = res.fetchone()
             if data_res:
                 if win == bool(data_res[0]):
