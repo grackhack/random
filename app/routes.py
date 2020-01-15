@@ -195,9 +195,11 @@ def create_play():
         bet = request.values.get('bet')
         after = request.values.get('after')
         game_type = int(request.values.get('game_type', 1))
+        game_koef = float(request.values.get('game_koef'))
 
         game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
-        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win, game_type=game_type)
+        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+                    game_type=game_type, game_koef=game_koef)
         db.session.add(play)
         db.session.flush()
         play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)
@@ -217,10 +219,10 @@ def history():
     bal = request.values.get('bal', '0')
     user = current_user.id
     if all_bet == '0':
-        user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).order_by(
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
-        user_games = db.session.query(Play, PlayGame).filter(Play.id == PlayGame.game_id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).order_by(
             Play.game_time.desc()).all()
 
     if bal == '1':

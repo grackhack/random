@@ -60,6 +60,7 @@
                 <th scope="col">Число</th>
                 <th scope="col">Пари</th>
                 <th scope="col">Ставка</th>
+                <th scope="col">Кэф</th>
                 <th scope="col">Результат</th>
                 <th scope="col">Игра</th>
                 <th scope="col">User</th>
@@ -87,6 +88,7 @@
                         {% endif %}
                     </td>
                     <td>{{ game.Play.game_bet }}</td>
+                    <td>{{ game.Play.game_koef }}</td>
 
                     <td>
                         {% if game.Play.game_result == None %}
@@ -107,7 +109,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ game.PlayGame.user_id }}
+                        {{ game.User.username }}
                     </td>
                 </tr>
 

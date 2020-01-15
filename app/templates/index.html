@@ -176,7 +176,17 @@
                         <input id="bet_count" class="form-control form-control-sm" type="text" placeholder="ставка"
                                onkeyup="refresh_bet_sum()">
                         <div class="input-group-prepend">
+                            {% if game_type=='2' and play=='1'  %}
+                            <span class="input-group-text" id="bet_k">5.75</span>
+                            {%  elif  game_type=='2' and play=='0'%}
+                            <span class="input-group-text" id="bet_k">1.14</span>
+                            {%  elif  game_type=='3' and play=='1'%}
+                            <span class="input-group-text" id="bet_k">3.43</span>
+                            {%  elif  game_type=='3' and play=='0'%}
+                            <span class="input-group-text" id="bet_k">1.33</span>
+                            {% else %}
                             <span class="input-group-text" id="bet_k">1.92</span>
+                            {% endif %}
                         </div>
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="bet_sum">?</span>

@@ -229,13 +229,15 @@ def calculate_bets(user):
     for (user,) in users:
         result = engine.execute(constants.PL_GAMES, (user,))
         pl_games = result.fetchall()
-        for gid, dt, digit, win, bet, sum, game_type in pl_games:
+        for gid, dt, digit, win, bet, sum, game_type, game_koef in pl_games:
             tbl_name = constants.GAME_MAP[str(game_type) or constants.G1]['tbl']
             res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
             data_res = res.fetchone()
             if data_res:
                 if win == bool(data_res[0]):
-                    sum = round(constants.KOEF * bet, 2)
+                    if not game_koef:
+                        game_koef = 1.92
+                    sum = round(game_koef * bet, 2)
                 else:
                     sum = 0
                 engine.execute(constants.UPDATE_SUM, (sum, gid))
