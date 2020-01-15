@@ -219,10 +219,10 @@ def history():
     bal = request.values.get('bal', '0')
     user = current_user.id
     if all_bet == '0':
-        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(PlayGame.user_id == User.id).order_by(
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
-        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(PlayGame.user_id == User.id).order_by(
             Play.game_time.desc()).all()
 
     if bal == '1':
