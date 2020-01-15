@@ -54,7 +54,7 @@ def gen_regexs():
 SW, SL = gen_regexs()
 
 PL_GAMES = """
-select  p.id,game_time, game_digit, game_win , game_bet, game_result, game_type from play p
+select  p.id,game_time, game_digit, game_win , game_bet, game_result, game_type, game_koef from play p
 join play_game pg on p.id = pg.game_id where user_id=%s and p.game_result isnull
 """
 

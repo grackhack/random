@@ -84,6 +84,7 @@ function bet() {
     var betGameType = $("#bet_game_type").val();
     var betAfter = $("#bet_after").text().trim();
     var balance = parseFloat($("#bal").text().trim())
+    var betKoef = $("#bet_k").text().trim()
     if (isNaN(betDigit)) {
         $("#err_msg").addClass("alert alert-danger");
         $("#err_msg").html('Не выбрано число');
@@ -118,7 +119,8 @@ function bet() {
         win: betWin,
         bet: betCount,
         after : betAfter,
-        game_type: betGameType
+        game_type: betGameType,
+        game_koef: betKoef
     }).done(function (response) {
         $("#exampleModal").modal('hide')
         $("#msg").addClass("alert alert-success");

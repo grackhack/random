@@ -88,6 +88,8 @@ class Play(db.Model):
     game_win = db.Column(db.Boolean)
     game_stat = db.Column(db.JSON)
     game_type = db.Column(db.Integer)
+    game_koef = db.Column(db.Float)
+
 
 
 class Game3(db.Model):
