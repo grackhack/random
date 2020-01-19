@@ -1,21 +1,21 @@
 import datetime
+import json
 from datetime import timezone, timedelta
 from random import random
 from typing import List
 
-import matplotlib.pyplot as plt
 import pandas as pd
 from flask import render_template, flash, redirect, url_for, jsonify, request
-from flask_login import login_required
 from flask_login import current_user, login_user, logout_user
+from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 from app import app
-from app import db
 from app import constants
+from app import db
 from app.forms import LoginForm, RegistrationForm
-from app.models import Game, User, Play, PlayGame
+from app.models import User, Play, PlayGame, Profile
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
     get_balance, get_all_balance, get_all_trend
 from config import Config
@@ -219,10 +219,12 @@ def history():
     bal = request.values.get('bal', '0')
     user = current_user.id
     if all_bet == '0':
-        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(PlayGame.user_id == User.id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
+            PlayGame.user_id == User.id).order_by(
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
-        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(PlayGame.user_id == User.id).order_by(
+        user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
+            PlayGame.user_id == User.id).order_by(
             Play.game_time.desc()).all()
 
     if bal == '1':
@@ -231,3 +233,56 @@ def history():
 
     calculate_bets(user)
     return render_template('history.html', result=user_games, balance='', all_bet=all_bet)
+
+
+@app.route('/emu')
+@login_required
+def emu():
+    profiles = db.session.query(Profile.id, Profile.name).filter(Profile.user_id == User.id).order_by(
+        Profile.name).all()
+    return render_template('emu.html', profiles=profiles)
+
+
+@app.route('/add_profile', methods=['POST'])
+@login_required
+def add_profile():
+    rules = json.dumps({})
+    skip_time = json.dumps({})
+    user_id = current_user.id
+    profile_name = request.values.get('pname')
+    profile = Profile(user_id=user_id, name=profile_name, rules=rules, skip_time=skip_time)
+    db.session.add(profile)
+    db.session.commit()
+    return {}
+
+
+@app.route('/add_rule', methods=['POST'])
+@login_required
+def add_rule():
+    id_profile = request.values.get('id_profile')
+    start = request.values.get('start')
+    stop = request.values.get('stop')
+
+    rules = {}
+    profile = Profile.query.get(id_profile)
+    if profile.rules:
+        rules = json.loads(profile.rules)
+    rules.add({'start': start, 'stop': stop})
+    profile.rules = json.dumps(rules)
+    db.session.add(profile)
+    db.session.commit()
+    return {}
+
+
+@app.route('/load_rule', methods=['POST'])
+@login_required
+def load_rule():
+    context = {'rules': {}, 'skip_time': {}}
+    id_profile = request.values.get('id_profile')
+    rule = db.session.query(Profile.rules, Profile.skip_time).filter(Profile.id == id_profile).first()
+    if rule:
+        rules = json.loads(rule.rules)
+        skip_time = json.loads(rule.skip_time)
+        context['rules'] = rules
+        context['skip_time'] = skip_time
+    return context

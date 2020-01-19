@@ -21,9 +21,10 @@
         <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>
         <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Дуэль</a>
         <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Топ 3</a>
-        <a class="navbar-brand" href="{{ url_for('history') }}">Результаты</a>
+        <a class="navbar-brand" href="{{ url_for('history') }}">Рез</a>
+        <a class="navbar-brand" href="{{ url_for('emu') }}">ЭМУ</a>
     {% if current_user.id==1 %}
-        <a class="navbar-brand" href="{{ url_for('settings') }}">Настройки</a>
+        <a class="navbar-brand" href="{{ url_for('settings') }}">Set</a>
     {%  endif %}
 
 {#        <a class="navbar-brand" href="{{ url_for('charts') }}">Инфо</a>#}
@@ -43,6 +44,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/charts2.0.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bar3.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/emu3.js') }}"></script>
 {#    <script src="{{ url_for('static', filename='js/trend.js') }}"></script>#}
 
 
