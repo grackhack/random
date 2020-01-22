@@ -2,7 +2,7 @@ from pprint import pprint
 from typing import List
 
 from app import constants
-from work_with_games import get_raw_data
+from app.work_with_games import get_raw_data
 
 
 def emulate(rules: dict) -> List[dict]:
