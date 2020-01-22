@@ -1,7 +1,7 @@
 from pprint import pprint
 from typing import List
 
-import constants
+from app import constants
 from work_with_games import get_raw_data
 
 
