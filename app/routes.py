@@ -19,7 +19,7 @@ from app.models import User, Play, PlayGame, Profile
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
     get_balance, get_all_balance, get_all_trend
 from config import Config
-from emu_game import emulate, calculate_emu_games
+from app.emu_game import emulate, calculate_emu_games
 
 
 @app.route('/logout')
