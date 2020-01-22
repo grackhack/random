@@ -19,6 +19,7 @@ from app.models import User, Play, PlayGame, Profile
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
     get_balance, get_all_balance, get_all_trend
 from config import Config
+from emu_game import emulate, calculate_emu_games
 
 
 @app.route('/logout')
@@ -262,13 +263,10 @@ def add_rule():
     id_profile = request.values.get('id_profile')
     start = request.values.get('start')
     stop = request.values.get('stop')
-
-    rules = {}
+    cnt_game = request.values.get('game')
+    game_type = request.values.get('game_type')
     profile = Profile.query.get(id_profile)
-    if profile.rules:
-        rules = json.loads(profile.rules)
-    rules.add({'start': start, 'stop': stop})
-    profile.rules = json.dumps(rules)
+    profile.rules = json.dumps({'start': start, 'stop': stop, 'game': cnt_game, 'game_type': '1'})
     db.session.add(profile)
     db.session.commit()
     return {}
@@ -285,4 +283,20 @@ def load_rule():
         skip_time = json.loads(rule.skip_time)
         context['rules'] = rules
         context['skip_time'] = skip_time
+    return context
+
+
+@app.route('/start_emu', methods=['POST'])
+@login_required
+def start_emu():
+    context = {}
+    id_profile = request.values.get('id_profile')
+    rule = db.session.query(Profile.rules, Profile.skip_time).filter(Profile.id == id_profile).first()
+    if rule:
+        rules = json.loads(rule.rules)
+        skip_time = json.loads(rule.skip_time)
+        stat = emulate(rules)
+        info = calculate_emu_games(stat)
+        # context['stat'] = stat
+        context['info'] = info
     return context
