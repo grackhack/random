@@ -24,9 +24,9 @@ def emulate(rules: dict) -> List[dict]:
             game_step = 0
             stat = []
             game_round = 0
-
-            for i in range(count_games):
-                game_delta = games[count_games - i - start - 1:count_games - i]
+            delta_games = count_games-game_start
+            for i in range(delta_games):
+                game_delta = games[delta_games - i - start - 1:delta_games - i]
                 if not game_delta:
                     break
                 if sts:
