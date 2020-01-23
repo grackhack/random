@@ -9,6 +9,7 @@ def emulate(rules: dict) -> List[dict]:
     start = int(rules.get('start'))
     stop = int(rules.get('stop'))
     count_games = int(rules.get('game'))
+    game_start = int(rules.get('game_start'))
     game_type = rules.get('game_type')
     max_play = stop - start + 1
 
@@ -17,7 +18,7 @@ def emulate(rules: dict) -> List[dict]:
         tmp_dgt = {}
         for digit in constants.GAME_MAP[game_type]['range']:
             mask = f'{int(series)}' * start + f'{int(not series)}'
-            games = get_raw_data(str(digit), constants.G1)[:count_games]
+            games = get_raw_data(str(digit), constants.G1)[game_start:count_games]
             # print(games)
             sts = False
             game_step = 0

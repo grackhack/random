@@ -38,6 +38,7 @@ function addRule() {
     let idProfile = $('#profile').val();
     let start = parseInt($("#e_start").val());
     let stop = parseInt($("#e_stop").val());
+    let game_start = parseInt($("#e_game_start").val());
     let game = parseInt($("#e_game").val());
     let game_type = parseInt($("#e_game_type").val());
     if (isNaN(start) || isNaN(stop) || isNaN(game)) {
@@ -50,6 +51,7 @@ function addRule() {
         start: start,
         stop: stop,
         game: game,
+        game_start: game_start,
         game_type: game_type,
     }).done(function (response) {
         loadRule()
