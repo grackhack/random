@@ -91,7 +91,6 @@ class Play(db.Model):
     game_koef = db.Column(db.Float)
 
 
-
 class Game3(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, index=True, unique=True)
@@ -162,3 +161,11 @@ class Game2(db.Model):
         digits = [de[2:] for de in des if getattr(self, de)]
         digits = ' '.join(digits)
         return f'{self.date}: {digits}'
+
+
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    rules = db.Column(db.JSON)
+    skip_time = db.Column(db.JSON)
