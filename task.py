@@ -19,7 +19,14 @@ def prepare_msg(series, game_type):
     else:
         gname = '12x24'
     for digit, win, ser in series:
-        msg.append(f'{gname}. Число: {digit} Серия {ser} игр')
+        if win == '0':
+            add = 'Выпадет'
+            add2 = 'невыпадений'
+        else:
+            add = 'Не Выпадет'
+            add2 = 'выпадений'
+
+        msg.append(f'{gname}. Число: {digit} {add}. Серия {ser} {add2}')
     return msg
 
 
