@@ -264,9 +264,10 @@ def add_rule():
     start = request.values.get('start')
     stop = request.values.get('stop')
     cnt_game = request.values.get('game')
+    game_start = request.values.get('game_start')
     game_type = request.values.get('game_type')
     profile = Profile.query.get(id_profile)
-    profile.rules = json.dumps({'start': start, 'stop': stop, 'game': cnt_game, 'game_type': '1'})
+    profile.rules = json.dumps({'start': start, 'stop': stop, 'game': cnt_game,'game_start':game_start, 'game_type': '1'})
     db.session.add(profile)
     db.session.commit()
     return {}
