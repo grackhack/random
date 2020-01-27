@@ -27,6 +27,10 @@ def send_msg(message):
                                      text=message,
                                      parse_mode='HTML',
                                      disable_web_page_preview=True)
+            updater.bot.send_message(chat_id=config.OLEG,
+                                     text=message,
+                                     parse_mode='HTML',
+                                     disable_web_page_preview=True)
         except Exception as e:
             print(e)
         else:
