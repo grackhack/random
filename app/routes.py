@@ -123,7 +123,7 @@ def collect_games():
         if oper == '1':
             engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
             tbl_name = constants.GAME_MAP[str(game_type) or constants.G2]['tbl']
-            engine.execute("""delete from {tbl:} where date between '{dt:} 00:00:00' and '{dt:} 23:59:59'
+            engine.execute("""delete from {tbl:} where date::date between '{dt:} 00:00:00'::date and '{dt:} 23:59:59'::date
                 """.format(dt=date, tbl=tbl_name))
 
         if oper == '0':
