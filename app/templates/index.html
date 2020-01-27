@@ -3,9 +3,9 @@
 
 {% block page_content %}
     <div id="msg">
-        {{ max_date }} Баланс: <b id="bal">{{ balance }}</b>
-    </div>
 
+    </div>
+ {{ max_date }} Баланс: <b id="bal">{{ balance }}</b>
     <div style="overflow-x: scroll;">
         <table class="table table-striped table-sm table-hover">
             <tbody>
@@ -45,24 +45,6 @@
             </tbody>
         </table>
     </div>
-    <table>
-        <tr>
-            <td id="hw">
-            </td>
-            <td style="background-color:#16f1f1">7</td>
-            <td style="background-color:#ffc107">8</td>
-            <td style="background-color:#ff60eb">9</td>
-            <td style="background-color:#28a745">10</td>
-            <td style="background-color:#dc3545">11</td>
-            <td style="background-color:#007bff">12</td>
-            <td style="background-color:#6f42c1">13</td>
-        <tr>
-    </table>
-    {% if play == '0' %}
-        <canvas id="chBarL" width="400" height="200"></canvas>
-    {% else %}
-        <canvas id="chBarW" width="400" height="200"></canvas>
-    {% endif %}
     <div class="container">
         <div class="row justify-content-between">
 
@@ -93,6 +75,25 @@
         <div id="stat"></div>
         <div id="lost_games"></div>
     </div>
+    <table>
+        <tr>
+            <td id="hw">
+            </td>
+            <td style="background-color:#16f1f1">7</td>
+            <td style="background-color:#ffc107">8</td>
+            <td style="background-color:#ff60eb">9</td>
+            <td style="background-color:#28a745">10</td>
+            <td style="background-color:#dc3545">11</td>
+            <td style="background-color:#007bff">12</td>
+            <td style="background-color:#6f42c1">13</td>
+        <tr>
+    </table>
+    {% if play == '0' %}
+        <canvas id="chBarL" width="400" height="200"></canvas>
+    {% else %}
+        <canvas id="chBarW" width="400" height="200"></canvas>
+    {% endif %}
+
 
     <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
