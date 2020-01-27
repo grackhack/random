@@ -119,7 +119,7 @@ def collect_games():
         now_day = datetime.datetime.now(offset)
         date = request.values.get('day', now_day.strftime("%d.%m.%Y"))
         game_type = request.values.get('game_type', '1')
-        oper = request.values.get('oper')
+        oper = request.values.get('oper', '0')
         if oper == '1':
             engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
             tbl_name = constants.GAME_MAP[str(game_type) or constants.G2]['tbl']
@@ -153,8 +153,6 @@ def settings():
             """.format(uname=uname, bal=bal))
         engine.execute("""delete from play_game""")
         engine.execute("""delete from play""")
-
-
 
     return render_template('settings.html', result=rows, game_type=game_type)
 
