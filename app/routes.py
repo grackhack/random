@@ -225,8 +225,7 @@ def history():
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
-            PlayGame.user_id == User.id).order_by(
-            Play.game_time.desc()).all()
+            PlayGame.user_id == User.id).order_by(Play.game_time.desc()).order_by(User.id).order_by(Play.game_bet.desc()).all()
 
     if bal == '1':
         result = get_all_balance()
