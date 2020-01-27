@@ -119,7 +119,15 @@ def collect_games():
         now_day = datetime.datetime.now(offset)
         date = request.values.get('day', now_day.strftime("%d.%m.%Y"))
         game_type = request.values.get('game_type', '1')
-        refresh_game_stat(date, game_type)
+        oper = request.values.get('oper')
+        if oper == '1':
+            engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+            tbl_name = constants.GAME_MAP[str(game_type) or constants.G2]['tbl']
+            engine.execute("""delete from {tbl:} where date between '{dt:} 00:00' and '{dt:} 23:59'
+                """.format(dt=date, tbl=tbl_name))
+
+        if oper == '0':
+            refresh_game_stat(date, game_type)
     except Exception as e:
         print(e)
         return jsonify({'data': 'error'})
@@ -130,12 +138,23 @@ def collect_games():
 @login_required
 def settings():
     game_type = request.values.get('game_type', '1')
+    clr = request.values.get('clr')
+
     game_tbl = constants.GAME_MAP[game_type]['tbl']
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute("""
     select COUNT(*) as count, date_trunc('day', date) as day FROM {tbl:} GROUP BY day ORDER BY day desc
     """.format(tbl=game_tbl))
     rows = result.fetchall()
+    if clr == '1':
+        all_bal = get_all_balance()
+        for uname, bal, _, _, _, _ in all_bal:
+            engine.execute("""Update "user" set balance={bal:} where username='{uname:}'
+            """.format(uname=uname, bal=bal))
+        engine.execute("""delete from play_game""")
+        engine.execute("""delete from play""")
+
+
 
     return render_template('settings.html', result=rows, game_type=game_type)
 
@@ -225,7 +244,8 @@ def history():
             Play.game_time.desc()).filter(PlayGame.user_id == user)
     else:
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
-            PlayGame.user_id == User.id).order_by(Play.game_time.desc()).order_by(User.id).order_by(Play.game_bet.desc()).all()
+            PlayGame.user_id == User.id).order_by(Play.game_time.desc()).order_by(User.id).order_by(
+            Play.game_bet.desc()).all()
 
     if bal == '1':
         result = get_all_balance()
@@ -266,7 +286,8 @@ def add_rule():
     game_start = request.values.get('game_start')
     game_type = request.values.get('game_type')
     profile = Profile.query.get(id_profile)
-    profile.rules = json.dumps({'start': start, 'stop': stop, 'game': cnt_game,'game_start':game_start, 'game_type': '1'})
+    profile.rules = json.dumps(
+        {'start': start, 'stop': stop, 'game': cnt_game, 'game_start': game_start, 'game_type': '1'})
     db.session.add(profile)
     db.session.commit()
     return {}

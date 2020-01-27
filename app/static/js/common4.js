@@ -20,11 +20,12 @@ function get_games(game_type) {
     });
 }
 
-function update_by_date(date, game_type) {
+function update_by_date(date, game_type, oper) {
     clear_msg()
     $.post('/collect_games', {
         day: date,
-        game_type: game_type
+        game_type: game_type,
+        oper: oper
     }).done(function (response) {
         location.reload();
         $("#msg").addClass("alert alert-success");
@@ -35,6 +36,8 @@ function update_by_date(date, game_type) {
         $("#msg").html("<p> Fail!</p>");
     });
 }
+
+
 
 function get_info(digit, play, game_type) {
     clear_msg()
