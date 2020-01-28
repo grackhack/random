@@ -17,7 +17,7 @@ from app import db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Play, PlayGame, Profile
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
-    get_balance, get_all_balance, get_all_trend
+    get_balance, get_all_balance, get_all_trend, get_groups
 from config import Config
 from app.emu_game import emulate, calculate_emu_games
 
@@ -160,7 +160,6 @@ def settings():
 @app.route('/get_info', methods=['POST'])
 def get_info():
     try:
-
         digit = request.values.get('digit').strip()
         play = request.values.get('play', '1').strip()
         game_type = request.values.get('game_type', '1').strip()
@@ -171,6 +170,17 @@ def get_info():
     except Exception as e:
         return jsonify({'data': 'error'})
     return jsonify({'stat': stat})
+
+
+@app.route('/find_gr', methods=['POST'])
+def find_gr():
+    try:
+        group = int(request.values.get('group', 0).strip())
+        game_type = request.values.get('game_type', '1').strip()
+        groups = get_groups(group, game_type)
+        return jsonify({'groups': groups})
+    except Exception as e:
+        return jsonify({'data': 'error'})
 
 
 @app.route('/charts')
@@ -230,6 +240,48 @@ def create_play():
     return render_template('index.html')
 
 
+@app.route('/gr_create_play', methods=['POST'])
+def gr_create_play():
+    try:
+        user = current_user.id
+        series = bool(int(request.values.get('play')))
+        bet = request.values.get('bet')
+        after = request.values.get('after')
+        game_type = int(request.values.get('game_type', 1))
+        game_koef = float(request.values.get('game_koef'))
+        ser0 = request.values.get('ser0', '')
+        ser1 = request.values.get('ser1', '')
+        ser0 = ser0.split(' : ')
+        ser1 = ser1.split(' : ')
+
+        for digit in ser0:
+            if digit.isdigit():
+                win = 1
+                game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
+                play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+                            game_type=game_type, game_koef=game_koef)
+                db.session.add(play)
+                db.session.flush()
+                play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)
+                db.session.add(play_game)
+        for digit in ser1:
+            if digit.isdigit():
+                win = 0
+                game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
+                play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+                            game_type=game_type, game_koef=game_koef)
+                db.session.add(play)
+                db.session.flush()
+                play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)
+                db.session.add(play_game)
+
+    except Exception as e:
+        raise
+    else:
+        db.session.commit()
+    return render_template('index.html')
+
+
 @app.route('/history')
 @login_required
 def history():
@@ -239,11 +291,11 @@ def history():
     if all_bet == '0':
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
             PlayGame.user_id == User.id).order_by(
-            Play.game_time.desc()).filter(PlayGame.user_id == user)
+            Play.game_time.desc()).order_by(User.id).order_by(Play.game_bet.desc()).order_by(Play.game_win.desc()).filter(PlayGame.user_id == user)
     else:
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
             PlayGame.user_id == User.id).order_by(Play.game_time.desc()).order_by(User.id).order_by(
-            Play.game_bet.desc()).all()
+            Play.game_bet.desc()).order_by(Play.game_win.desc()).all()
 
     if bal == '1':
         result = get_all_balance()

@@ -89,15 +89,16 @@ def refresh_game_stat(date, game_type: str):
     db.commit()
 
 
-def get_raw_data(digit: str, game_type: str) -> str:
+def get_raw_data(digit: str, game_type: str, limit=0) -> str:
     """Строка 1/0 за все игры для числа и количество"""
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     tbl_name = constants.GAME_MAP[game_type]['tbl']
+    limit_str = f'limit {limit}' if limit > 0 else ''
     result = engine.execute("""
             select array(select (case when de{d:} = TRUE then '1' else '0' end)
                  from {tbl:}
-                 order by date desc)
-            """.format(d=digit, tbl=tbl_name))
+                 order by date desc {limit:})
+            """.format(d=digit, tbl=tbl_name, limit=limit_str))
     result = result.fetchone()
     raw = ''.join(result[0])
     return raw
@@ -134,9 +135,13 @@ def get_last_series(game_type: str):
                 current_series.append((digit, s, cnt))
                 break
     if game_type == constants.G2:
-        series = list(filter(lambda x: constants.MIN_TELE_S + constants.SHIFT_G2 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G2, current_series))
+        series = list(filter(
+            lambda x: constants.MIN_TELE_S + constants.SHIFT_G2 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G2,
+            current_series))
     elif game_type == constants.G3:
-        series = list(filter(lambda x: constants.MIN_TELE_S + constants.SHIFT_G3 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G3, current_series))
+        series = list(filter(
+            lambda x: constants.MIN_TELE_S + constants.SHIFT_G3 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G3,
+            current_series))
     else:
         series = list(filter(lambda x: constants.MIN_TELE_S <= x[2] <= constants.MAX_TELE_S, current_series))
     return series
@@ -257,3 +262,16 @@ def get_all_balance():
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     result = engine.execute(constants.USERS_BAL).fetchall()
     return result
+
+
+def get_groups(count: int, game_type: str) -> dict:
+    groups = {'0': [], '1': []}
+    mask0 = '0' * count + '1'
+    mask1 = '1' * count + '0'
+    for digit in constants.GAME_MAP[game_type]['range']:
+        row = get_raw_data(digit, game_type, limit=count + 1)
+        if row == mask0:
+            groups['0'].append(digit)
+        if row == mask1:
+            groups['1'].append(digit)
+    return groups
