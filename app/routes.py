@@ -2,7 +2,7 @@ import datetime
 import json
 from datetime import timezone, timedelta
 from random import random
-from typing import List
+from typing import List, Tuple
 
 import pandas as pd
 from flask import render_template, flash, redirect, url_for, jsonify, request
@@ -17,7 +17,7 @@ from app import db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Play, PlayGame, Profile
 from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
-    get_balance, get_all_balance, get_all_trend, get_groups
+    get_balance, get_all_balance, get_all_trend, get_groups, get_raw_data
 from config import Config
 from app.emu_game import emulate, calculate_emu_games
 
@@ -63,7 +63,7 @@ def get_play_history(row: List[int], positive=True) -> List[str]:
     ng = False
     res = []
     cnt = 1
-    for i in row:
+    for i in row[::-1]:
         if i == play and not ng:
             cnt = 1
             ng = True
@@ -77,17 +77,51 @@ def get_play_history(row: List[int], positive=True) -> List[str]:
     return res[::-1]
 
 
-def get_digit_row(digit, play, game_type: str):
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
-    connection = engine.raw_connection()
-    df = pd.read_sql_query("""
-        select de{d:} from (select date,de{d:}  from {tbl_name:} order by date desc limit {tbl:}) a order by date;       
-        """.format(d=digit, tbl=constants.TBL_COL, tbl_name=constants.GAME_MAP[game_type]['tbl']), connection)
-    df = df.fillna(0)
-    row = df.replace(True, 1)[f'de{digit}'].tolist()
-    history = get_play_history(row, positive=play)
+def get_view_series(digit: int, game_type: str) -> List[int]:
+    raw = get_raw_data(digit, game_type, limit=constants.TBL_COL)
+    return list(map(int, raw))
 
-    return history
+
+def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
+    all_raw = []
+
+    if game_type == constants.G1:
+        raw = []
+        de5 = get_raw_data('5', game_type, limit=constants.TBL_COL)
+        de10 = get_raw_data('10', game_type, limit=constants.TBL_COL)
+        de15 = get_raw_data('15', game_type, limit=constants.TBL_COL)
+        de20 = get_raw_data('20', game_type, limit=constants.TBL_COL)
+        for i, j, k, l in zip(de5, de10, de15, de20):
+            if i == j == k == l:
+                raw.append(1)
+            else:
+                raw.append(0)
+        all_raw.append(('k15', raw))
+    if game_type == constants.G3:
+        raw1 = []
+        raw2 = []
+        de0 = get_raw_data('0', game_type, limit=constants.TBL_COL)
+        de1 = get_raw_data('1', game_type, limit=constants.TBL_COL)
+        de2 = get_raw_data('2', game_type, limit=constants.TBL_COL)
+        de3 = get_raw_data('3', game_type, limit=constants.TBL_COL)
+        de4 = get_raw_data('4', game_type, limit=constants.TBL_COL)
+        de5 = get_raw_data('5', game_type, limit=constants.TBL_COL)
+        de6 = get_raw_data('6', game_type, limit=constants.TBL_COL)
+        de7 = get_raw_data('7', game_type, limit=constants.TBL_COL)
+        de8 = get_raw_data('8', game_type, limit=constants.TBL_COL)
+        de9 = get_raw_data('9', game_type, limit=constants.TBL_COL)
+        for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(de0, de1, de2, de3, de4, de5, de6, de7, de8, de9):
+            if a1 == a3 == a5 == a7 == a9 == '0':
+                raw1.append(1)
+            else:
+                raw1.append(0)
+            if a0 == a2 == a4 == a6 == a8 == '0':
+                raw2.append(1)
+            else:
+                raw2.append(0)
+        all_raw.append(('BЧ', raw1))
+        all_raw.append(('HЧ', raw2))
+    return all_raw
 
 
 @app.route('/')
@@ -105,8 +139,24 @@ def index():
     games = []
     result = []
     for digit in constants.GAME_MAP[game_type]['range']:
-        result = get_digit_row(digit, play, game_type)
-        games.append({'digit': digit, 'game': result})
+        raw_series = get_view_series(digit, game_type)
+        history = get_play_history(raw_series, positive=play)
+        games.append({'digit': digit, 'game': history})
+
+    if game_type == constants.G1:
+        games.append({'digit': '', 'game': []})
+        raw_series = get_view_kseries(game_type)
+        for k_name, k_series in raw_series:
+            history = get_play_history(k_series, positive=play)
+            games.append({'digit': k_name, 'game': history})
+
+    if game_type == constants.G3:
+        games.append({'digit': '', 'game': []})
+        raw_series = get_view_kseries(game_type)
+        for k_name, k_series in raw_series:
+            history = get_play_history(k_series, positive=play)
+            games.append({'digit': k_name, 'game': history})
+
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=len(result), dates=dates,
                            play=play, balance=balance, game_type=game_type)
@@ -291,7 +341,8 @@ def history():
     if all_bet == '0':
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
             PlayGame.user_id == User.id).order_by(
-            Play.game_time.desc()).order_by(User.id).order_by(Play.game_bet.desc()).order_by(Play.game_win.desc()).filter(PlayGame.user_id == user)
+            Play.game_time.desc()).order_by(User.id).order_by(Play.game_bet.desc()).order_by(
+            Play.game_win.desc()).filter(PlayGame.user_id == user)
     else:
         user_games = db.session.query(Play, PlayGame, User).filter(Play.id == PlayGame.game_id).filter(
             PlayGame.user_id == User.id).order_by(Play.game_time.desc()).order_by(User.id).order_by(

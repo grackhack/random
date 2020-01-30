@@ -13,7 +13,7 @@ function hist(digit, game_type) {
         $("#msg").addClass("alert alert-danger");
         $("#msg").html("<p> Fail!</p>");
     });
-    trend(digit, game_type)
+    // trend(digit, game_type)
 }
 
 function show_bar(data) {
