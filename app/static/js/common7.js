@@ -40,6 +40,9 @@ function update_by_date(date, game_type, oper) {
 
 function get_info(digit, play, game_type) {
     clear_msg()
+    if (isNaN(parseInt(digit))) {
+        return
+    }
     $.post('/get_info', {
         digit: digit,
         play: play,
