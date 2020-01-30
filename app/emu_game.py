@@ -18,13 +18,13 @@ def emulate(rules: dict) -> List[dict]:
         tmp_dgt = {}
         for digit in constants.GAME_MAP[game_type]['range']:
             mask = f'{int(series)}' * start + f'{int(not series)}'
-            games = get_raw_data(str(digit), constants.G1)[game_start:count_games]
+            games = get_raw_data(str(digit), constants.G1)[game_start:count_games + 1]
             # print(games)
             sts = False
             game_step = 0
             stat = []
             game_round = 0
-            delta_games = count_games-game_start
+            delta_games = count_games-game_start + 1
             for i in range(delta_games):
                 game_delta = games[delta_games - i - start - 1:delta_games - i]
                 if not game_delta:

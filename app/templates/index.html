@@ -42,6 +42,19 @@
                     {% endfor %}
                 </tr>
             {% endfor %}
+
+                 <tr>
+                 <td></td>
+                     {% for i in range(0, 300) %}
+                         <td>
+                         {% if i % 5==0 %}
+                         {{ i }}
+                         {% endif %}
+                         </td>
+                      {% endfor %}
+                 </tr>
+
+
             </tbody>
         </table>
     </div>
@@ -285,8 +298,7 @@
 
                     <div id="bet_after">{{ max_date }}</div>
                     <div class="input-group input-group-sm mb-3">
-                        <input id="gr_series" class="form-control form-control-sm" type="text" placeholder="серия"
-                               onkeyup="refresh_gr_bet_sum()">
+                        <input id="gr_series" class="form-control form-control-sm" type="text" placeholder="серия">
                         <input id="gr_bet_win" class="form-control form-control-sm" type="text" value="?" readonly>
                         <input id="gr_bet_count" class="form-control form-control-sm" type="text" placeholder="ставка"
                                onkeyup="refresh_gr_bet_sum()">
