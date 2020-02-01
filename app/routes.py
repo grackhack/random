@@ -92,7 +92,7 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
         de15 = get_raw_data('15', game_type, limit=constants.TBL_COL)
         de20 = get_raw_data('20', game_type, limit=constants.TBL_COL)
         for i, j, k, l in zip(de5, de10, de15, de20):
-            if i == j == k == l:
+            if i == j == k == l == '0':
                 raw.append(1)
             else:
                 raw.append(0)
