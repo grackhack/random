@@ -62,7 +62,7 @@ def check_win(delta, series):
     return delta[0] == f'{int(not series)}'
 
 
-def calculate_emu_games(stat: dict) -> int:
+def calculate_emu_games(stat: List[dict]) -> int:
     all_sum = {}
     total = 0
     for series, play in stat.items():

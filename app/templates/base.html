@@ -19,20 +19,20 @@
 {% block navbar %}
     <nav class="navbar navbar-dark bg-primary ">
         <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>
-        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Дуэль</a>
-        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Топ 3</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Duel</a>
+        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Тоp3</a>
         <a class="navbar-brand" href="{{ url_for('history') }}">Рез</a>
         <a class="navbar-brand" href="{{ url_for('emu') }}">ЭМУ</a>
     {% if current_user.id==1 %}
         <a class="navbar-brand" href="{{ url_for('settings') }}">Set</a>
     {%  endif %}
 
-{#        <a class="navbar-brand" href="{{ url_for('charts') }}">Инфо</a>#}
+        <a class="navbar-brand" href="{{ url_for('charts') }}">Стат</a>
 {#        <a class="navbar-brand" href="{{ url_for('chart') }}">Боке</a>#}
         {% if current_user.is_anonymous %}
             <a class="navbar-brand" href="{{ url_for('login') }}">Войти</a>
         {% else %}
-            <a class="navbar-brand" href="{{ url_for('logout') }}">Выxoд</a>
+            <a class="navbar-brand" href="{{ url_for('logout') }}">Выx</a>
         {% endif %}
     </nav>
 

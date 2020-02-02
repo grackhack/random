@@ -1,71 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
- <canvas id="chLine" width="200" height="100"></canvas>
-    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-        <div class="btn-group mr-2" role="group" aria-label="First group">
-            <button type="button" class="btn btn-secondary" onclick="hist('1')">1</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('2')">2</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('3')">3</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('4')">4</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('5')">5</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('6')">6</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('7')">7</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('8')">8</button>
-        </div>
-        <div class="btn-group mr-2" role="group" aria-label="First group">
-
-            <button type="button" class="btn btn-secondary" onclick="hist('9')">9</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('10')">10</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('11')">11</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('12')">12</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('13')">13</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('14')">14</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('15')">15</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('16')">16</button>
-        </div>
-
-
-        <div class="btn-group mr-2" role="group" aria-label="First group">
-            <button type="button" class="btn btn-secondary" onclick="hist('17')">17</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('18')">18</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('19')">19</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('20')">20</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('21')">21</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('22')">22</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('23')">23</button>
-            <button type="button" class="btn btn-secondary" onclick="hist('24')">24</button>
-        </div>
-    </div>
-    <div>
-        <table>
+    <div>Всего игр:<b> {{ cnt }}</b></div>
+    <div style="overflow-x: scroll;">
+        <table border="1">
             <tr>
-                <td id="hw">
-                </td>
-                <td style="background-color:#16f1f1">7</td>
-                <td style="background-color:#ffc107">8</td>
-                <td style="background-color:#ff60eb">9</td>
-                <td style="background-color:#28a745">10</td>
-                <td style="background-color:#dc3545">11</td>
-                <td style="background-color:#007bff">12</td>
-                <td style="background-color:#6f42c1">13</td>
-            <tr>
+                <td></td>
+                {% for i in range(1,21) %}
+                    <td style="background-color: #6dfc7d"><b>{{ i }}</b></td>
+                {% endfor %}
+                <td></td>
+                {% for i in range(1,21) %}
+                    <td style="background-color: #ff7f5d"><b>{{ i }}</b></td>
+                {% endfor %}
+            </tr>
+            {% for j in range(1, 25) %}
+
+                <tr>
+                    <td><b>{{ j }}</b></td>
+                    {% for g, digs in full_stat[j].items() %}
+
+                        {% for i in range(1,21) %}
+                            {#                    {% for n, cnt in ser.items() %}#}
+                            {% if i|string in digs %}
+                                <td>{{ digs[i|string] }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+
+                        {% endfor %}
+                        <td></td>
+
+                    {% endfor %}
+
+
+                </tr>
+            {% endfor %}
         </table>
-        <canvas id="chBarW" width="200" height="100"></canvas>
     </div>
-    <div>
-        <table>
-            <tr>
-                <td id="hl"></td>
-                <td style="background-color:#16f1f1">4</td>
-                <td style="background-color:#ffc107">5</td>
-                <td style="background-color:#ff60eb">6</td>
-                <td style="background-color:#28a745">7</td>
-                <td style="background-color:#dc3545">8</td>
-                <td style="background-color:#007bff">9</td>
-                <td style="background-color:#6f42c1">10</td>
-            <tr>
-        </table>
-        <canvas id="chBarL" width="200" height="100"></canvas>
-    </div>
-
 {% endblock %}
