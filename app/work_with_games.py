@@ -175,6 +175,29 @@ def get_diff_series(series):
     return full_series
 
 
+def get_full_counts(series):
+    """Подсчет серии"""
+    res = {'W': {}, 'L': {}}
+    for game, digs in series.items():
+        for d, ser in digs.items():
+            size = len(ser)
+            if size > 0:
+                res[game][d] = size
+    return res
+
+
+def get_full_stat(game_type: str):
+    """
+    Количество серйи по всем числам Для игры
+    """
+    full_info = {}
+    for digit in constants.GAME_MAP[game_type]['range']:
+        series, cnt = get_digit_info(digit, game_type)
+        full_counts = get_full_counts(series)
+        full_info[digit] = full_counts
+    return full_info
+
+
 def get_count_series(digit, game_type):
     """Количество серий для каждого числа"""
     series, cnt = get_digit_info(digit, game_type)

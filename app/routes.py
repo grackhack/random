@@ -16,8 +16,10 @@ from app import constants
 from app import db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Play, PlayGame, Profile
-from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
-    get_balance, get_all_balance, get_all_trend, get_groups, get_raw_data
+from app import work_with_games as wwg
+# from app.work_with_games import refresh_game_stat, get_digit_info, get_diff_series, get_count_series, calculate_bets, \
+#     get_balance, get_all_balance, get_all_trend, get_groups, get_raw_data, get_full_counts
+
 from config import Config
 from app.emu_game import emulate, calculate_emu_games
 
@@ -78,7 +80,7 @@ def get_play_history(row: List[int], positive=True) -> List[str]:
 
 
 def get_view_series(digit: int, game_type: str) -> List[int]:
-    raw = get_raw_data(digit, game_type, limit=constants.TBL_COL)
+    raw = wwg.get_raw_data(digit, game_type, limit=constants.TBL_COL)
     return list(map(int, raw))
 
 
@@ -87,10 +89,10 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
 
     if game_type == constants.G1:
         raw = []
-        de5 = get_raw_data('5', game_type, limit=constants.TBL_COL)
-        de10 = get_raw_data('10', game_type, limit=constants.TBL_COL)
-        de15 = get_raw_data('15', game_type, limit=constants.TBL_COL)
-        de20 = get_raw_data('20', game_type, limit=constants.TBL_COL)
+        de5 = wwg.get_raw_data('5', game_type, limit=constants.TBL_COL)
+        de10 = wwg.get_raw_data('10', game_type, limit=constants.TBL_COL)
+        de15 = wwg.get_raw_data('15', game_type, limit=constants.TBL_COL)
+        de20 = wwg.get_raw_data('20', game_type, limit=constants.TBL_COL)
         for i, j, k, l in zip(de5, de10, de15, de20):
             if i == j == k == l == '0':
                 raw.append(1)
@@ -100,16 +102,16 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
     if game_type == constants.G3:
         raw1 = []
         raw2 = []
-        de0 = get_raw_data('0', game_type, limit=constants.TBL_COL)
-        de1 = get_raw_data('1', game_type, limit=constants.TBL_COL)
-        de2 = get_raw_data('2', game_type, limit=constants.TBL_COL)
-        de3 = get_raw_data('3', game_type, limit=constants.TBL_COL)
-        de4 = get_raw_data('4', game_type, limit=constants.TBL_COL)
-        de5 = get_raw_data('5', game_type, limit=constants.TBL_COL)
-        de6 = get_raw_data('6', game_type, limit=constants.TBL_COL)
-        de7 = get_raw_data('7', game_type, limit=constants.TBL_COL)
-        de8 = get_raw_data('8', game_type, limit=constants.TBL_COL)
-        de9 = get_raw_data('9', game_type, limit=constants.TBL_COL)
+        de0 = wwg.get_raw_data('0', game_type, limit=constants.TBL_COL)
+        de1 = wwg.get_raw_data('1', game_type, limit=constants.TBL_COL)
+        de2 = wwg.get_raw_data('2', game_type, limit=constants.TBL_COL)
+        de3 = wwg.get_raw_data('3', game_type, limit=constants.TBL_COL)
+        de4 = wwg.get_raw_data('4', game_type, limit=constants.TBL_COL)
+        de5 = wwg.get_raw_data('5', game_type, limit=constants.TBL_COL)
+        de6 = wwg.get_raw_data('6', game_type, limit=constants.TBL_COL)
+        de7 = wwg.get_raw_data('7', game_type, limit=constants.TBL_COL)
+        de8 = wwg.get_raw_data('8', game_type, limit=constants.TBL_COL)
+        de9 = wwg.get_raw_data('9', game_type, limit=constants.TBL_COL)
         for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(de0, de1, de2, de3, de4, de5, de6, de7, de8, de9):
             if a1 == a3 == a5 == a7 == a9 == '0':
                 raw1.append(1)
@@ -130,7 +132,7 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
 def index():
     user = current_user.id
     game_type = request.args.get('game', '1')
-    balance = round(get_balance(user), 2)
+    balance = round(wwg.get_balance(user), 2)
     play = request.args.get('play', '1')
     game_model = constants.GAME_MAP[game_type]['model']
     max_date = db.session.query(db.func.max(game_model.date)).scalar()
@@ -157,6 +159,8 @@ def index():
             history = get_play_history(k_series, positive=play)
             games.append({'digit': k_name, 'game': history})
 
+
+
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=len(result), dates=dates,
                            play=play, balance=balance, game_type=game_type)
@@ -177,7 +181,7 @@ def collect_games():
                 """.format(dt=date, tbl=tbl_name))
 
         if oper == '0':
-            refresh_game_stat(date, game_type)
+            wwg.refresh_game_stat(date, game_type)
     except Exception as e:
         print(e)
         return jsonify({'data': 'error'})
@@ -197,7 +201,7 @@ def settings():
     """.format(tbl=game_tbl))
     rows = result.fetchall()
     if clr == '1':
-        all_bal = get_all_balance()
+        all_bal = wwg.get_all_balance()
         for uname, bal, _, _, _, _ in all_bal:
             engine.execute("""Update "user" set balance={bal:} where username='{uname:}'
             """.format(uname=uname, bal=bal))
@@ -209,12 +213,13 @@ def settings():
 
 @app.route('/get_info', methods=['POST'])
 def get_info():
+    """Инфо по клику на цифру"""
     try:
         digit = request.values.get('digit').strip()
         play = request.values.get('play', '1').strip()
         game_type = request.values.get('game_type', '1').strip()
-        series, cnt = get_digit_info(digit, game_type)
-        full_series = get_diff_series(series)
+        series, cnt = wwg.get_digit_info(digit, game_type)
+        full_series = wwg.get_diff_series(series)
 
         stat = render_template('stat.html', series=series, cnt=cnt, digit=digit, play=play, full_series=full_series)
     except Exception as e:
@@ -227,7 +232,7 @@ def find_gr():
     try:
         group = int(request.values.get('group', 0).strip())
         game_type = request.values.get('game_type', '1').strip()
-        groups = get_groups(group, game_type)
+        groups = wwg.get_groups(group, game_type)
         return jsonify({'groups': groups})
     except Exception as e:
         return jsonify({'data': 'error'})
@@ -236,7 +241,10 @@ def find_gr():
 @app.route('/charts')
 @login_required
 def charts():
-    return render_template('charts.html')
+    full_stat = wwg.get_full_stat(constants.G1)
+    raw = wwg.get_raw_data('1', constants.G1)
+    count_games = len(raw)
+    return render_template('charts.html', full_stat=full_stat, cnt=count_games)
 
 
 @app.route('/get_hist', methods=['POST'])
@@ -244,7 +252,7 @@ def get_hist():
     try:
         digit = request.values.get('digit').strip()
         game_type = request.values.get('game_type', '1').strip()
-        dataset = get_count_series(digit, game_type)
+        dataset = wwg.get_count_series(digit, game_type)
     except Exception as e:
         raise
     return jsonify({'dataset': dataset})
@@ -255,7 +263,7 @@ def get_trend():
     try:
         digit = request.values.get('digit').strip()
         game_type = request.values.get('game_type', '1').strip()
-        dataset = get_all_trend(digit, game_type)
+        dataset = wwg.get_all_trend(digit, game_type)
     except Exception as e:
         raise
     return jsonify({'dataset': dataset})
@@ -325,7 +333,7 @@ def gr_create_play():
                 play_game = PlayGame(user_id=user, game_num=game_number + 1, game_id=play.id)
                 db.session.add(play_game)
 
-    except Exception as e:
+    except Exception:
         raise
     else:
         db.session.commit()
@@ -349,10 +357,10 @@ def history():
             Play.game_bet.desc()).order_by(Play.game_win.desc()).all()
 
     if bal == '1':
-        result = get_all_balance()
+        result = wwg.get_all_balance()
         return render_template('history.html', balance=result, bal=bal, all_bet=all_bet)
 
-    calculate_bets(user)
+    wwg.calculate_bets(user)
     return render_template('history.html', result=user_games, balance='', all_bet=all_bet)
 
 
@@ -385,7 +393,7 @@ def add_rule():
     stop = request.values.get('stop')
     cnt_game = request.values.get('game')
     game_start = request.values.get('game_start')
-    game_type = request.values.get('game_type')
+    # game_type = request.values.get('game_type')
     profile = Profile.query.get(id_profile)
     profile.rules = json.dumps(
         {'start': start, 'stop': stop, 'game': cnt_game, 'game_start': game_start, 'game_type': '1'})
@@ -416,7 +424,7 @@ def start_emu():
     rule = db.session.query(Profile.rules, Profile.skip_time).filter(Profile.id == id_profile).first()
     if rule:
         rules = json.loads(rule.rules)
-        skip_time = json.loads(rule.skip_time)
+        # skip_time = json.loads(rule.skip_time)
         stat = emulate(rules)
         info = calculate_emu_games(stat)
         # context['stat'] = stat
