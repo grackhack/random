@@ -207,8 +207,8 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
             else:
                 raw3.append(0)
 
-        all_raw.append(('BЧ', raw1))
-        all_raw.append(('HЧ', raw2))
+        # all_raw.append(('BЧ', raw1))
+        # all_raw.append(('HЧ', raw2))
         all_raw.append(('CM', raw3))
     return all_raw
 
