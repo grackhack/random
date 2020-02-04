@@ -134,6 +134,50 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
                 raw2.append(0)
         all_raw.append(('Ч>Н', raw2))
 
+    if game_type == constants.G2:
+        raw = []
+        raw2 = []
+        de1 = wwg.get_raw_data('1', game_type, limit=constants.TBL_COL)
+        de2 = wwg.get_raw_data('2', game_type, limit=constants.TBL_COL)
+        de3 = wwg.get_raw_data('3', game_type, limit=constants.TBL_COL)
+        de4 = wwg.get_raw_data('4', game_type, limit=constants.TBL_COL)
+        de5 = wwg.get_raw_data('5', game_type, limit=constants.TBL_COL)
+        de6 = wwg.get_raw_data('6', game_type, limit=constants.TBL_COL)
+        de7 = wwg.get_raw_data('7', game_type, limit=constants.TBL_COL)
+        de8 = wwg.get_raw_data('8', game_type, limit=constants.TBL_COL)
+        de9 = wwg.get_raw_data('9', game_type, limit=constants.TBL_COL)
+        de10 = wwg.get_raw_data('10', game_type, limit=constants.TBL_COL)
+        de11 = wwg.get_raw_data('11', game_type, limit=constants.TBL_COL)
+        de12 = wwg.get_raw_data('12', game_type, limit=constants.TBL_COL)
+        de13 = wwg.get_raw_data('13', game_type, limit=constants.TBL_COL)
+        de14 = wwg.get_raw_data('14', game_type, limit=constants.TBL_COL)
+        de15 = wwg.get_raw_data('15', game_type, limit=constants.TBL_COL)
+        de16 = wwg.get_raw_data('16', game_type, limit=constants.TBL_COL)
+        de17 = wwg.get_raw_data('17', game_type, limit=constants.TBL_COL)
+        de18 = wwg.get_raw_data('18', game_type, limit=constants.TBL_COL)
+        de19 = wwg.get_raw_data('19', game_type, limit=constants.TBL_COL)
+        de20 = wwg.get_raw_data('20', game_type, limit=constants.TBL_COL)
+        de21 = wwg.get_raw_data('21', game_type, limit=constants.TBL_COL)
+        de22 = wwg.get_raw_data('22', game_type, limit=constants.TBL_COL)
+        de23 = wwg.get_raw_data('23', game_type, limit=constants.TBL_COL)
+        de24 = wwg.get_raw_data('24', game_type, limit=constants.TBL_COL)
+        de25 = wwg.get_raw_data('25', game_type, limit=constants.TBL_COL)
+        de26 = wwg.get_raw_data('26', game_type, limit=constants.TBL_COL)
+
+        for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26 in zip(
+                de1, de2, de3, de4, de5, de6, de7, de8, de9, de10, de11, de12, de13, de14, de15, de16, de17, de18,
+                de19, de20, de21, de22, de23, de24, de25, de26):
+            if (a2==a4==a6==a8==a10==a12==a14==a16==a18==a20==a22==a24==a26=='0'):
+                raw.append(1)
+            else:
+                raw.append(0)
+            if (a1 == a3 == a5 == a7 == a9 == a11 == a13 == a15 == a17 == a19 == a21 == a23 == a25 == '0'):
+                raw2.append(1)
+            else:
+                raw2.append(0)
+        all_raw.append(('Ч13', raw2))
+        all_raw.append(('Н13', raw))
+
     if game_type == constants.G3:
         raw1 = []
         raw2 = []
@@ -181,6 +225,13 @@ def index():
         games.append({'digit': digit, 'game': history})
 
     if game_type == constants.G1:
+        games.append({'digit': '', 'game': []})
+        raw_series = get_view_kseries(game_type)
+        for k_name, k_series in raw_series:
+            history = get_play_history(k_series, positive=play)
+            games.append({'digit': k_name, 'game': history})
+
+    if game_type == constants.G2:
         games.append({'digit': '', 'game': []})
         raw_series = get_view_kseries(game_type)
         for k_name, k_series in raw_series:
