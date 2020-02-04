@@ -167,7 +167,7 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
         for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26 in zip(
                 de1, de2, de3, de4, de5, de6, de7, de8, de9, de10, de11, de12, de13, de14, de15, de16, de17, de18,
                 de19, de20, de21, de22, de23, de24, de25, de26):
-            if (a2==a4==a6==a8==a10==a12==a14==a16==a18==a20==a22==a24==a26=='0'):
+            if (a2 == a4 == a6 == a8 == a10 == a12 == a14 == a16 == a18 == a20 == a22 == a24 == a26 == '0'):
                 raw.append(1)
             else:
                 raw.append(0)
@@ -181,6 +181,7 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
     if game_type == constants.G3:
         raw1 = []
         raw2 = []
+        raw3 = []
         de0 = wwg.get_raw_data('0', game_type, limit=constants.TBL_COL)
         de1 = wwg.get_raw_data('1', game_type, limit=constants.TBL_COL)
         de2 = wwg.get_raw_data('2', game_type, limit=constants.TBL_COL)
@@ -200,8 +201,15 @@ def get_view_kseries(game_type: str) -> List[Tuple[str, List[int]]]:
                 raw2.append(1)
             else:
                 raw2.append(0)
+            if (a0 == a1 == '1') or (a1 == a2 == '1') or (a2 == a3 == '1') or (a3 == a4 == '1') or (
+                    a4 == a5 == '1') or (a5 == a6 == '1') or (a6 == a7 == '1') or (a7 == a8 == '1') or (a8 == a9 == '1'):
+                raw3.append(1)
+            else:
+                raw3.append(0)
+
         all_raw.append(('BЧ', raw1))
         all_raw.append(('HЧ', raw2))
+        all_raw.append(('CM', raw3))
     return all_raw
 
 
