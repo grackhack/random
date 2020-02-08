@@ -3,18 +3,22 @@
 {% block content %}
     <div id="msg"></div>
     <a class="navbar-brand" href="{{ url_for('settings') }}">12x24</a>
-        <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=2">Дуэль</a>
-        <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=3">Топ 3</a>
-        <a class="navbar-brand" href="{{ url_for('settings') }}?clr=1">CLR</a>
+    <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=2">Дуэль</a>
+    <a class="navbar-brand" href="{{ url_for('settings') }}?game_type=3">Топ 3</a>
+    <a class="navbar-brand" href="{{ url_for('settings') }}?clr=1">CLR</a>
     <div class="container">
         <ul class="list-group">
             {% for d in result %}
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     {{ d.day|only_date }}
                     {% if d.count!=85 %}
-                        <button type="button" class="btn btn-primary  btn-sm" onclick="update_by_date('{{ d.day|human_date }}', {{ game_type }}, 0)">Обновить</button>
+                        <button type="button" class="btn btn-primary  btn-sm"
+                                onclick="update_by_date('{{ d.day|human_date }}', {{ game_type }}, 0)">Обновить
+                        </button>
                     {% endif %}
-                    <button type="button" class="btn btn-primary  btn-sm" onclick="update_by_date('{{ d.day|only_date }}', {{ game_type }}, 1)">Удалить</button>
+                    <button type="button" class="btn btn-primary  btn-sm"
+                            onclick="update_by_date('{{ d.day|only_date }}', {{ game_type }}, 1)">Удалить
+                    </button>
                     <span class="badge badge-primary badge-pill">{{ d.count }}</span>
                 </div>
                 </li>

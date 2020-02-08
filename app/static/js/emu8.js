@@ -41,10 +41,12 @@ function addRule() {
     let game_start = parseInt($("#e_game_start").val());
     let game = parseInt($("#e_game").val());
     let game_type = parseInt($("#e_game_type").val());
-    if (isNaN(start) || isNaN(stop) || isNaN(game)) {
+    let game_digit = $("#e_game_digit").val();
+    let game_ser = $("#e_game_ser").val();
+    if (isNaN(start) || isNaN(stop) || isNaN(game) || isNaN(game_type)) {
         msg.addClass("alert alert-danger");
         msg.html('Не все поля заполнены!')
-        return
+        return 0
     }
     $.post('/add_rule', {
         id_profile: idProfile,
@@ -53,12 +55,23 @@ function addRule() {
         game: game,
         game_start: game_start,
         game_type: game_type,
+        game_digit: game_digit,
+        game_ser: game_ser,
     }).done(function (response) {
         loadRule()
     })
 }
 
 function startEmu() {
+    let msg = $("#msg");
+    msg.removeClass("alert alert-danger");
+    msg.html('')
+    if (addRule() === 0) {
+        return
+    }
+    ;
+    msg.addClass("alert alert-warning");
+    msg.html("Идет обработка... !");
     let idProfile = $('#profile').val();
     let info = $('#info');
     let total = $('#total');
@@ -80,6 +93,12 @@ function startEmu() {
         }
         info.html(strInfo)
         total.html(totalSum)
-
+        msg.removeClass('alert alert-warning')
+        msg.addClass('alert alert-success')
+        msg.html("Готово !");
+        setTimeout(function () {
+            msg.removeClass('alert alert-success');
+            msg.html('');
+        }, 3000)
     })
 }

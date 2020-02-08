@@ -1,15 +1,20 @@
 import re
 from app.models import Game, Game2, Game3
 
+GTEST = '0'
 G1 = '1'
 G2 = '2'
 G3 = '3'
 
-CNT_REGEX = 50
+RD = 'W'
+GR = 'L'
+FILL_CHAR = '•'
+CNT_REGEX = 120
 XRNG = 1000
 XTICK = 10
 MIN_SERIES = 7
 TBL_COL = 300
+RAW_LIMIT = 300
 KOEF = 1.92
 SERIES_BEGIN_POS = 1
 MIN_TELE_S = 9
@@ -19,17 +24,29 @@ SHIFT_G2 = 34
 SHIFT_G3 = 13
 
 GAME_MAP = {
+    '0': {
+        'range': range(1, 2),
+        'model': Game,
+        'tbl': 'test_tbl',
+        'base_link': '',
+        'name': 'test_game',
+        'event_list': ['k15', ],
+    },
     '1': {
         'range': range(1, 25),
         'model': Game,
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
+        'name': '12x24',
+        'event_list': ['k15', 'E>O', 'MNE', 'MXE', 'k152'],
     },
     '2': {
         'range': range(1, 27),
         'model': Game2,
         'tbl': 'game2',
         'base_link': 'https://www.stoloto.ru/draw-results/duel/load',
+        'name': 'duel',
+        'event_list': ['E13', 'O13'],
 
     },
     '3': {
@@ -37,6 +54,8 @@ GAME_MAP = {
         'model': Game3,
         'tbl': 'game3',
         'base_link': 'https://www.stoloto.ru/draw-results/top3/load',
+        'name': 'top3',
+        'event_list': ['NR', 'EQ'],
     },
 }
 

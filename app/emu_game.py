@@ -2,6 +2,7 @@ from pprint import pprint
 from typing import List
 
 from app import constants
+from app.games import Loto
 from app.work_with_games import get_raw_data
 
 
@@ -11,20 +12,40 @@ def emulate(rules: dict) -> List[dict]:
     count_games = int(rules.get('game'))
     game_start = int(rules.get('game_start'))
     game_type = rules.get('game_type')
+    game_digit = rules.get('game_digit', '')
+    game_ser = rules.get('game_ser', '')
     max_play = stop - start + 1
+    loto = Loto(game_type)
+    get_func = loto.get_raw_data
+    if game_digit:
+        if game_digit.isdigit():
+            dig = int(game_digit)
+            full_range = range(dig, dig + 1)
+        else:
+            full_range = [game_digit, ]
+            get_func = loto.get_calc_raw_data
+    else:
+        full_range = loto.range
 
     all_stat = {'0': {}, '1': {}}
-    for series in [False, True]:
+    if game_ser == '1':
+        range_ser = [False, ]
+    elif  game_ser == '0':
+        range_ser = [True, ]
+    else:
+        range_ser = [False, True]
+
+    for series in range_ser:
         tmp_dgt = {}
-        for digit in constants.GAME_MAP[game_type]['range']:
+        for digit in full_range:
             mask = f'{int(series)}' * start + f'{int(not series)}'
-            games = get_raw_data(str(digit), constants.G1)[game_start:count_games + 1]
+            games = get_func(digit)[game_start:count_games + 1]
             # print(games)
             sts = False
             game_step = 0
             stat = []
             game_round = 0
-            delta_games = count_games-game_start + 1
+            delta_games = count_games - game_start + 1
             for i in range(delta_games):
                 game_delta = games[delta_games - i - start - 1:delta_games - i]
                 if not game_delta:
@@ -75,7 +96,6 @@ def calculate_emu_games(stat: List[dict]) -> int:
         all_sum[series] = tmp_sum
 
     return all_sum, total
-
 
 # if __name__ == '__main__':
 #     res = emulate({'start': 7, 'stop': 11, 'game': 100, 'game_type': 1})

@@ -1,5 +1,7 @@
 import os
 
+from sqlalchemy.pool import QueuePool
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 BOT_FATHER = os.environ.get('BOT_FATHER')
 ALEX = os.environ.get('ALEX')
@@ -16,3 +18,9 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'not today'
     SQLALCHEMY_POOL_SIZE = 20
+    # SQLALCHEMY_ENGINE_OPTIONS = {
+    #     'pool': QueuePool,
+    #     'pool_size': 20,
+    #     'pool_recycle': 120,
+    #     'pool_pre_ping': True
+    # }
