@@ -70,7 +70,7 @@ def index():
     play = request.args.get('play', '1')
     game_model = constants.GAME_MAP[game_type]['model']
     max_date = db.session.query(db.func.max(game_model.date)).scalar()
-    dates = db.session.query(game_model.date).order_by(game_model.date.desc()).limit(constants.TBL_COL)
+    dates = db.session.query(game_model.date).order_by(game_model.date.desc()).limit(constants.RAW_LIMIT)
     # build_plot()
     loto = Loto(game_type=game_type)
     ser_type = constants.RD if play == '1' else constants.GR
@@ -79,7 +79,7 @@ def index():
 
     return render_template('index.html', title='Stat', max_date=max_date, games=games,
                            url='new_plot.png', count_games=count_games, dates=dates,
-                           play=play, balance=balance, game_type=game_type)
+                           play=play, balance=balance, game_type=game_type, row_lim=constants.RAW_LIMIT)
 
 
 @app.route('/collect_games', methods=['POST'])
