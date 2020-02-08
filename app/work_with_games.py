@@ -189,8 +189,14 @@ def calculate_bets(user):
         pl_games = result.fetchall()
         for gid, dt, digit, win, bet, sum, game_type, game_koef in pl_games:
             tbl_name = constants.GAME_MAP[str(game_type) or constants.G1]['tbl']
-            res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
-            data_res = res.fetchone()
+            if digit.isdigit():
+                res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
+                data_res = res.fetchone()
+            else:
+                res = engine.execute(constants.PL_GAME_SPEC.format(tbl=tbl_name), (dt,))
+                data_res = res.fetchone()
+                if data_res:
+                    data_res = get_spec_win(digit, data_res)
             if data_res:
                 if win == bool(data_res[0]):
                     if not game_koef:
@@ -199,6 +205,20 @@ def calculate_bets(user):
                 else:
                     sum = 0
                 engine.execute(constants.UPDATE_SUM, (sum, gid))
+
+
+def get_spec_win(spec, data_res):
+    res = {}
+    cnt = 0
+    for item in data_res:
+        if item is None:
+            res[cnt] = '0'
+            cnt += 1
+        if item == True:
+            res[cnt] = '1'
+            cnt += 1
+    raw = int(constants.SPEC_MAP[spec]['func'](res))
+    return [raw, ]
 
 
 def get_balance(user):
@@ -228,4 +248,3 @@ def get_groups(count: int, game_type: str) -> dict:
         if row == mask1:
             groups['1'].append(digit)
     return groups
-

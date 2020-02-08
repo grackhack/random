@@ -4,8 +4,9 @@ from app.types import DigitRaw
 
 def get_k15(de: DigitRaw) -> str:
     raw = ''
-    for i, j, k, l in zip(de['5'], de['10'], de['15'], de['20']):
-        if i == j == k == l == '0':
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24 in zip(
+            *de.values()):
+        if a5 == a10 == a15 == a20 == '0':
             raw += '1'
         else:
             raw += '0'

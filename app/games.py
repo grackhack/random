@@ -5,26 +5,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 
 from app import constants
-from app import special
+
 from app.types import SeriesRaw, DigitRaw
 from app.utils import timing
 from config import Config
 
 from abc import ABCMeta, abstractmethod
 
-SPEC_MAP = {
-    'k15': special.get_k15,
-    'E>O': special.get_even_more_odd,
-    'NR': special.get_nr,
-    'EVEN': special.get_all_even,
-    'ODD': special.get_all_odd,
-    'E13': special.get_even13,
-    'O13': special.get_odd13,
-    'EQ': special.get_eq,
-    'MNE': special.get_min_even,
-    'MXE': special.get_max_odd,
-    'k152': special.get_sum_152,
-}
+
 
 
 class AbcGame(object):
@@ -98,15 +86,15 @@ class Loto(AbcGame):
         raw = ''
         if self.game_type == constants.G1 or self.game_type == constants.GTEST:
             de = self.get_full_raw_data(limit=limit)
-            raw = SPEC_MAP[label](de)
+            raw = constants.SPEC_MAP[label]['func'](de)
             return raw
         if self.game_type == constants.G2:
             de = self.get_full_raw_data(limit=limit)
-            raw = SPEC_MAP[label](de)
+            raw = constants.SPEC_MAP[label]['func'](de)
             return raw
         if self.game_type == constants.G3:
             de = self.get_full_raw_data(limit=limit)
-            raw = SPEC_MAP[label](de)
+            raw = constants.SPEC_MAP[label]['func'](de)
             return raw
         return raw
 

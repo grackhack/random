@@ -192,7 +192,7 @@ def create_play():
         game_koef = float(request.values.get('game_koef'))
 
         game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
-        play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+        play = Play(game_time=after, game_dig=digit, game_series=series, game_bet=bet, game_win=win,
                     game_type=game_type, game_koef=game_koef)
         db.session.add(play)
         db.session.flush()
@@ -224,7 +224,7 @@ def gr_create_play():
             if digit.isdigit():
                 win = 1
                 game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
-                play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+                play = Play(game_time=after, game_dig=digit, game_series=series, game_bet=bet, game_win=win,
                             game_type=game_type, game_koef=game_koef)
                 db.session.add(play)
                 db.session.flush()
@@ -234,7 +234,7 @@ def gr_create_play():
             if digit.isdigit():
                 win = 0
                 game_number = db.session.query(db.func.max(PlayGame.game_num)).scalar() or 1
-                play = Play(game_time=after, game_digit=digit, game_series=series, game_bet=bet, game_win=win,
+                play = Play(game_time=after, game_dig=digit, game_series=series, game_bet=bet, game_win=win,
                             game_type=game_type, game_koef=game_koef)
                 db.session.add(play)
                 db.session.flush()
@@ -341,3 +341,9 @@ def start_emu():
         # context['stat'] = stat
         context['info'] = info
     return context
+
+
+@app.route('/get_kf', methods=['POST'])
+@login_required
+def get_kf():
+    return jsonify({k: v['kf'] for k, v in constants.SPEC_MAP.items()})
