@@ -1,4 +1,20 @@
-const RANGE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+KF = {
+    '1': {1: 1.92, 0: 1.92},
+    '2': {1: 5.75, 0: 1.14},
+    '3': {1: 3.45, 0: 1.33},
+
+    'k15': {1: 15.0, 0: 1.03},
+    'E>O': {1: 2.84, 0: 1.45},
+    'NR': {1: 2.17, 0: 1.72},
+    'EVEN': {1: 6.75, 0: 1.12},
+    'ODD': {1: 6.75, 0: 1.12},
+    'E13': {1: 2.84, 0: 1.45},
+    'O13': {1: 2.84, 0: 1.45},
+    'EQ': {1: 3.33, 0: 1.35},
+    'MNE': {1: 2.80, 0: 1.46},
+    'MXE': {1: 1.46, 0: 2.80},
+    'k152': {1: 2.16, 0: 1.73},
+};
 
 function clear_msg() {
     $("#msg").removeClass("alert alert-success");
@@ -6,7 +22,7 @@ function clear_msg() {
 }
 
 function get_games(game_type) {
-    clear_msg()
+    clear_msg();
     $.post('/collect_games', {
         game_type: game_type
     }).done(function (response) {
@@ -40,9 +56,10 @@ function update_by_date(date, game_type, oper) {
 
 function get_info(digit, play, game_type) {
     clear_msg()
-    if (isNaN(parseInt(digit))) {
-        return
-    }
+    $("#bet_digit").text(digit);
+    // if (isNaN(parseInt(digit))) {
+    //     return
+    // }
     $.post('/get_info', {
         digit: digit,
         play: play,
@@ -90,11 +107,21 @@ function ins_gr(count, game_type) {
     refresh_gr_bet_sum()
 }
 
+
 function ins_win(win) {
+    let betDigit = $("#bet_digit").text().trim();
+    let betGameType = $("#bet_game_type").val();
     if (win == 0) {
         $("#bet_win").val('Не выпадет');
     } else {
         $("#bet_win").val('Выпадет');
+    }
+
+    if (!$.isNumeric(betDigit)) {
+        $("#bet_k").text(KF[betDigit][win]);
+    }
+    else {
+        $("#bet_k").text(KF[betGameType][win]);
     }
 
     refresh_bet_sum()
@@ -117,7 +144,7 @@ function bet() {
     $("#err_msg").removeClass("alert alert-danger");
     $("#err_msg").html('');
 
-    var betDigit = parseInt($("#bet_digit").text().trim());
+    var betDigit = $("#bet_digit").text().trim();
     var betCount = parseInt($("#bet_count").val());
     var betWin = $("#bet_win").val();
     var betSeries = $("#bet_series").val();
@@ -125,11 +152,7 @@ function bet() {
     var betAfter = $("#bet_after").text().trim();
     var balance = parseFloat($("#bal").text().trim())
     var betKoef = $("#bet_k").text().trim()
-    if (isNaN(betDigit)) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Не выбрано число');
-        return
-    }
+
     if (isNaN(betCount)) {
         $("#err_msg").addClass("alert alert-danger");
         $("#err_msg").html('Не выбрана ставка')

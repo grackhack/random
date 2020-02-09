@@ -82,6 +82,7 @@ class Play(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game_time = db.Column(db.DateTime)
     game_digit = db.Column(db.Integer)
+    game_dig = db.Column(db.String(16))
     game_series = db.Column(db.Boolean)
     game_bet = db.Column(db.Integer)
     game_result = db.Column(db.Float)

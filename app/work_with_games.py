@@ -11,6 +11,7 @@ from sqlalchemy.pool import NullPool
 from typing import Tuple, Dict
 
 from app import constants
+from app.games import Loto
 from app.models import Game
 from config import Config
 
@@ -89,6 +90,14 @@ def refresh_game_stat(date, game_type: str):
     db.commit()
 
 
+def get_max_games(game_type: str) -> int:
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    tbl_name = constants.GAME_MAP[game_type]['tbl']
+    result = engine.execute(f'select count(*) from {tbl_name}')
+    result = result.fetchone()[0]
+    return result
+
+
 def get_raw_data(digit: str, game_type: str, limit=0) -> str:
     """Строка 1/0 за все игры для числа и количество"""
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
@@ -102,22 +111,6 @@ def get_raw_data(digit: str, game_type: str, limit=0) -> str:
     result = result.fetchone()
     raw = ''.join(result[0])
     return raw
-
-
-def get_digit_info(digit: str, game_type: str) -> Tuple[Dict, int]:
-    """Словарь с количеством серий для каждого числа"""
-    raw = get_raw_data(digit, game_type)
-    count_games = len(raw)
-    series = {}
-    series_win = {}
-    series_los = {}
-    for d in constants.SW:
-        series_win[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SW[d], raw)]
-        series_los[d] = [m.start() + constants.SERIES_BEGIN_POS for m in re.finditer(constants.SL[d], raw)]
-
-    series['W'] = series_win
-    series['L'] = series_los
-    return series, count_games
 
 
 def get_last_series(game_type: str):
@@ -147,60 +140,11 @@ def get_last_series(game_type: str):
     return series
 
 
-def get_diff_series(series):
-    """Среднее серий для каждого числа от MIN_SERIES+"""
-    full_series = {}
-    for pl, item in series.items():
-        full_series[pl] = {}
-        for i in range(constants.MIN_SERIES, constants.CNT_REGEX):
-            tmp = []
-            full_series[pl][str(i)] = {}
-            for d, v in item.items():
-                if int(d) >= i:
-                    tmp.extend(v)
-            sort_tmp = sorted(tmp)
-            full_series[pl][str(i)] = sort_tmp
-            if len(tmp) > 1:
-
-                diff = [j - i for i, j in zip(sort_tmp[:-1], sort_tmp[1:])]
-                avg = round(sum(diff) / len(diff))
-                full_series[pl][str(i) + 'avg'] = avg
-
-                next_ser = sort_tmp[0] - avg
-
-                if next_ser <= 0:
-                    full_series[pl][str(i) + 'next'] = f'Ждать {abs(next_ser)} игр'
-                else:
-                    full_series[pl][str(i) + 'next'] = f'Должна {next_ser} игр назад'
-    return full_series
-
-
-def get_full_counts(series):
-    """Подсчет серии"""
-    res = {'W': {}, 'L': {}}
-    for game, digs in series.items():
-        for d, ser in digs.items():
-            size = len(ser)
-            if size > 0:
-                res[game][d] = size
-    return res
-
-
-def get_full_stat(game_type: str):
-    """
-    Количество серйи по всем числам Для игры
-    """
-    full_info = {}
-    for digit in constants.GAME_MAP[game_type]['range']:
-        series, cnt = get_digit_info(digit, game_type)
-        full_counts = get_full_counts(series)
-        full_info[digit] = full_counts
-    return full_info
-
-
-def get_count_series(digit, game_type):
+def get_dataset_series(digit, game_type):
     """Количество серий для каждого числа"""
-    series, cnt = get_digit_info(digit, game_type)
+    cnt = get_max_games(game_type)
+    loto = Loto(game_type=game_type)
+    series = loto.get_raw_series(digit)
     step = (cnt + constants.XTICK) // constants.XTICK
 
     line_x = sorted([i for i in range(cnt, 0, -step)])
@@ -235,20 +179,6 @@ def prepare_dataset(data):
     return all_data
 
 
-def get_all_trend(digit, game_type):
-    raw = get_raw_data(digit, game_type)
-    x = 0
-    data = [x, ]
-    for g in raw[::-1]:
-        if g == '0':
-            x = x - 1
-        else:
-            x = x + 1
-        data.append(x)
-
-    pass
-
-
 def calculate_bets(user):
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
 
@@ -259,8 +189,14 @@ def calculate_bets(user):
         pl_games = result.fetchall()
         for gid, dt, digit, win, bet, sum, game_type, game_koef in pl_games:
             tbl_name = constants.GAME_MAP[str(game_type) or constants.G1]['tbl']
-            res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
-            data_res = res.fetchone()
+            if digit.isdigit():
+                res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
+                data_res = res.fetchone()
+            else:
+                res = engine.execute(constants.PL_GAME_SPEC.format(tbl=tbl_name), (dt,))
+                data_res = res.fetchone()
+                if data_res:
+                    data_res = get_spec_win(digit, data_res)
             if data_res:
                 if win == bool(data_res[0]):
                     if not game_koef:
@@ -269,6 +205,20 @@ def calculate_bets(user):
                 else:
                     sum = 0
                 engine.execute(constants.UPDATE_SUM, (sum, gid))
+
+
+def get_spec_win(spec, data_res):
+    res = {}
+    cnt = 0
+    for item in data_res:
+        if item is None:
+            res[cnt] = '0'
+            cnt += 1
+        if item == True:
+            res[cnt] = '1'
+            cnt += 1
+    raw = int(constants.SPEC_MAP[spec]['func'](res))
+    return [raw, ]
 
 
 def get_balance(user):

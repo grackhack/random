@@ -1,26 +1,29 @@
 {% extends "base.html" %}
+
 {% block content %}
+    <a class="navbar-brand" href="{{ url_for('charts') }}">12x24</a>
+    <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=2">Дуэль</a>
+    <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=3">Топ 3</a>
     <div>Всего игр:<b> {{ cnt }}</b></div>
     <div style="overflow-x: scroll;">
         <table border="1">
             <tr>
                 <td></td>
-                {% for i in range(1,22) %}
+                {% for i in range(1,max_ser.W + 1) %}
                     <td style="background-color: #ff7f5d"><b>{{ i }}</b></td>
                 {% endfor %}
                 <td></td>
-                {% for i in range(1,22) %}
+                {% for i in range(1,max_ser.L + 1) %}
                     <td style="background-color: #6dfc7d"><b>{{ i }}</b></td>
                 {% endfor %}
             </tr>
-            {% for j in range(1, 25) %}
+            {% for j in rng %}
 
                 <tr>
                     <td><b>{{ j }}</b></td>
-                    {% for g, digs in full_stat[j].items() %}
+                    {% for gg, digs in full_stat[j].items() %}
 
-                        {% for i in range(1,22) %}
-                            {#                    {% for n, cnt in ser.items() %}#}
+                        {% for i in range(1,max_ser[gg] + 1) %}
                             {% if i|string in digs %}
                                 <td>{{ digs[i|string] }}</td>
                             {% else %}
@@ -31,8 +34,41 @@
                         <td></td>
 
                     {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br>
+    Спец кэфы
+    <div style="overflow-x: scroll;">
+        <table border="1">
+            <tr>
+                <td></td>
+                {% for i in range(1,max_event_ser.W + 1) %}
+                    <td style="background-color: #ff7f5d"><b>{{ i }}</b></td>
+                {% endfor %}
+                <td></td>
+                {% for i in range(1,max_event_ser.L + 1) %}
+                    <td style="background-color: #6dfc7d"><b>{{ i }}</b></td>
+                {% endfor %}
+            </tr>
+            {% for j in event_rng %}
 
+                <tr>
+                    <td><b>{{ j }}</b></td>
+                    {% for gg, digs in full_event_stat[j].items() %}
 
+                        {% for i in range(1,max_event_ser[gg] + 1) %}
+                            {% if i|string in digs %}
+                                <td>{{ digs[i|string] }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+
+                        {% endfor %}
+                        <td></td>
+
+                    {% endfor %}
                 </tr>
             {% endfor %}
         </table>

@@ -1,15 +1,20 @@
 import re
 from app.models import Game, Game2, Game3
+from app import special
 
+GTEST = '0'
 G1 = '1'
 G2 = '2'
 G3 = '3'
 
-CNT_REGEX = 50
+RD = 'W'
+GR = 'L'
+FILL_CHAR = '•'
+CNT_REGEX = 120
 XRNG = 1000
 XTICK = 10
 MIN_SERIES = 7
-TBL_COL = 300
+RAW_LIMIT = 200
 KOEF = 1.92
 SERIES_BEGIN_POS = 1
 MIN_TELE_S = 9
@@ -18,18 +23,44 @@ MAX_TELE_S = 25
 SHIFT_G2 = 34
 SHIFT_G3 = 13
 
+SPEC_MAP = {
+    'k15': {'func': special.get_k15, 'kf':  {'Y': 15.0, 'N': 1.03}},
+    'E>O': {'func': special.get_even_more_odd, 'kf': {'Y': 2.84, 'N': 1.45}},
+    'NR': {'func': special.get_nr, 'kf': {'Y': 2.17, 'N': 1.72}},
+    'EVEN': {'func': special.get_all_even, 'kf': {'Y': 6.75, 'N': 1.12}},
+    'ODD': {'func': special.get_all_odd, 'kf': {'Y': 6.75, 'N': 1.12}},
+    'E13': {'func': special.get_even13, 'kf': {'Y': 2.84, 'N': 1.45}},
+    'O13': {'func': special.get_odd13, 'kf': {'Y': 2.84, 'N': 1.45}},
+    'EQ': {'func': special.get_eq, 'kf': {'Y': 3.33, 'N': 1.35}},
+    'MNE': {'func': special.get_min_even, 'kf': {'Y': 2.80, 'N': 1.46}},
+    'MXE': {'func': special.get_max_odd, 'kf': {'Y': 1.46, 'N': 2.80}},
+    'k152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
+}
+
 GAME_MAP = {
+    '0': {
+        'range': range(1, 2),
+        'model': Game,
+        'tbl': 'test_tbl',
+        'base_link': '',
+        'name': 'test_game',
+        'event_list': ['k15', ],
+    },
     '1': {
         'range': range(1, 25),
         'model': Game,
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
+        'name': '12x24',
+        'event_list': ['k15', 'E>O', 'MNE', 'MXE', 'k152'],
     },
     '2': {
         'range': range(1, 27),
         'model': Game2,
         'tbl': 'game2',
         'base_link': 'https://www.stoloto.ru/draw-results/duel/load',
+        'name': 'duel',
+        'event_list': ['E13', 'O13'],
 
     },
     '3': {
@@ -37,6 +68,8 @@ GAME_MAP = {
         'model': Game3,
         'tbl': 'game3',
         'base_link': 'https://www.stoloto.ru/draw-results/top3/load',
+        'name': 'top3',
+        'event_list': ['NR', 'EQ'],
     },
 }
 
@@ -55,11 +88,12 @@ def gen_regexs():
 SW, SL = gen_regexs()
 
 PL_GAMES = """
-select  p.id,game_time, game_digit, game_win , game_bet, game_result, game_type, game_koef from play p
+select  p.id,game_time, game_dig, game_win , game_bet, game_result, game_type, game_koef from play p
 join play_game pg on p.id = pg.game_id where user_id=%s and p.game_result isnull
 """
 
 PL_GAME_RES = 'select de{de:} from {tbl:} where date> %s order by date limit 1'
+PL_GAME_SPEC = 'select * from {tbl:} where date> %s order by date limit 1'
 
 UPDATE_SUM = 'update play set game_result = %s where id = %s'
 
