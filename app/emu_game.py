@@ -97,9 +97,9 @@ def calculate_emu_games(stat: List[dict]) -> int:
 
     return all_sum, total
 
-if __name__ == '__main__':
-    res = emulate({'start': '2', 'stop': '3', 'game': '15', 'game_start': '0', 'game_type': '3', 'game_digit': 'NR', 'game_ser': '0'})
-    pprint(res)
-    all_sum, total = calculate_emu_games(res)
-    pprint(all_sum)
-    print(total)
+# if __name__ == '__main__':
+#     res = emulate({'start': '2', 'stop': '3', 'game': '15', 'game_start': '0', 'game_type': '3', 'game_digit': 'NR', 'game_ser': '0'})
+#     pprint(res)
+#     all_sum, total = calculate_emu_games(res)
+#     pprint(all_sum)
+#     print(total)
