@@ -4,8 +4,8 @@
     {{ super() }}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style2.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/Chart.min.css') }}">
-{#    <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" rel="stylesheet">#}
-{#    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css" rel="stylesheet">#}
+    {#    <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" rel="stylesheet">#}
+    {#    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css" rel="stylesheet">#}
 
 {% endblock %}
 
@@ -18,17 +18,32 @@
 
 {% block navbar %}
     <nav class="navbar navbar-dark bg-primary ">
-        <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>
-        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Duel</a>
-        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Тоp3</a>
+        <a class="navbar-brand" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+            {% if game_type == '2' %}
+                Duel
+            {% elif game_type =='3' %}
+                Top3
+            {% else %}
+                12x24
+            {% endif %}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('index') }}">12x24</a>
+            <a class="dropdown-item" href="{{ url_for('index') }}?game=2">Duel</a>
+            <a class="dropdown-item" href="{{ url_for('index') }}?game=3">Тоp3</a>
+        </div>
+        {#        <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>#}
+        {#        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Duel</a>#}
+        {#        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Тоp3</a>#}
         <a class="navbar-brand" href="{{ url_for('history') }}">Рез</a>
         <a class="navbar-brand" href="{{ url_for('emu') }}">ЭМУ</a>
-    {% if current_user.id==1 %}
-        <a class="navbar-brand" href="{{ url_for('settings') }}">Set</a>
-    {%  endif %}
+        {% if current_user.id==1 %}
+            <a class="navbar-brand" href="{{ url_for('settings') }}">Set</a>
+        {% endif %}
 
         <a class="navbar-brand" href="{{ url_for('charts') }}">Стат</a>
-{#        <a class="navbar-brand" href="{{ url_for('chart') }}">Боке</a>#}
+        {#        <a class="navbar-brand" href="{{ url_for('chart') }}">Боке</a>#}
         {% if current_user.is_anonymous %}
             <a class="navbar-brand" href="{{ url_for('login') }}">Войти</a>
         {% else %}
@@ -49,10 +64,10 @@
 
 
 
-{#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-1.4.0.min.js"></script>#}
-{#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-1.4.0.min.js"></script>#}
-{#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-1.4.0.min.js"></script>#}
-{#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-1.4.0.min.js"></script>#}
+    {#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-1.4.0.min.js"></script>#}
+    {#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-1.4.0.min.js"></script>#}
+    {#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-1.4.0.min.js"></script>#}
+    {#    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-1.4.0.min.js"></script>#}
 
     {{ super() }}
 {% endblock %}

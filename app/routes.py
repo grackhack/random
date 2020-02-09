@@ -184,7 +184,6 @@ def create_play():
 
         digit = request.values.get('digit')
         series = bool(int(request.values.get('play')))
-        # series = request.values.get('play')
         win = bool(int(request.values.get('win')))
         bet = request.values.get('bet')
         after = request.values.get('after')
@@ -200,10 +199,11 @@ def create_play():
         db.session.add(play_game)
 
     except Exception as e:
-        raise
+        return jsonify({'data': 'Пари НЕ принято'})
     else:
         db.session.commit()
-    return render_template('index.html')
+    return jsonify({'data': 'Пари принято'})
+
 
 
 @app.route('/gr_create_play', methods=['POST'])

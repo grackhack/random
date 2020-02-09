@@ -16,6 +16,8 @@ KF = {
     'k152': {1: 2.16, 0: 1.73},
 };
 
+
+
 function clear_msg() {
     $("#msg").removeClass("alert alert-success");
     $("#msg").html('');
