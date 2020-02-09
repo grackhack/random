@@ -3,7 +3,6 @@ from typing import List
 
 from app import constants
 from app.games import Loto
-from app.work_with_games import get_raw_data
 
 
 def emulate(rules: dict) -> List[dict]:

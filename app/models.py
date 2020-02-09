@@ -170,3 +170,9 @@ class Profile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     rules = db.Column(db.JSON)
     skip_time = db.Column(db.JSON)
+
+
+class Notice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    rules = db.Column(db.JSON)

@@ -10,7 +10,7 @@ G3 = '3'
 RD = 'W'
 GR = 'L'
 FILL_CHAR = '•'
-CNT_REGEX = 120
+CNT_REGEX = 60
 XRNG = 1000
 XTICK = 10
 MIN_SERIES = 7
@@ -24,7 +24,7 @@ SHIFT_G2 = 34
 SHIFT_G3 = 13
 
 SPEC_MAP = {
-    'k15': {'func': special.get_k15, 'kf':  {'Y': 15.0, 'N': 1.03}},
+    'K15': {'func': special.get_k15, 'kf':  {'Y': 15.0, 'N': 1.03}},
     'E>O': {'func': special.get_even_more_odd, 'kf': {'Y': 2.84, 'N': 1.45}},
     'NR': {'func': special.get_nr, 'kf': {'Y': 2.17, 'N': 1.72}},
     'EVEN': {'func': special.get_all_even, 'kf': {'Y': 6.75, 'N': 1.12}},
@@ -34,7 +34,7 @@ SPEC_MAP = {
     'EQ': {'func': special.get_eq, 'kf': {'Y': 3.33, 'N': 1.35}},
     'MNE': {'func': special.get_min_even, 'kf': {'Y': 2.80, 'N': 1.46}},
     'MXE': {'func': special.get_max_odd, 'kf': {'Y': 1.46, 'N': 2.80}},
-    'k152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
+    'K152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
 }
 
 GAME_MAP = {
@@ -44,7 +44,7 @@ GAME_MAP = {
         'tbl': 'test_tbl',
         'base_link': '',
         'name': 'test_game',
-        'event_list': ['k15', ],
+        'event_list': ['K15', ],
     },
     '1': {
         'range': range(1, 25),
@@ -52,7 +52,7 @@ GAME_MAP = {
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
         'name': '12x24',
-        'event_list': ['k15', 'E>O', 'MNE', 'MXE', 'k152'],
+        'event_list': ['K15', 'E>O', 'MNE', 'MXE', 'K152'],
     },
     '2': {
         'range': range(1, 27),

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="msg"></div>
+    <table>
+        <thead>
+        <tr>
+            <th>Игра</th>
+            <th>Число</th>
+            <th>Серия</th>
+            <th>Н|В</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+
+            <td>
+                <input id="n_game_type" class="form-control form-control-sm" type="text" placeholder="Игра"/>
+            </td>
+            <td>
+                <input id="n_game_digit" class="form-control form-control-sm" type="text" placeholder="Число"/>
+            </td>
+            <td>
+                <input id="n_game_size" class="form-control form-control-sm" type="text" placeholder="Серия"/>
+            </td>
+            <td>
+                <input id="n_game_ser" class="form-control form-control-sm" type="text" placeholder="0|1"/>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <button type="button" class="btn btn-primary btn-group-sm btn-block" onclick="addNotice()">Добавить
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Игра</th>
+            <th>Число</th>
+            <th>Серия</th>
+            <th>Н|В</th>
+            <th>Del</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for rule in rules %}
+            <tr id="id_notice_{{ loop.index0 }}">
+                <td>{{ rule.game_type }}</td>
+                <td>{{ rule.game_digit }}</td>
+                <td>{{ rule.game_size }}</td>
+                <td>{{ rule.game_ser }}</td>
+                {#                <td><button type="button" onclick="delNotice({{ loop.index0 }})">Удалить</button></td>#}
+                <td>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-primary btn-group-sm"
+                                onclick="delNotice({{ loop.index0 }})">x
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}

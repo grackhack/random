@@ -1,5 +1,6 @@
+import json
 import re
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Set, Type
 
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
@@ -11,8 +12,6 @@ from app.utils import timing
 from config import Config
 
 from abc import ABCMeta, abstractmethod
-
-
 
 
 class AbcGame(object):
@@ -36,6 +35,12 @@ class AbcGame(object):
 
     def get_full_view(self, ser_type: str, limit: int = 0) -> List[Dict[str, str]]:
         """Список серий для отображений"""
+
+    def get_last_series(self) -> Set[str]:
+        """"Получить последние серии для всех чисел"""
+
+    def get_one_series(self, digit: str, raw: str) -> Dict[str, str]:
+        """крайние текущие серии"""
 
 
 class Loto(AbcGame):
@@ -188,10 +193,75 @@ class Loto(AbcGame):
         return res
 
     @staticmethod
-    def get_max_series(full_stat) -> int:
+    def get_max_series(full_stat) -> Dict[Any, Union[int, Any]]:
         max_ser = {constants.RD: 0, constants.GR: 0}
         for d, digs in full_stat.items():
             for g, ser in digs.items():
                 tmp_max = max(map(int, ser.keys())) if ser.keys() else 0
                 max_ser[g] = tmp_max if tmp_max > max_ser[g] else max_ser[g]
         return max_ser
+
+    def get_last_series(self) -> Set[str]:
+        """"Получить последние серии для всех чисел"""
+        find_series = set()
+
+        for digit in self.range:
+            raw = self.get_raw_data(digit, limit=constants.RAW_LIMIT)
+            current_ser = self.get_one_series(str(digit), raw)
+            find_series.add(json.dumps(current_ser))
+
+        for spec in self.events:
+            raw = self.get_calc_raw_data(spec, limit=constants.RAW_LIMIT)
+            current_ser = self.get_one_series(spec, raw)
+            find_series.add(json.dumps(current_ser))
+        return find_series
+
+    def get_one_series(self, digit: str, raw: str) -> Dict[str, str]:
+        tmp = raw[:constants.CNT_REGEX]
+        ser_size = 0
+        ser = tmp[0]
+        for i in tmp:
+            if i == ser:
+                ser_size += 1
+            else:
+                return {'game_type': self.game_type, 'game_digit': digit, 'game_size': str(ser_size), 'game_ser': ser}
+        return {'game_type': self.game_type, 'game_digit': digit, 'game_size': 'NoFound', 'game_ser': ser}
+
+    def prepare_notices(self) -> Dict[Union[Type[int], Any], Union[list, Any]]:
+        engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+        sql = """select user_id, rules from notice"""
+
+        result = engine.execute(sql)
+        result = result.fetchall()
+        user_rules: Dict[int, Set[str]] = {}
+        if result:
+            for (user_id, rules) in result:
+                if user_id not in user_rules:
+                    user_rules[user_id] = set()
+                rule_list = json.loads(rules)
+                for rule in rule_list:
+                    if rule.get('game_type') == self.game_type:
+                        if not rule.get('game_digit') and not rule.get('game_ser'):
+                            gen_rules = self.generate_rule(rule.get('game_size'))
+                            user_rules[user_id].update(gen_rules)
+                        elif not rule.get('game_ser'):
+                            one_rules = self.generate_one_rule(rule.get('game_digit'), rule.get('game_size'))
+                            user_rules[user_id].update(one_rules)
+                        else:
+                            user_rules[user_id].add(json.dumps(rule))
+        return user_rules
+
+    def generate_rule(self, game_size: str) -> Set[str]:
+        rules = set()
+        for ser in ('0', '1'):
+            for digit in self.range:
+                rules.add(json.dumps(
+                    {'game_type': self.game_type, 'game_digit': str(digit), 'game_size': game_size, 'game_ser': ser}))
+        return rules
+
+    def generate_one_rule(self, digit: str, game_size: str) -> Set[str]:
+        rules = set()
+        for ser in ('0', '1'):
+            rules.add(json.dumps(
+                {'game_type': self.game_type, 'game_digit': digit, 'game_size': game_size, 'game_ser': ser}))
+        return rules
