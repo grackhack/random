@@ -39,32 +39,30 @@
         </tbody>
     </table>
 
-    <table class="table">
+    <table class="table table-sm">
         <thead>
         <tr>
+            <th>Del</th>
             <th>Игра</th>
             <th>Число</th>
             <th>Серия</th>
             <th>Н|В</th>
-            <th>Del</th>
+
 
         </tr>
         </thead>
         <tbody>
         {% for rule in rules %}
             <tr id="id_notice_{{ loop.index0 }}">
+                <td>
+                    <div onclick="delNotice({{ loop.index0 }})">DEL
+                    </div>
+                </td>
                 <td>{{ rule.game_type }}</td>
                 <td>{{ rule.game_digit }}</td>
                 <td>{{ rule.game_size }}</td>
                 <td>{{ rule.game_ser }}</td>
-                {#                <td><button type="button" onclick="delNotice({{ loop.index0 }})">Удалить</button></td>#}
-                <td>
-                    <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                        <button type="button" class="btn btn-primary btn-group-sm"
-                                onclick="delNotice({{ loop.index0 }})">x
-                        </button>
-                    </div>
-                </td>
+
             </tr>
         {% endfor %}
 
