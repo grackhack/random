@@ -55,13 +55,13 @@
         {% for rule in rules %}
             <tr id="id_notice_{{ loop.index0 }}">
                 <td>
-                    <div onclick="delNotice({{ loop.index0 }})">DEL
-                    </div>
+                    <h6><span class="badge badge-pill badge-danger" onclick="delNotice({{ loop.index0 }})">DEL
+                    </span></h6>
                 </td>
-                <td>{{ rule.game_type }}</td>
-                <td>{{ rule.game_digit }}</td>
-                <td>{{ rule.game_size }}</td>
-                <td>{{ rule.game_ser }}</td>
+                <td><h6>{{ rule.game_type }}</h6></td>
+                <td><h6>{{ rule.game_digit }}</h6></td>
+                <td><h6>{{ rule.game_size }}</h6></td>
+                <td><h6>{{ rule.game_ser }}</h6></td>
 
             </tr>
         {% endfor %}
