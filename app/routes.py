@@ -244,7 +244,7 @@ def gr_create_play():
         raise
     else:
         db.session.commit()
-    return render_template('index.html')
+    return {}
 
 
 @app.route('/notice')
