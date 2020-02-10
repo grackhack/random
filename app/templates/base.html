@@ -33,11 +33,10 @@
             <a class="dropdown-item" href="{{ url_for('index') }}?game=2">Duel</a>
             <a class="dropdown-item" href="{{ url_for('index') }}?game=3">Тоp3</a>
         </div>
-        {#        <a class="navbar-brand" href="{{ url_for('index') }}">12x24</a>#}
-        {#        <a class="navbar-brand" href="{{ url_for('index') }}?game=2">Duel</a>#}
-        {#        <a class="navbar-brand" href="{{ url_for('index') }}?game=3">Тоp3</a>#}
         <a class="navbar-brand" href="{{ url_for('history') }}">Рез</a>
         <a class="navbar-brand" href="{{ url_for('emu') }}">ЭМУ</a>
+        <a class="navbar-brand" href="{{ url_for('notice') }}">Увд</a>
+
         {% if current_user.id==1 %}
             <a class="navbar-brand" href="{{ url_for('settings') }}">Set</a>
         {% endif %}
@@ -55,11 +54,13 @@
 
 {% block scripts %}
     <script data-require="jquery" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
-    <script src="{{ url_for('static', filename='js/common9.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common11.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/charts2.0.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bar8.js') }}"></script>
     <script src="{{ url_for('static', filename='js/emu8.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/notice7.js') }}"></script>
 
 
 

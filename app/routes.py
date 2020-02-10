@@ -16,7 +16,7 @@ from app import constants
 from app import db
 from app.forms import LoginForm, RegistrationForm
 from app.games import Loto
-from app.models import User, Play, PlayGame, Profile
+from app.models import User, Play, PlayGame, Profile, Notice
 from app import work_with_games as wwg
 from app import games
 
@@ -205,7 +205,6 @@ def create_play():
     return jsonify({'data': 'Пари принято'})
 
 
-
 @app.route('/gr_create_play', methods=['POST'])
 def gr_create_play():
     try:
@@ -245,7 +244,59 @@ def gr_create_play():
         raise
     else:
         db.session.commit()
-    return render_template('index.html')
+    return {}
+
+
+@app.route('/notice')
+@login_required
+def notice():
+    rules = []
+    user_id = current_user.id
+    notices = Notice.query.filter_by(user_id=user_id).first()
+    if notices:
+        rules = json.loads(notices.rules)
+    return render_template('notices.html', rules=rules)
+
+
+@app.route('/del_notice', methods=['POST'])
+@login_required
+def del_notice():
+    id_notice_rule: str = request.values.get('id_notice_rule')
+    if id_notice_rule.isdigit():
+        user_id = current_user.id
+        notice = Notice.query.filter_by(user_id=user_id).first()
+        if notice:
+            rules: list = json.loads(notice.rules)
+            rules.pop(int(id_notice_rule))
+            notice.rules = json.dumps(rules)
+            db.session.add(notice)
+            db.session.commit()
+    return {}
+
+
+
+@app.route('/add_notice', methods=['POST'])
+@login_required
+def add_notice():
+    game_type = request.values.get('game_type')
+    game_digit = request.values.get('game_digit', '')
+    game_size = request.values.get('game_size')
+    game_ser = request.values.get('game_ser', '')
+    user_id = current_user.id
+    notice = Notice.query.filter_by(user_id=user_id).first()
+    new_rule = {'game_type': game_type, 'game_digit': game_digit, 'game_size': game_size, 'game_ser': game_ser}
+    if notice:
+        rules = json.loads(notice.rules)
+        if new_rule not in rules:
+            rules.append(new_rule)
+            notice.rules = json.dumps(rules)
+    else:
+        rules = json.dumps([new_rule, ])
+        notice = Notice(user_id=user_id, rules=rules)
+
+    db.session.add(notice)
+    db.session.commit()
+    return {}
 
 
 @app.route('/history')

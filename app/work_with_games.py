@@ -113,33 +113,6 @@ def get_raw_data(digit: str, game_type: str, limit=0) -> str:
     return raw
 
 
-def get_last_series(game_type: str):
-    """"Получить последние серии для всех чисел"""
-    current_series = []
-    for digit in constants.GAME_MAP[game_type]['range']:
-        raw = get_raw_data(digit, game_type)
-        tmp = raw[:constants.CNT_REGEX]
-        cnt = 0
-        s = tmp[0]
-        for i in tmp:
-            if i == s:
-                cnt += 1
-            else:
-                current_series.append((digit, s, cnt))
-                break
-    if game_type == constants.G2:
-        series = list(filter(
-            lambda x: constants.MIN_TELE_S + constants.SHIFT_G2 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G2,
-            current_series))
-    elif game_type == constants.G3:
-        series = list(filter(
-            lambda x: constants.MIN_TELE_S + constants.SHIFT_G3 <= x[2] <= constants.MAX_TELE_S + constants.SHIFT_G3,
-            current_series))
-    else:
-        series = list(filter(lambda x: constants.MIN_TELE_S <= x[2] <= constants.MAX_TELE_S, current_series))
-    return series
-
-
 def get_dataset_series(digit, game_type):
     """Количество серий для каждого числа"""
     cnt = get_max_games(game_type)

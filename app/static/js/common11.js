@@ -3,7 +3,7 @@ KF = {
     '2': {1: 5.75, 0: 1.14},
     '3': {1: 3.45, 0: 1.33},
 
-    'k15': {1: 15.0, 0: 1.03},
+    'K15': {1: 15.0, 0: 1.03},
     'E>O': {1: 2.84, 0: 1.45},
     'NR': {1: 2.17, 0: 1.72},
     'EVEN': {1: 6.75, 0: 1.12},
@@ -13,10 +13,19 @@ KF = {
     'EQ': {1: 3.33, 0: 1.35},
     'MNE': {1: 2.80, 0: 1.46},
     'MXE': {1: 1.46, 0: 2.80},
-    'k152': {1: 2.16, 0: 1.73},
+    'K152': {1: 2.16, 0: 1.73},
 };
 
 
+function showMsg(msgType, msgText) {
+    msg = $("#msg");
+    msg.addClass(`alert alert-${msgType}`);
+    msg.html(msgText);
+    setTimeout(function () {
+        msg.removeClass(`alert alert-${msgType}`);
+        msg.html('');
+    }, 3000);
+}
 
 function clear_msg() {
     $("#msg").removeClass("alert alert-success");
@@ -121,8 +130,7 @@ function ins_win(win) {
 
     if (!$.isNumeric(betDigit)) {
         $("#bet_k").text(KF[betDigit][win]);
-    }
-    else {
+    } else {
         $("#bet_k").text(KF[betGameType][win]);
     }
 
@@ -228,12 +236,11 @@ function gr_bet() {
         ser0: ser0,
         ser1: ser1,
     }).done(function (response) {
-        $("#grModal").modal('hide')
-        $("#msg").addClass("alert alert-success");
-        $("#msg").html("<p> Ставки сделаны!</p>");
+        showMsg('success', 'Ставки сделаны!');
+         $("#grModal").modal('hide')
     }).fail(function () {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html("<p> Fail!</p>");
+        showMsg('danger', 'Fail');
+        $("#grModal").modal('hide')
     });
 }
 
