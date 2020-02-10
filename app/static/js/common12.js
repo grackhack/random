@@ -14,6 +14,8 @@ KF = {
     'MNE': {1: 2.80, 0: 1.46},
     'MXE': {1: 1.46, 0: 2.80},
     'K152': {1: 2.16, 0: 1.73},
+    'M2_5': {1: 2.72, 0: 1.48},
+    'S14': {1: 2.24, 0: 1.68},
 };
 
 
@@ -237,7 +239,7 @@ function gr_bet() {
         ser1: ser1,
     }).done(function (response) {
         showMsg('success', 'Ставки сделаны!');
-         $("#grModal").modal('hide')
+        $("#grModal").modal('hide')
     }).fail(function () {
         showMsg('danger', 'Fail');
         $("#grModal").modal('hide')
