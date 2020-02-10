@@ -17,6 +17,15 @@ KF = {
 };
 
 
+function showMsg(msgType, msgText) {
+    msg = $("#msg");
+    msg.addClass(`alert alert-${msgType}`);
+    msg.html(msgText);
+    setTimeout(function () {
+        msg.removeClass(`alert alert-${msgType}`);
+        msg.html('');
+    }, 3000);
+}
 
 function clear_msg() {
     $("#msg").removeClass("alert alert-success");
@@ -121,8 +130,7 @@ function ins_win(win) {
 
     if (!$.isNumeric(betDigit)) {
         $("#bet_k").text(KF[betDigit][win]);
-    }
-    else {
+    } else {
         $("#bet_k").text(KF[betGameType][win]);
     }
 
@@ -228,12 +236,11 @@ function gr_bet() {
         ser0: ser0,
         ser1: ser1,
     }).done(function (response) {
-        $("#grModal").modal('hide')
-        $("#msg").addClass("alert alert-success");
-        $("#msg").html("<p> Ставки сделаны!</p>");
+        showMsg('success', 'Ставки сделаны!');
+         $("#grModal").modal('hide')
     }).fail(function () {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html("<p> Fail!</p>");
+        showMsg('danger', 'Fail');
+        $("#grModal").modal('hide')
     });
 }
 
