@@ -23,8 +23,10 @@ MAX_TELE_S = 25
 SHIFT_G2 = 34
 SHIFT_G3 = 13
 
+SORT_NOTICE_KEY = lambda item: (item['game_type'], item['game_digit'], int(item['game_size']), item['game_ser'])
+
 SPEC_MAP = {
-    'K15': {'func': special.get_k15, 'kf':  {'Y': 15.0, 'N': 1.03}},
+    'K15': {'func': special.get_k15, 'kf': {'Y': 15.0, 'N': 1.03}},
     'E>O': {'func': special.get_even_more_odd, 'kf': {'Y': 2.84, 'N': 1.45}},
     'NR': {'func': special.get_nr, 'kf': {'Y': 2.17, 'N': 1.72}},
     'EVEN': {'func': special.get_all_even, 'kf': {'Y': 6.75, 'N': 1.12}},
@@ -54,7 +56,7 @@ GAME_MAP = {
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
         'name': '12x24',
-        'event_list': ['K15', 'E>O', 'MNE', 'MXE', 'K152',],
+        'event_list': ['K15', 'E>O', 'MNE', 'MXE', 'K152', ],
     },
     '2': {
         'range': range(1, 27),
