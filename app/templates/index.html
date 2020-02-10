@@ -89,6 +89,14 @@
         <div id="stat"></div>
         <div id="lost_games"></div>
     </div>
+    <div>
+    {% if game_type=='3' %}
+        <div><b>NR:</b> Выпадут соседние номера:  Да: <b>2.17</b> Нет: <b>1.72</b></div>
+        <div><b>EQ:</b> Выпадут ли два одинаковых номера: Да: <b>3.33</b> Нет: <b>1.35</b></div>
+        <div><b>M2_5:</b> Наименьший выпавший номер Больше 2.5:  Да: <b>2.72</b > Нет: <b>1.48</b></div>
+        <div><b>S14:</b> Сумма всех выпавших номеров Больше 14.5:  Да: <b>2.24</b > Нет: <b>1.68</b></div>
+    {% endif %}
+    </div>
     <table>
         <tr>
             <td id="hw">
@@ -107,6 +115,7 @@
     {% else %}
         <canvas id="chBarW" width="400" height="200"></canvas>
     {% endif %}
+
 
 
     <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
