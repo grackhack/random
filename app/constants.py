@@ -35,6 +35,8 @@ SPEC_MAP = {
     'MNE': {'func': special.get_min_even, 'kf': {'Y': 2.80, 'N': 1.46}},
     'MXE': {'func': special.get_max_odd, 'kf': {'Y': 1.46, 'N': 2.80}},
     'K152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
+    'M2_5': {'func': special.get_min_25, 'kf': {'Y': 2.72, 'N': 1.48}},
+    'S14': {'func': special.get_sum_14, 'kf': {'Y': 2.24, 'N': 1.68}},
 }
 
 GAME_MAP = {
@@ -52,7 +54,7 @@ GAME_MAP = {
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
         'name': '12x24',
-        'event_list': ['K15', 'E>O', 'MNE', 'MXE', 'K152'],
+        'event_list': ['K15', 'E>O', 'MNE', 'MXE', 'K152',],
     },
     '2': {
         'range': range(1, 27),
@@ -69,7 +71,7 @@ GAME_MAP = {
         'tbl': 'game3',
         'base_link': 'https://www.stoloto.ru/draw-results/top3/load',
         'name': 'top3',
-        'event_list': ['NR', 'EQ'],
+        'event_list': ['NR', 'EQ', 'M2_5', 'S14'],
     },
 }
 
