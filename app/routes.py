@@ -255,6 +255,8 @@ def notice():
     notices = Notice.query.filter_by(user_id=user_id).first()
     if notices:
         rules = json.loads(notices.rules)
+        rules = sorted(rules, key=lambda item: (item['game_type'], int(item['game_size'])))
+
     return render_template('notices.html', rules=rules)
 
 
@@ -267,6 +269,7 @@ def del_notice():
         notice = Notice.query.filter_by(user_id=user_id).first()
         if notice:
             rules: list = json.loads(notice.rules)
+            rules = sorted(rules, key=lambda item: (item['game_type'], int(item['game_size'])))
             rules.pop(int(id_notice_rule))
             notice.rules = json.dumps(rules)
             db.session.add(notice)
@@ -289,7 +292,8 @@ def add_notice():
         rules = json.loads(notice.rules)
         if new_rule not in rules:
             rules.append(new_rule)
-            notice.rules = json.dumps(rules)
+            list_rules = sorted(rules, key=lambda item: (item['game_type'], int(item['game_size'])))
+            notice.rules = json.dumps(list_rules)
     else:
         rules = json.dumps([new_rule, ])
         notice = Notice(user_id=user_id, rules=rules)
