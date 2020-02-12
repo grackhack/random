@@ -146,13 +146,39 @@ def get_min_25(de: DigitRaw) -> str:
     return raw
 
 
+def get_min_15(de: DigitRaw) -> str:
+    """Наименьший выпавший номер Больше 1.5"""
+    raw = ''
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+        tmp = ''.join([a0, a1, a2, a3, a4, a5, a6, a7, a8, a9])
+        pos = tmp.find('1')
+        if pos > 1.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
 def get_sum_14(de: DigitRaw) -> str:
-    """Наименьший выпавший номер Больше 2.5"""
+    """Сумма всех выпавших номеров Больше 14.5"""
     raw = ''
     for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
         tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
                    int(a7) * 7, int(a8) * 8, int(a9) * 9])
         if tmp > 14.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_sum_12(de: DigitRaw) -> str:
+    """Сумма всех выпавших номеров Больше 12.5"""
+    raw = ''
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
+                   int(a7) * 7, int(a8) * 8, int(a9) * 9])
+        if tmp > 12.5:
             raw += '1'
         else:
             raw += '0'
@@ -188,3 +214,7 @@ def get_duel_eb(de: DigitRaw) -> str:
         else:
             raw += '0'
     return raw
+
+
+def empty(de: DigitRaw) -> str:
+    return '1' * len(de['1'])
