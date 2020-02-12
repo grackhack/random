@@ -31,14 +31,14 @@ SPEC_MAP = {
     'NR': {'func': special.get_nr, 'kf': {'Y': 2.17, 'N': 1.72}},
     'EVEN': {'func': special.get_all_even, 'kf': {'Y': 6.75, 'N': 1.12}},
     'ODD': {'func': special.get_all_odd, 'kf': {'Y': 6.75, 'N': 1.12}},
-    'E13': {'func': special.get_even13, 'kf': {'Y': 2.84, 'N': 1.45}},
-    'O13': {'func': special.get_odd13, 'kf': {'Y': 2.84, 'N': 1.45}},
     'EQ': {'func': special.get_eq, 'kf': {'Y': 3.33, 'N': 1.35}},
     'MNE': {'func': special.get_min_even, 'kf': {'Y': 2.80, 'N': 1.46}},
     'MXE': {'func': special.get_max_odd, 'kf': {'Y': 1.46, 'N': 2.80}},
     'K152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
     'M2_5': {'func': special.get_min_25, 'kf': {'Y': 2.72, 'N': 1.48}},
     'S14': {'func': special.get_sum_14, 'kf': {'Y': 2.24, 'N': 1.68}},
+    'DNR': {'func': special.get_duel_nr, 'kf': {'Y': 2.50, 'N': 1.56}},
+    'DEB': {'func': special.get_duel_eb, 'kf': {'Y': 3.05, 'N': 1.40}},
 }
 
 GAME_MAP = {
@@ -64,7 +64,7 @@ GAME_MAP = {
         'tbl': 'game2',
         'base_link': 'https://www.stoloto.ru/draw-results/duel/load',
         'name': 'duel',
-        'event_list': ['E13', 'O13'],
+        'event_list': ['DNR', 'DEB'],
 
     },
     '3': {
