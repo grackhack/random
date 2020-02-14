@@ -105,10 +105,13 @@ class Game3(db.Model):
     de7 = db.Column(db.Boolean)
     de8 = db.Column(db.Boolean)
     de9 = db.Column(db.Boolean)
+    s1 = db.Column(db.Integer)
+    s2 = db.Column(db.Integer)
 
     def __init__(self, game: list):
         self.date = datetime.datetime.strptime(game[0], '%Y-%m-%d %H:%M:%S')
         des = [i for i in dir(self) if not callable(i) if 'de' in i and '_' not in i]
+        self.__setattr__('s1', sum(game[1:]))
         for de in game[1:]:
             if f'de{de}' in des:
                 self.__setattr__(f'de{de}', True)

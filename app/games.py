@@ -66,12 +66,29 @@ class Loto(AbcGame):
         raw = ''.join(result[0])
         return raw
 
+    def get_raw_s_data(self, limit: int = 0) -> str:
+        engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+        limit_str = f'limit {limit}' if limit > 0 else ''
+        result = engine.execute("""
+                    select array(select s1
+                         from {tbl:}
+                         order by date desc {limit:})
+                    """.format(tbl=self.tbl, limit=limit_str))
+        result = result.fetchone()
+        raw = [i for i in result]
+        return raw[0]
+
     def get_full_raw_data(self, limit: int = 0) -> DigitRaw:
         full_raw = {}
         for digit in self.range:
             digit_row = self.get_raw_data(digit, limit=limit)
             full_raw[str(digit)] = digit_row
         return full_raw
+
+    def get_full_s_raw_data(self, limit: int = 0) -> DigitRaw:
+        full_raw = {}
+        digit_row = self.get_raw_s_data(limit=limit)
+        return digit_row
 
     def get_full_series(self, limit: int = 0) -> SeriesRaw:
         full_series = {constants.GR: {}, constants.RD: {}}
@@ -98,9 +115,14 @@ class Loto(AbcGame):
             raw = constants.SPEC_MAP[label]['func'](de)
             return raw
         if self.game_type == constants.G3:
-            de = self.get_full_raw_data(limit=limit)
-            raw = constants.SPEC_MAP[label]['func'](de)
-            return raw
+            if label in ['S12', 'S14']:
+                de = self.get_full_s_raw_data()
+                raw = constants.SPEC_MAP[label]['func'](de)
+                return raw
+            else:
+                de = self.get_full_raw_data(limit=limit)
+                raw = constants.SPEC_MAP[label]['func'](de)
+                return raw
         return raw
 
     def get_raw_series(self, label: str, limit: int = 0) -> SeriesRaw:
