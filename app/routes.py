@@ -5,6 +5,12 @@ from random import random
 from typing import List, Tuple
 
 import pandas as pd
+import random
+from bokeh.embed import components
+from bokeh.plotting import figure
+from bokeh.resources import INLINE
+from bokeh.util.string import encode_utf8
+import pandas as pd
 from flask import render_template, flash, redirect, url_for, jsonify, request
 from flask_login import current_user, login_user, logout_user
 from flask_login import login_required
@@ -277,7 +283,6 @@ def del_notice():
     return {}
 
 
-
 @app.route('/add_notice', methods=['POST'])
 @login_required
 def add_notice():
@@ -402,3 +407,65 @@ def start_emu():
 @login_required
 def get_kf():
     return jsonify({k: v['kf'] for k, v in constants.SPEC_MAP.items()})
+
+
+@app.route('/chart')
+def chart():
+    loto = Loto(game_type=constants.G1)
+    # chart defaults
+    color = '#FF0000'
+    start = 0
+    finish = 10
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    df = pd.read_sql_query('select date,de4 from game order by date desc limit 200', engine)
+    df.de4 = df.fillna(0).de4.astype('int64')
+    y = df.de4.replace(0, -1).cumsum().tolist()
+    # create a polynomial line graph with the above args
+    x = list(range(0, len(y)))
+    fig = figure(title='Polynomial', plot_width=400, plot_height=200)
+    fig.line(x, y, color=color, line_width=1)
+
+    # grab the static resources
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
+
+    # render template
+    script, div = components(fig)
+    html = render_template(
+        'chart.html',
+        plot_script=script,
+        plot_div=div,
+        js_resources=js_resources,
+        css_resources=css_resources
+    )
+    return encode_utf8(html)
+
+
+@app.route('/show_trend',  methods=['POST'])
+def show_trend():
+    loto = Loto(game_type=constants.G1)
+    # chart defaults
+    color = '#FF0000'
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+    df = pd.read_sql_query('select date,de4 from game order by date desc limit 200', engine)
+    df.de4 = df.fillna(0).de4.astype('int64')
+    y = df.de4.replace(0, -1).cumsum().tolist()
+    # create a polynomial line graph with the above args
+    x = list(range(0, len(y)))
+    fig = figure(title='Polynomial', plot_width=400, plot_height=200)
+    fig.line(x, y, color=color, line_width=1)
+
+    # grab the static resources
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
+
+    # render template
+    script, div = components(fig)
+    html = render_template(
+        'diagram.html',
+        plot_script=script,
+        plot_div=div,
+        js_resources=js_resources,
+        css_resources=css_resources
+    )
+    return {'data': encode_utf8(html)}

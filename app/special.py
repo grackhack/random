@@ -48,7 +48,7 @@ def get_all_odd(de: DigitRaw) -> str:
 def get_eq(de: DigitRaw) -> str:
     raw = ''
     for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
-        if [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9].count('1') == 2:
+        if [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9].count('1') <= 2:
             raw += '1'
         else:
             raw += '0'
