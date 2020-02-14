@@ -116,7 +116,7 @@ class Loto(AbcGame):
             return raw
         if self.game_type == constants.G3:
             if label in ['S12', 'S14']:
-                de = self.get_full_s_raw_data()
+                de = self.get_full_s_raw_data(limit=limit)
                 raw = constants.SPEC_MAP[label]['func'](de)
                 return raw
             else:
