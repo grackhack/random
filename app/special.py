@@ -15,7 +15,7 @@ def get_k15(de: DigitRaw) -> str:
 
 def get_nr(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if (a0 == a1 == '1') or (a1 == a2 == '1') or (a2 == a3 == '1') or (a3 == a4 == '1') or (
                 a4 == a5 == '1') or (a5 == a6 == '1') or (a6 == a7 == '1') or (a7 == a8 == '1') or (
                 a8 == a9 == '1'):
@@ -27,7 +27,7 @@ def get_nr(de: DigitRaw) -> str:
 
 def get_all_even(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if a1 == a3 == a5 == a7 == a9 == '0':
             raw += '1'
         else:
@@ -37,7 +37,7 @@ def get_all_even(de: DigitRaw) -> str:
 
 def get_all_odd(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if a0 == a2 == a4 == a6 == a8 == '0':
             raw += '1'
         else:
@@ -47,7 +47,7 @@ def get_all_odd(de: DigitRaw) -> str:
 
 def get_eq(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9].count('1') <= 2:
             raw += '1'
         else:
@@ -136,7 +136,7 @@ def get_sum_152(de: DigitRaw) -> str:
 def get_min_25(de: DigitRaw) -> str:
     """Наименьший выпавший номер Больше 2.5"""
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         tmp = ''.join([a0, a1, a2, a3, a4, a5, a6, a7, a8, a9])
         pos = tmp.find('1')
         if pos > 2.5:
@@ -149,7 +149,7 @@ def get_min_25(de: DigitRaw) -> str:
 def get_min_15(de: DigitRaw) -> str:
     """Наименьший выпавший номер Больше 1.5"""
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         tmp = ''.join([a0, a1, a2, a3, a4, a5, a6, a7, a8, a9])
         pos = tmp.find('1')
         if pos > 1.5:
