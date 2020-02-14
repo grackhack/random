@@ -166,7 +166,10 @@ def calculate_bets(user):
                 res = engine.execute(constants.PL_GAME_RES.format(de=digit, tbl=tbl_name), (dt,))
                 data_res = res.fetchone()
             else:
-                res = engine.execute(constants.PL_GAME_SPEC.format(tbl=tbl_name), (dt,))
+                if game_type == 3:
+                    res = engine.execute(constants.PL_GAME_SPEC_TOP3.format(tbl=tbl_name), (dt,))
+                else:
+                    res = engine.execute(constants.PL_GAME_SPEC.format(tbl=tbl_name), (dt,))
                 data_res = res.fetchone()
                 if data_res:
                     data_res = get_spec_win(digit, data_res)
