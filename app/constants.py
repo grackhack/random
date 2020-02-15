@@ -104,6 +104,7 @@ PL_GAME_RES = 'select de{de:} from {tbl:} where date> %s order by date limit 1'
 
 PL_GAME_SPEC = 'select * from {tbl:} where date> %s order by date limit 1'
 PL_GAME_SPEC_TOP3 = 'select id, date, de0, de1, de2,de3,de4,de5,de6,de7,de8,de9  from {tbl:} where date> %s order by date limit 1'
+PL_GAME_SPEC_S_TOP3 = 'select s1 from {tbl:} where date> %s order by date limit 1'
 
 UPDATE_SUM = 'update play set game_result = %s where id = %s'
 
