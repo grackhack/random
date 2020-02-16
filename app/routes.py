@@ -409,55 +409,32 @@ def get_kf():
     return jsonify({k: v['kf'] for k, v in constants.SPEC_MAP.items()})
 
 
-@app.route('/chart')
-def chart():
-    loto = Loto(game_type=constants.G1)
-    # chart defaults
-    color = '#FF0000'
-    start = 0
-    finish = 10
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
-    df = pd.read_sql_query('select date,de4 from game order by date desc limit 200', engine)
-    df.de4 = df.fillna(0).de4.astype('int64')
-    y = df.de4.replace(0, -1).cumsum().tolist()
-    # create a polynomial line graph with the above args
-    x = list(range(0, len(y)))
-    fig = figure(title='Polynomial', plot_width=400, plot_height=200)
-    fig.line(x, y, color=color, line_width=1)
-
-    # grab the static resources
-    js_resources = INLINE.render_js()
-    css_resources = INLINE.render_css()
-
-    # render template
-    script, div = components(fig)
-    html = render_template(
-        'chart.html',
-        plot_script=script,
-        plot_div=div,
-        js_resources=js_resources,
-        css_resources=css_resources
-    )
-    return encode_utf8(html)
+@app.route('/diag')
+@login_required
+def diag():
+    return render_template('diag.html')
 
 
-@app.route('/show_trend',  methods=['POST'])
+@app.route('/show_trend', methods=['POST'])
 def show_trend():
-    loto = Loto(game_type=constants.G1)
+    digit = request.values.get('digit')
+    game_type = request.values.get('game_type')
+    loto = Loto(game_type=game_type)
     # chart defaults
     color = '#FF0000'
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
-    df = pd.read_sql_query('select date,de4 from game order by date desc limit 200', engine)
-    df.de4 = df.fillna(0).de4.astype('int64')
-    y = df.de4.replace(0, -1).cumsum().tolist()
-    # create a polynomial line graph with the above args
+    if digit.isdigit():
+        raw = loto.get_raw_data(int(digit), limit=constants.RAW_LIMIT)
+    else:
+        raw = loto.get_calc_raw_data(digit, limit=constants.RAW_LIMIT)
+    y = list(map(int, raw))[::-1]
+    y = pd.Series(y).replace(0, -1).cumsum().tolist()
     x = list(range(0, len(y)))
-    fig = figure(title='Polynomial', plot_width=400, plot_height=200)
+    fig = figure(title=f'{digit}', plot_width=400, plot_height=200, tools=[])
     fig.line(x, y, color=color, line_width=1)
 
-    # grab the static resources
-    js_resources = INLINE.render_js()
-    css_resources = INLINE.render_css()
+    # # grab the static resources
+    # js_resources = INLINE.render_js()
+    # css_resources = INLINE.render_css()
 
     # render template
     script, div = components(fig)
@@ -465,7 +442,7 @@ def show_trend():
         'diagram.html',
         plot_script=script,
         plot_div=div,
-        js_resources=js_resources,
-        css_resources=css_resources
+        # js_resources=js_resources,
+        # css_resources=css_resources
     )
     return {'data': encode_utf8(html)}
