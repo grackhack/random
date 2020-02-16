@@ -241,6 +241,33 @@ def get_min_p_15(de: DigitRaw) -> str:
             raw += '0'
     return raw
 
+def get_max_p_18(de: DigitRaw) -> str:
+    """Наибольший выпавший номер Больше 1.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20][::-1])
+        pos = tmp.find('1')
+        if pos > 1.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_max_p_19(de: DigitRaw) -> str:
+    """Наибольший выпавший номер Больше 1.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20][::-1])
+        pos = tmp.find('1')
+        if pos > 0.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
 
 def get_min_p_25(de: DigitRaw) -> str:
     """Наименьший выпавший номер Больше 2.5"""

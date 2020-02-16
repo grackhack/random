@@ -242,3 +242,24 @@ def get_groups(count: int, game_type: str) -> dict:
         if row == mask1:
             groups['1'].append(digit)
     return groups
+
+
+def calc_best_notice(full_stat):
+    res = {}
+    for dig, ser in full_stat.items():
+        res[dig] = {'W':{}, 'L':{}}
+        for ser, games in ser.items():
+            data = [v for k, v in games.items()]
+            res[dig][ser] = _calc_kf(data)
+    return res
+
+
+
+def _calc_kf(data: list):
+    res = []
+    while data:
+        a1 = data.pop(0)
+        if data:
+            k = round(a1 / sum(data), 2)
+            res.append(k)
+    return res
