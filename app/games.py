@@ -78,6 +78,18 @@ class Loto(AbcGame):
         raw = [i for i in result]
         return raw[0]
 
+    def get_raw_b_data(self,label: int,  limit: int = 0) -> str:
+        engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
+        limit_str = f'limit {limit}' if limit > 0 else ''
+        result = engine.execute("""
+                           select array(select (case when b{d:} = TRUE then '1' else '0' end)
+                                from {tbl:}
+                                order by date desc {limit:})
+                           """.format(d=label, tbl=self.tbl, limit=limit_str))
+        result = result.fetchone()
+        raw = ''.join(result[0])
+        return raw
+
     def get_full_raw_data(self, limit: int = 0) -> DigitRaw:
         full_raw = {}
         for digit in self.range:
@@ -123,6 +135,10 @@ class Loto(AbcGame):
                 de = self.get_full_raw_data(limit=limit)
                 raw = constants.SPEC_MAP[label]['func'](de)
                 return raw
+        if self.game_type in (constants.G4, constants.G5):
+            de = self.get_full_raw_data(limit=limit)
+            raw = constants.SPEC_MAP[label]['func'](de)
+            return raw
         return raw
 
     def get_raw_series(self, label: str, limit: int = 0) -> SeriesRaw:

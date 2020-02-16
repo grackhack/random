@@ -24,6 +24,10 @@ def prepare_msg(notices):
                 gname = 'Топ 3'
             elif game_type == '2':
                 gname = 'Дуэль'
+            elif game_type == '4':
+                gname = 'Рап1'
+            elif game_type == '5':
+                gname = 'Рап2'
             else:
                 gname = '12x24'
             if notice['game_ser'] == '0':
