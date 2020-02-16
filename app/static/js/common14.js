@@ -84,7 +84,7 @@ function get_info(digit, play, game_type) {
         showMsg('danger', 'Fail')
     });
     showTrend(digit, game_type);
-    // hist(digit, game_type)
+    hist(digit, game_type)
 }
 
 function find_gr(group, game_type) {
