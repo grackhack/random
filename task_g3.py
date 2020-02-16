@@ -56,7 +56,7 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     db = Session()
     message = {}
-    for game_type in (constants.G1, constants.G2):
+    for game_type in (constants.G3,):
         game_model = constants.GAME_MAP[game_type]['model']
         games = get_all_data(game_type=game_type)
         histoty = db.query(game_model.date).all()

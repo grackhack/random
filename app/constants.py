@@ -35,6 +35,7 @@ SPEC_MAP = {
     'MNE': {'func': special.get_min_even, 'kf': {'Y': 2.80, 'N': 1.46}},
     'MXE': {'func': special.get_max_odd, 'kf': {'Y': 1.46, 'N': 2.80}},
     'K152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
+    'K148': {'func': special.get_sum_148, 'kf': {'Y': 1.81, 'N': 2.04}},
     'M1_5': {'func': special.get_min_15, 'kf': {'Y': 1.85, 'N': 2.00}},
     'M2_5': {'func': special.get_min_25, 'kf': {'Y': 2.72, 'N': 1.48}},
     'S14': {'func': special.get_sum_14, 'kf': {'Y': 2.24, 'N': 1.68}},
@@ -59,7 +60,7 @@ GAME_MAP = {
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
         'name': '12x24',
-        'event_list': ['K15', '---', 'E>O', 'MNE', 'MXE', 'K152', ],
+        'event_list': ['K15', '---', 'E>O', 'MNE', 'MXE', 'K152', 'K148' ],
     },
     '2': {
         'range': range(1, 27),
@@ -100,7 +101,10 @@ join play_game pg on p.id = pg.game_id where user_id=%s and p.game_result isnull
 """
 
 PL_GAME_RES = 'select de{de:} from {tbl:} where date> %s order by date limit 1'
+
 PL_GAME_SPEC = 'select * from {tbl:} where date> %s order by date limit 1'
+PL_GAME_SPEC_TOP3 = 'select id, date, de0, de1, de2,de3,de4,de5,de6,de7,de8,de9  from {tbl:} where date> %s order by date limit 1'
+PL_GAME_SPEC_S_TOP3 = 'select s1 from {tbl:} where date> %s order by date limit 1'
 
 UPDATE_SUM = 'update play set game_result = %s where id = %s'
 

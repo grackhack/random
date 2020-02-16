@@ -27,7 +27,7 @@ def get_nr(de: DigitRaw) -> str:
 
 def get_all_even(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if a1 == a3 == a5 == a7 == a9 == '0':
             raw += '1'
         else:
@@ -37,7 +37,7 @@ def get_all_even(de: DigitRaw) -> str:
 
 def get_all_odd(de: DigitRaw) -> str:
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
+    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, s in zip(*de.values()):
         if a0 == a2 == a4 == a6 == a8 == '0':
             raw += '1'
         else:
@@ -132,6 +132,20 @@ def get_sum_152(de: DigitRaw) -> str:
             raw += '0'
     return raw
 
+def get_sum_148(de: DigitRaw) -> str:
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24 in zip(
+            *de.values()):
+        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
+                   int(a7) * 7, int(a8) * 8, int(a9) * 9, int(a10) * 10, int(a11) * 11, int(a12) * 12,
+                   int(a13) * 13, int(a14) * 14, int(a15) * 15, int(a16) * 16, int(a17) * 17, int(a18) * 18,
+                   int(a19) * 19, int(a20) * 20, int(a21) * 21, int(a22) * 22, int(a23) * 23, int(a24) * 24])
+        if tmp > 148.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
 
 def get_min_25(de: DigitRaw) -> str:
     """Наименьший выпавший номер Больше 2.5"""
@@ -162,10 +176,9 @@ def get_min_15(de: DigitRaw) -> str:
 def get_sum_14(de: DigitRaw) -> str:
     """Сумма всех выпавших номеров Больше 14.5"""
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
-        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
-                   int(a7) * 7, int(a8) * 8, int(a9) * 9])
-        if tmp > 14.5:
+    for s in de:
+        sum = s if s is not None else 0
+        if sum > 14.5:
             raw += '1'
         else:
             raw += '0'
@@ -175,10 +188,9 @@ def get_sum_14(de: DigitRaw) -> str:
 def get_sum_12(de: DigitRaw) -> str:
     """Сумма всех выпавших номеров Больше 12.5"""
     raw = ''
-    for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
-        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
-                   int(a7) * 7, int(a8) * 8, int(a9) * 9])
-        if tmp > 12.5:
+    for s in de:
+        sum = s if s is not None else 0
+        if sum > 12.5:
             raw += '1'
         else:
             raw += '0'
