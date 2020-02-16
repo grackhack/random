@@ -34,46 +34,45 @@ function showMsg(msgType, msgText) {
     }, 3000);
 }
 
-function clear_msg() {
-    $("#msg").removeClass("alert alert-success");
-    $("#msg").html('');
+function showErrMsg(msgText) {
+    let msg = $("#err_msg");
+    msg.addClass('alert alert-danger');
+    msg.html(msgText);
+    setTimeout(function () {
+        msg.removeClass('alert alert-danger');
+        msg.html('');
+    }, 3000);
 }
 
+
 function get_games(game_type) {
-    clear_msg();
     $.post('/collect_games', {
         game_type: game_type
-    }).done(function (response) {
+    }).done(function () {
         location.reload();
-        $("#msg").addClass("alert alert-success");
-        $("#msg").html("<p> Refresh done!</p>");
+        showMsg('success', 'Refresh done!')
     }).fail(function () {
         location.reload();
-        $("#msg").addClass("alert alert-danger");
-        $("#msg").html("<p> Fail!</p>");
+        showMsg('danger', 'Fail!')
     });
 }
 
 function update_by_date(date, game_type, oper) {
-    clear_msg()
     $.post('/collect_games', {
         day: date,
         game_type: game_type,
         oper: oper
-    }).done(function (response) {
+    }).done(function () {
         location.reload();
-        $("#msg").addClass("alert alert-success");
-        $("#msg").html("<p> Refresh done!</p>");
+        showMsg('success', 'Refresh done!')
     }).fail(function () {
         location.reload();
-        $("#msg").addClass("alert alert-danger");
-        $("#msg").html("<p> Fail!</p>");
+        showMsg('danger', 'Fail!')
     });
 }
 
 
 function get_info(digit, play, game_type) {
-    clear_msg()
     $("#bet_digit").text(digit);
     // if (isNaN(parseInt(digit))) {
     //     return
@@ -85,8 +84,7 @@ function get_info(digit, play, game_type) {
     }).done(function (response) {
         $('#stat').html(response.stat)
     }).fail(function () {
-        $("#msg").addClass("alert alert-danger");
-        $("#msg").html("<p> Fail!</p>");
+        showMsg('danger', 'Fail')
     });
     hist(digit, game_type)
 }
@@ -96,15 +94,14 @@ function find_gr(group, game_type) {
         group: group,
         game_type: game_type
     }).done(function (response) {
-        let cnt = 0
+        let cnt = 0;
         for (let [series, digits] of Object.entries(response.groups)) {
-            $(`#gr_${series}`).html(digits.join(' : '))
+            $(`#gr_${series}`).html(digits.join(' : '));
             cnt += digits.length
         }
         $('#gr_bet_win').val(cnt)
     }).fail(function () {
-        $("#msg").addClass("alert alert-danger");
-        $("#msg").html("<p> Fail!</p>");
+        showErrMsg('Fail')
     });
 
 }
@@ -121,7 +118,7 @@ function gr_ins_bet(count) {
 
 function ins_gr(count, game_type) {
     $("#gr_series").val(count);
-    find_gr(count, game_type)
+    find_gr(count, game_type);
     refresh_gr_bet_sum()
 }
 
@@ -129,7 +126,7 @@ function ins_gr(count, game_type) {
 function ins_win(win) {
     let betDigit = $("#bet_digit").text().trim();
     let betGameType = $("#bet_game_type").val();
-    if (win == 0) {
+    if (win === 0) {
         $("#bet_win").val('Не выпадет');
     } else {
         $("#bet_win").val('Выпадет');
@@ -145,36 +142,38 @@ function ins_win(win) {
 }
 
 function refresh_bet_sum() {
-    var betCount = parseInt($("#bet_count").val());
-    var betK = parseFloat($("#bet_k").text().trim());
+    let betCount = parseInt($("#bet_count").val());
+    let betK = parseFloat($("#bet_k").text().trim());
     $("#bet_sum").text((betCount * betK).toFixed(2));
 }
 
 function refresh_gr_bet_sum() {
-    var betCount = parseInt($("#gr_bet_count").val());
-    var betK = parseFloat($("#gr_bet_k").text().trim());
-    var cnt = parseInt($("#gr_bet_win").val());
+    let betCount = parseInt($("#gr_bet_count").val());
+    parseFloat($("#gr_bet_k").text().trim());
+    let cnt = parseInt($("#gr_bet_win").val());
     $("#gr_bet_sum").text((betCount * cnt).toFixed(2));
 }
 
 function bet() {
-    $("#err_msg").removeClass("alert alert-danger");
-    $("#err_msg").html('');
-
-    var betDigit = $("#bet_digit").text().trim();
-    var betCount = parseInt($("#bet_count").val());
-    var betWin = $("#bet_win").val();
-    var betSeries = $("#bet_series").val();
-    var betGameType = $("#bet_game_type").val();
-    var betAfter = $("#bet_after").text().trim();
-    var balance = parseFloat($("#bal").text().trim())
-    var betKoef = $("#bet_k").text().trim()
+    let betDigit = $("#bet_digit").text().trim();
+    let betCount = parseInt($("#bet_count").val());
+    let betWin = $("#bet_win").val();
+    let betSeries = $("#bet_series").val();
+    let betGameType = $("#bet_game_type").val();
+    let betAfter = $("#bet_after").text().trim();
+    let balance = parseFloat($("#bal").text().trim());
+    let betKoef = $("#bet_k").text().trim();
 
     if (isNaN(betCount)) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Не выбрана ставка')
+        showErrMsg('Не выбрана ставка');
         return
     }
+
+    if (betDigit === '?') {
+        showErrMsg('Не выбрано число');
+        return
+    }
+
     if (betWin === 'Выпадет') {
         betWin = 1
     }
@@ -184,13 +183,11 @@ function bet() {
     }
 
     if ([0, 1].indexOf(betWin) < 0) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Не выбран тип ставки')
+        showErrMsg('Не выбран тип ставки');
         return
     }
     if ((balance - betCount) < 0) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Нет денег на балансе для ставки')
+        showErrMsg('Нет денег на балансе для ставки');
         return
     }
     $.post('/create_play', {
@@ -201,20 +198,15 @@ function bet() {
         after: betAfter,
         game_type: betGameType,
         game_koef: betKoef
-    }).done(function (response) {
-        $("#exampleModal").modal('hide')
-        $("#msg").addClass("alert alert-success");
-        $("#msg").html("<p> Ставка принята!</p>");
+    }).done(function () {
+        $("#exampleModal").modal('hide');
+        showMsg('success', 'Ставка принята!')
     }).fail(function () {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html("<p> Fail!</p>");
+        showErrMsg('Fail');
     });
 }
 
 function gr_bet() {
-    $("#err_msg").removeClass("alert alert-danger");
-    $("#err_msg").html('');
-
     let grCount = parseInt($("#gr_bet_count").val());
     let grKoef = $("#gr_bet_k").text().trim();
     let grSeries = $("#gr_series").val();
@@ -224,13 +216,11 @@ function gr_bet() {
     let grGameType = $("#gr_bet_game_type").val();
 
     if (isNaN(grSeries)) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Не выбрана серия');
+        showErrMsg('Не выбрана серия');
         return
     }
     if (isNaN(grCount)) {
-        $("#err_msg").addClass("alert alert-danger");
-        $("#err_msg").html('Не выбрана ставка')
+        showErrMsg('Не выбрана ставка');
         return
     }
 
@@ -242,11 +232,11 @@ function gr_bet() {
         game_koef: grKoef,
         ser0: ser0,
         ser1: ser1,
-    }).done(function (response) {
+    }).done(function () {
         showMsg('success', 'Ставки сделаны!');
         $("#grModal").modal('hide')
     }).fail(function () {
-        showMsg('danger', 'Fail');
+        showErrMsg('Fail');
         $("#grModal").modal('hide')
     });
 }
