@@ -24,6 +24,10 @@ def prepare_msg(notices):
                 gname = 'Топ 3'
             elif game_type == '2':
                 gname = 'Дуэль'
+            elif game_type == '4':
+                gname = 'Рап1'
+            elif game_type == '5':
+                gname = 'Рап2'
             else:
                 gname = '12x24'
             if notice['game_ser'] == '0':
@@ -56,7 +60,7 @@ if __name__ == '__main__':
     Session = sessionmaker(bind=engine)
     db = Session()
     message = {}
-    for game_type in (constants.G3,):
+    for game_type in (constants.G3, constants.G4, constants.G5):
         game_model = constants.GAME_MAP[game_type]['model']
         games = get_all_data(game_type=game_type)
         histoty = db.query(game_model.date).all()

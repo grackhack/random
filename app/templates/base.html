@@ -24,6 +24,10 @@
                 Duel
             {% elif game_type =='3' %}
                 Top3
+            {% elif game_type =='4' %}
+                Rap1
+            {% elif game_type =='5' %}
+                Rap2
             {% else %}
                 12x24
             {% endif %}
@@ -32,6 +36,8 @@
             <a class="dropdown-item" href="{{ url_for('index') }}">12x24</a>
             <a class="dropdown-item" href="{{ url_for('index') }}?game=2">Duel</a>
             <a class="dropdown-item" href="{{ url_for('index') }}?game=3">Тоp3</a>
+            <a class="dropdown-item" href="{{ url_for('index') }}?game=4">Rap1</a>
+            <a class="dropdown-item" href="{{ url_for('index') }}?game=5">Rap2</a>
         </div>
         <a class="navbar-brand" href="{{ url_for('history') }}">Рез</a>
         <a class="navbar-brand" href="{{ url_for('emu') }}">ЭМУ</a>
@@ -54,7 +60,7 @@
 
 {% block scripts %}
     <script data-require="jquery" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
-    <script src="{{ url_for('static', filename='js/common14.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common15.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/charts2.0.js') }}"></script>

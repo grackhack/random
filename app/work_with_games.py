@@ -29,8 +29,15 @@ def _get_draw(data, game_type):
     if game_type == '2':
         DIGITS = re.compile(
             r"""<span class="zone"><b class='right'>([\d]+) <b class='right'>([\d]+) </span><span class="zone"><b class='left'>([\d]+) <b class='left'>([\d]+) </span>""")
+    elif game_type in ('4', '5'):
+        DIGITS = re.compile(r"""<span class="zone">(([<b >\d]){20,})/span><span class="zone"><b class="extra">(\d)""")
+
     else:
         DIGITS = re.compile(r'<span class="zone">([\d ]+)</span>')
+
+
+
+
 
     results = ()
     text = data.replace('\n', ''
@@ -46,6 +53,8 @@ def _get_draw(data, game_type):
     draw_items = DIGITS.findall(text)
     if game_type == '2' and draw_items:
         draw_items = [' '.join(list(item)) for item in draw_items]
+    if game_type in ('4', '5'):
+        draw_items = [(item[0].replace('<b >','').replace('<','')+ item[2]) for item in draw_items]
     if len(date_items) == len(draw_items):
         draw_items = _convert_items(draw_items)
         results = [[a, *b] for a, b in list(zip(str_dates, draw_items))]
@@ -171,6 +180,8 @@ def calculate_bets(user):
                         res = engine.execute(constants.PL_GAME_SPEC_S_TOP3.format(tbl=tbl_name), (dt,))
                     else:
                         res = engine.execute(constants.PL_GAME_SPEC_TOP3.format(tbl=tbl_name), (dt,))
+                elif game_type in (4, 5):
+                    res = engine.execute(constants.PL_GAME_SPEC_RAP.format(tbl=tbl_name), (dt,))
                 else:
                     res = engine.execute(constants.PL_GAME_SPEC.format(tbl=tbl_name), (dt,))
                 data_res = res.fetchone()
@@ -231,3 +242,24 @@ def get_groups(count: int, game_type: str) -> dict:
         if row == mask1:
             groups['1'].append(digit)
     return groups
+
+
+def calc_best_notice(full_stat):
+    res = {}
+    for dig, ser in full_stat.items():
+        res[dig] = {'W':{}, 'L':{}}
+        for ser, games in ser.items():
+            data = [v for k, v in games.items()]
+            res[dig][ser] = _calc_kf(data)
+    return res
+
+
+
+def _calc_kf(data: list):
+    res = []
+    while data:
+        a1 = data.pop(0)
+        if data:
+            k = round(a1 / sum(data), 2)
+            res.append(k)
+    return res
