@@ -7,6 +7,7 @@ from typing import List, Tuple
 import pandas as pd
 import random
 from bokeh.embed import components
+from bokeh.models import Range1d
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
 from bokeh.util.string import encode_utf8
@@ -418,6 +419,21 @@ def diag():
     return render_template('diag.html')
 
 
+def _build_all_series(raw):
+    x = []
+    y = []
+    for game, ser in raw.items():
+        if game == 'W':
+            for k, v in ser.items():
+                x.extend(v)
+                y.extend([int(k)] * len(v))
+        if game == 'L':
+            for k, v in ser.items():
+                x.extend(v)
+                y.extend([-int(k)] * len(v))
+    return x[::-1], y[::-1]
+
+
 @app.route('/show_trend', methods=['POST'])
 def show_trend():
     digit = request.values.get('digit')
@@ -425,15 +441,21 @@ def show_trend():
     loto = Loto(game_type=game_type)
     # chart defaults
     color = '#FF0000'
-    if digit.isdigit():
-        raw = loto.get_raw_data(int(digit), limit=constants.RAW_LIMIT)
-    else:
-        raw = loto.get_calc_raw_data(digit, limit=constants.RAW_LIMIT)
-    y = list(map(int, raw))[::-1]
-    y = pd.Series(y).replace(0, -1).cumsum().tolist()
-    x = list(range(0, len(y)))
-    fig = figure(title=f'{digit}', plot_width=400, plot_height=200, tools=[])
-    fig.line(x, y, color=color, line_width=1)
+    # if digit.isdigit():
+    # raw = loto.get_raw_data(int(digit), limit=constants.RAW_LIMIT)
+    raw = loto.get_raw_series(label=digit, limit=constants.RAW_LIMIT * 2)
+    x, y = _build_all_series(raw)
+    # else:
+    #     raw = loto.get_calc_raw_data(digit, limit=constants.RAW_LIMIT)
+    # y = list(map(int, raw))[::-1]
+    # y = pd.Series(y).replace(0, -1).cumsum().tolist()
+    # x = list(range(0, len(y)))
+    # x = raw
+    # y = [1] * len(x)
+    fig = figure(title=f'{digit}', plot_width=800, plot_height=200, tools="")
+    # fig.line(x, y, color=color, line_width=1)
+    fig.vbar(x=x, width=1, bottom=0, top=y, color="#FF0000")
+    # fig.vbar(x, y, color=color, line_width=1)
 
     # # grab the static resources
     # js_resources = INLINE.render_js()
