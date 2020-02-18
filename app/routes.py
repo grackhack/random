@@ -1,13 +1,16 @@
 import datetime
 import json
 from datetime import timezone, timedelta
+from enum import Enum
 from random import random
 from typing import List, Tuple
 
 import pandas as pd
 import random
+
+from bokeh.core.enums import enumeration
 from bokeh.embed import components
-from bokeh.models import Range1d
+from bokeh.models import Range1d, Ticker, FixedTicker, ContinuousTicker, PanTool
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
 from bokeh.util.string import encode_utf8
@@ -452,9 +455,11 @@ def show_trend():
     # x = list(range(0, len(y)))
     # x = raw
     # y = [1] * len(x)
-    fig = figure(title=f'{digit}', plot_width=800, plot_height=200, tools="")
+    fig = figure(title=f'{digit}', plot_width=800, plot_height=400, tools="")
     # fig.line(x, y, color=color, line_width=1)
     fig.vbar(x=x, width=1, bottom=0, top=y, color="#FF0000")
+    fig.ygrid.minor_grid_line_color = 'gainsboro'
+    fig.ygrid.minor_grid_line_alpha = 1
     # fig.vbar(x, y, color=color, line_width=1)
 
     # # grab the static resources
