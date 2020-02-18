@@ -16,7 +16,7 @@ def send_msg(message):
                                              text=message,
                                              parse_mode='HTML',
                                              disable_web_page_preview=True)
-                if user_id == 3:
+                if user_id == 18:
                     updater.bot.send_message(chat_id=config.ALEX,
                                              text=message,
                                              parse_mode='HTML',

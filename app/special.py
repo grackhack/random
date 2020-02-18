@@ -105,11 +105,37 @@ def get_min_even(de: DigitRaw) -> str:
     return raw
 
 
+def get_min_p_even(de: DigitRaw) -> str:
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17])
+        pos = tmp.find('1')
+        if pos % 2 == 0:
+            raw += '0'
+        else:
+            raw += '1'
+    return raw
+
+
 def get_max_odd(de: DigitRaw) -> str:
     raw = ''
     for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24 in zip(
             *de.values()):
         tmp = ''.join([a24, a23, a22, a21, a20, a19, a18, a17, a16, a15, a14, a13, a12, a11])
+        pos = tmp.find('1')
+        if pos % 2 == 0:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_max_p_odd(de: DigitRaw) -> str:
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a20, a19, a18, a17, a16, a15, a14, a13, a12, a11, a10, a9, a8, a7])
         pos = tmp.find('1')
         if pos % 2 == 0:
             raw += '1'
@@ -132,6 +158,7 @@ def get_sum_152(de: DigitRaw) -> str:
             raw += '0'
     return raw
 
+
 def get_sum_148(de: DigitRaw) -> str:
     raw = ''
     for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24 in zip(
@@ -141,6 +168,34 @@ def get_sum_148(de: DigitRaw) -> str:
                    int(a13) * 13, int(a14) * 14, int(a15) * 15, int(a16) * 16, int(a17) * 17, int(a18) * 18,
                    int(a19) * 19, int(a20) * 20, int(a21) * 21, int(a22) * 22, int(a23) * 23, int(a24) * 24])
         if tmp > 148.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+def get_sum_84(de: DigitRaw) -> str:
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
+                   int(a7) * 7, int(a8) * 8, int(a9) * 9, int(a10) * 10, int(a11) * 11, int(a12) * 12,
+                   int(a13) * 13, int(a14) * 14, int(a15) * 15, int(a16) * 16, int(a17) * 17, int(a18) * 18,
+                   int(a19) * 19, int(a20) * 20])
+        if tmp > 84.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+def get_sum_88(de: DigitRaw) -> str:
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = sum([int(a1) * 1, int(a2) * 2, int(a3) * 3, int(a4) * 4, int(a5) * 5, int(a6) * 6,
+                   int(a7) * 7, int(a8) * 8, int(a9) * 9, int(a10) * 10, int(a11) * 11, int(a12) * 12,
+                   int(a13) * 13, int(a14) * 14, int(a15) * 15, int(a16) * 16, int(a17) * 17, int(a18) * 18,
+                   int(a19) * 19, int(a20) * 20])
+        if tmp > 88.5:
             raw += '1'
         else:
             raw += '0'
@@ -165,6 +220,61 @@ def get_min_15(de: DigitRaw) -> str:
     raw = ''
     for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
         tmp = ''.join([a0, a1, a2, a3, a4, a5, a6, a7, a8, a9])
+        pos = tmp.find('1')
+        if pos > 1.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_min_p_15(de: DigitRaw) -> str:
+    """Наименьший выпавший номер Больше 1.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20])
+        pos = tmp.find('1')
+        if pos > 0.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+def get_max_p_18(de: DigitRaw) -> str:
+    """Наибольший выпавший номер Больше 1.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20][::-1])
+        pos = tmp.find('1')
+        if pos > 1.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_max_p_19(de: DigitRaw) -> str:
+    """Наибольший выпавший номер Больше 1.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20][::-1])
+        pos = tmp.find('1')
+        if pos > 0.5:
+            raw += '1'
+        else:
+            raw += '0'
+    return raw
+
+
+def get_min_p_25(de: DigitRaw) -> str:
+    """Наименьший выпавший номер Больше 2.5"""
+    raw = ''
+    for a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 in zip(
+            *de.values()):
+        tmp = ''.join([a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20])
         pos = tmp.find('1')
         if pos > 1.5:
             raw += '1'

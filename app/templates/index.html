@@ -99,6 +99,8 @@
         {% elif game_type=='2' %}
         <div><b>DNR:</b> Выпадут соседние номера:  Да: <b>2.50</b> Нет: <b>1.56</b></div>
         <div><b>DEB</b> Четных больше, чем нечетных: Да: <b>3.05</b> Нет: <b>1.40</b></div>
+        {% elif game_type=='4' %}
+        {% elif game_type=='5' %}
         {% else %}
         <div><b>E>O:</b> Четных больше, чем нечетных:  Да: <b>2.84</b> Нет: <b>1.45</b></div>
         <div><b>MNE:</b> Наименьший выпавший номер Чет: Да: <b>2.80</b> Нет: <b>1.46</b></div>
@@ -154,6 +156,7 @@
                                     </button>
                                     <button type="button" class="btn btn-secondary"
                                             onclick="hist('2', '{{ game_type }}')">2
+                                    </button>
                                     </button>
                                     <button type="button" class="btn btn-secondary"
                                             onclick="hist('3', '{{ game_type }}')">3

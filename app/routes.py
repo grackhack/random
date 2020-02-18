@@ -163,13 +163,16 @@ def charts():
     loto = Loto(game_type=game_type)
     lim = 0
     full_stat = loto.get_full_stat(limit=lim)
+    full_kf_stat = wwg.calc_best_notice(full_stat)
     full_event_stat = loto.get_full_events_stat(limit=lim)
+    full_kf_event_stat = wwg.calc_best_notice(full_event_stat)
     count_games = wwg.get_max_games(game_type)
     max_ser = loto.get_max_series(full_stat)
     max_event_ser = loto.get_max_series(full_event_stat)
     return render_template('charts.html', full_stat=full_stat, full_event_stat=full_event_stat,
                            cnt=count_games, rng=loto.range, max_ser=max_ser,
-                           max_event_ser=max_event_ser, event_rng=loto.events)
+                           max_event_ser=max_event_ser, event_rng=loto.events,
+                           kf_stat=full_kf_stat, kf_event=full_kf_event_stat)
 
 
 @app.route('/get_hist', methods=['POST'])

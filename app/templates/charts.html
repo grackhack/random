@@ -4,6 +4,8 @@
     <a class="navbar-brand" href="{{ url_for('charts') }}">12x24</a>
     <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=2">Дуэль</a>
     <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=3">Топ 3</a>
+    <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=4">Рап 1</a>
+    <a class="navbar-brand" href="{{ url_for('charts') }}?game_type=5">Рап 2</a>
     <div>Всего игр:<b> {{ cnt }}</b></div>
     <div style="overflow-x: scroll;">
         <table border="1">
@@ -73,4 +75,67 @@
             {% endfor %}
         </table>
     </div>
+    <br>
+        <div style="overflow-x: scroll;">
+        <table border="1">
+            <tr>
+                <td></td>
+                {% for i in range(1,max_ser.W + 1) %}
+                    <td style="background-color: #ff7f5d"><b>{{ i }}</b></td>
+                {% endfor %}
+                <td></td>
+                {% for i in range(1,max_ser.L + 1) %}
+                    <td style="background-color: #6dfc7d"><b>{{ i }}</b></td>
+                {% endfor %}
+            </tr>
+            {% for j in rng %}
+
+                <tr>
+                    <td><b>{{ j }}</b></td>
+                    {% for gg, digs in kf_stat[j].items() %}
+
+                        {% for i in range(1,max_ser[gg] + 1) %}
+                            <td>{{ digs[i] }}</td>
+                        {% endfor %}
+                        <td></td>
+
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br>
+
+    Спец кэфы
+    <div style="overflow-x: scroll;">
+        <table border="1">
+            <tr>
+                <td></td>
+                {% for i in range(1,max_event_ser.W + 1) %}
+                    <td style="background-color: #ff7f5d"><b>{{ i }}</b></td>
+                {% endfor %}
+                <td></td>
+                {% for i in range(1,max_event_ser.L + 1) %}
+                    <td style="background-color: #6dfc7d"><b>{{ i }}</b></td>
+                {% endfor %}
+            </tr>
+            {% for j in event_rng %}
+
+                <tr>
+                    <td><b>{{ j }}</b></td>
+                    {% for gg, digs in kf_event[j].items() %}
+
+                        {% for i in range(1,max_event_ser[gg] + 1) %}
+                                <td>{{ digs[i] }}</td>
+                        {% endfor %}
+                        <td></td>
+
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+
 {% endblock %}
