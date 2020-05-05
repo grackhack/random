@@ -83,3 +83,65 @@ def test_get_full_view(mocker):
 #     g = games.Loto(game_type=constants.G1)
 #     res = g.prepare_notices()
 #     print(res)
+# def test_pattern():
+#     def get_frame(s0, s1, s2, cnt):
+#         pos = len(s0)
+#         a = (s0[(pos - cnt - 4):(pos - cnt)],
+#              s1[(pos - cnt - 4):(pos - cnt)],
+#              s2[(pos - cnt - 4):(pos - cnt)],
+#              )
+#         return a
+#
+#     def check_frame(f):
+#         DIG=4
+#         s = sum([f[0][1:].count('1'), f[1][1:].count('1'), f[2][1:].count('1')])
+#         one = f[0][1:].count('1') > 0 and f[1][1:].count('1') > 0 and f[2][1:].count('1') > 0
+#         risk = all([f[0][3] == '0', f[1][3] == '0', f[2][3] == '0'])
+#         win = all([f[0][0] == '0', f[1][0] == '0', f[2][0] == '0'])
+#         half = f[0][0] == '0' and f[1][0] == '0' and f[2][0] == '1'
+#         fail = f[0][0] == '1' or f[1][0] == '1'
+#         if s >= DIG and one and win and not risk:
+#             return 'win'
+#         elif s >= DIG and one and half and not risk:
+#             return 'half'
+#         elif s >= DIG and one and fail and not risk:
+#             return 'fail'
+#         else:
+#             return 'skip'
+#
+#     g = games.Loto(game_type=constants.G3)
+#     s0 = g.get_raw_data('0', limit=1000)
+#     s1 = g.get_raw_data('1', limit=1000)
+#     s2 = g.get_raw_data('2', limit=1000)
+#     # s0 = g.get_raw_data('0')
+#     # s1 = g.get_raw_data('1')
+#     # s2 = g.get_raw_data('2')
+#     cnt = 0
+#     stat = {
+#         'win': 0,
+#         'half': 0,
+#         'fail': 0,
+#         'skip': 0
+#     }
+#     resrow = ''
+#     while cnt < len(s0):
+#         frame = get_frame(s0, s1, s2, cnt)
+#         if not frame[0]:
+#             break
+#         res = check_frame(frame)
+#         if res == 'win':
+#             resrow += '2'
+#         elif res == 'fail':
+#             resrow += '1'
+#         elif res == 'half':
+#             resrow += '3'
+#         else:
+#             resrow += '0'
+#         if res in ('win', 'half'):
+#             cnt += 1
+#         else:
+#             cnt += 1
+#         stat[res] += 1
+#     print(stat)
+#     print(resrow)
+#     print('---')
