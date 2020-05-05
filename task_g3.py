@@ -55,6 +55,31 @@ def get_full_notices(game_type: str):
     return messages
 
 
+def check_frame(f):
+    DIG = 4
+    s = sum([f[0].count('1'), f[1].count('1'), f[2].count('1')])
+    one = f[0].count('1') > 0 and f[1].count('1') > 0 and f[2].count('1') > 0
+    risk = all([f[0][2] == '0', f[1][2] == '0', f[2][2] == '0'])
+    if not risk and one and s >= DIG:
+        return s
+    else:
+        return 0
+
+
+def quadro():
+    msg = ''
+    g = Loto(game_type=constants.G3)
+    s0 = g.get_raw_data('0', limit=3)
+    s1 = g.get_raw_data('1', limit=3)
+    s2 = g.get_raw_data('2', limit=3)
+    frame = (s0, s1, s2)
+
+    res = check_frame(frame)
+    if res > 0:
+        msg = f'Квадрат размером: {res}\n{s0}\n{s1}\n{s2}'
+    return msg
+
+
 if __name__ == '__main__':
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, poolclass=NullPool)
     Session = sessionmaker(bind=engine)
@@ -79,6 +104,16 @@ if __name__ == '__main__':
                     message[user_id].extend(msg_list)
                 else:
                     message[user_id] = msg_list
+    try:
+        add_msg = quadro()
+        if add_msg:
+            if message and 1 in message:
+                message[1].append(add_msg)
+            else:
+                message[1] = add_msg
+    except Exception:
+        pass
+
     if message:
         print(message)
         send_msg(message)
