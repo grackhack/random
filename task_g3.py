@@ -72,11 +72,19 @@ def quadro():
     s0 = g.get_raw_data('0', limit=3)
     s1 = g.get_raw_data('1', limit=3)
     s2 = g.get_raw_data('2', limit=3)
+    s7 = g.get_raw_data('7', limit=3)
+    s8 = g.get_raw_data('8', limit=3)
+    s9 = g.get_raw_data('9', limit=3)
+
     frame = (s0, s1, s2)
+    frame2 = (s7, s8, s9)
 
     res = check_frame(frame)
+    res2 = check_frame(frame2)
     if res > 0:
-        msg = f'Квадрат размером: {res}\n{s0}\n{s1}\n{s2}'
+        msg += f'Верхний квадрат: {res}\n{s0}\n{s1}\n{s2}\n'
+    if res2 > 0:
+        msg += f'Нижний квадрат: {res}\n{s0}\n{s1}\n{s2}\n'
     return msg
 
 
@@ -106,11 +114,12 @@ if __name__ == '__main__':
                     message[user_id] = msg_list
     try:
         add_msg = quadro()
-        if add_msg:
-            if message and 1 in message:
-                message[1].append(add_msg)
-            else:
-                message[1] = add_msg
+        for user_id in (1, 2, 13, 18):
+            if add_msg:
+                if message and user_id in message:
+                    message[user_id].extend([add_msg, ])
+                else:
+                    message[user_id] = [add_msg, ]
     except Exception:
         pass
 
