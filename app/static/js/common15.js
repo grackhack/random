@@ -95,9 +95,6 @@ function update_by_date(date, game_type, oper) {
 
 function get_info(digit, play, game_type) {
     $("#bet_digit").text(digit);
-    // if (isNaN(parseInt(digit))) {
-    //     return
-    // }
     $.post('/get_info', {
         digit: digit,
         play: play,
@@ -107,6 +104,7 @@ function get_info(digit, play, game_type) {
     }).fail(function () {
         showMsg('danger', 'Fail')
     });
+    showTrend(digit, game_type);
     hist(digit, game_type)
 }
 

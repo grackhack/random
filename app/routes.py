@@ -1,9 +1,19 @@
 import datetime
 import json
 from datetime import timezone, timedelta
+from enum import Enum
 from random import random
 from typing import List, Tuple
 
+import pandas as pd
+import random
+
+from bokeh.core.enums import enumeration
+from bokeh.embed import components
+from bokeh.models import Range1d, Ticker, FixedTicker, ContinuousTicker, PanTool
+from bokeh.plotting import figure
+from bokeh.resources import INLINE
+from bokeh.util.string import encode_utf8
 import pandas as pd
 from flask import render_template, flash, redirect, url_for, jsonify, request
 from flask_login import current_user, login_user, logout_user
@@ -280,7 +290,6 @@ def del_notice():
     return {}
 
 
-
 @app.route('/add_notice', methods=['POST'])
 @login_required
 def add_notice():
@@ -405,3 +414,65 @@ def start_emu():
 @login_required
 def get_kf():
     return jsonify({k: v['kf'] for k, v in constants.SPEC_MAP.items()})
+
+
+@app.route('/diag')
+@login_required
+def diag():
+    return render_template('diag.html')
+
+
+def _build_all_series(raw):
+    x = []
+    y = []
+    for game, ser in raw.items():
+        if game == 'W':
+            for k, v in ser.items():
+                x.extend(v)
+                y.extend([int(k)] * len(v))
+        if game == 'L':
+            for k, v in ser.items():
+                x.extend(v)
+                y.extend([-int(k)] * len(v))
+    return x[::-1], y[::-1]
+
+
+@app.route('/show_trend', methods=['POST'])
+def show_trend():
+    digit = request.values.get('digit')
+    game_type = request.values.get('game_type')
+    loto = Loto(game_type=game_type)
+    # chart defaults
+    color = '#FF0000'
+    # if digit.isdigit():
+    # raw = loto.get_raw_data(int(digit), limit=constants.RAW_LIMIT)
+    raw = loto.get_raw_series(label=digit, limit=constants.RAW_LIMIT * 2)
+    x, y = _build_all_series(raw)
+    # else:
+    #     raw = loto.get_calc_raw_data(digit, limit=constants.RAW_LIMIT)
+    # y = list(map(int, raw))[::-1]
+    # y = pd.Series(y).replace(0, -1).cumsum().tolist()
+    # x = list(range(0, len(y)))
+    # x = raw
+    # y = [1] * len(x)
+    fig = figure(title=f'{digit}', plot_width=800, plot_height=400, tools="")
+    # fig.line(x, y, color=color, line_width=1)
+    fig.vbar(x=x, width=1, bottom=0, top=y, color="#FF0000")
+    fig.ygrid.minor_grid_line_color = 'gainsboro'
+    fig.ygrid.minor_grid_line_alpha = 1
+    # fig.vbar(x, y, color=color, line_width=1)
+
+    # # grab the static resources
+    # js_resources = INLINE.render_js()
+    # css_resources = INLINE.render_css()
+
+    # render template
+    script, div = components(fig)
+    html = render_template(
+        'diagram.html',
+        plot_script=script,
+        plot_div=div,
+        # js_resources=js_resources,
+        # css_resources=css_resources
+    )
+    return {'data': encode_utf8(html)}
