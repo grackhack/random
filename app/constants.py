@@ -56,6 +56,7 @@ SPEC_MAP = {
     '2M1_5': {'func': special.get_min_p_15, 'kf': {'Y': 2.13, 'N': 1.75}},
     '2M2_5': {'func': special.get_min_p_25, 'kf': {'Y': 2.13, 'N': 1.75}},
     'M2_5': {'func': special.get_min_25, 'kf': {'Y': 2.72, 'N': 1.48}},
+    'B75': {'func': special.get_min_75, 'kf': {'Y': 1.96, 'N': 1.88}},
     'S14': {'func': special.get_sum_14, 'kf': {'Y': 2.24, 'N': 1.68}},
     'S12': {'func': special.get_sum_12, 'kf': {'Y': 1.68, 'N': 2.24}},
     'DNR': {'func': special.get_duel_nr, 'kf': {'Y': 2.50, 'N': 1.56}},
@@ -95,7 +96,7 @@ GAME_MAP = {
         'tbl': 'game3',
         'base_link': 'https://www.stoloto.ru/draw-results/top3/load',
         'name': 'top3',
-        'event_list': ['---', 'NR', 'EQ', 'M1_5', 'M2_5', 'S14', 'S12', ],
+        'event_list': ['---', 'NR', 'EQ', 'B75', 'M1_5', 'M2_5', 'S14', 'S12', ],
     },
     '4': {
         'range': range(1, 21),
