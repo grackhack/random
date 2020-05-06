@@ -84,7 +84,7 @@ def quadro():
     if res > 0:
         msg += f'Верхний квадрат: {res}\n{s0}\n{s1}\n{s2}\n'
     if res2 > 0:
-        msg += f'Нижний квадрат: {res}\n{s0}\n{s1}\n{s2}\n'
+        msg += f'Нижний квадрат: {res2}\n{s7}\n{s8}\n{s9}\n'
     return msg
 
 
