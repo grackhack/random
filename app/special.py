@@ -220,10 +220,10 @@ def get_min_75(de: DigitRaw) -> str:
     for a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 in zip(*de.values()):
         tmp = ''.join([a0, a1, a2, a3, a4, a5, a6, a7, a8, a9])
         pos = tmp[::-1].find('1')
-        if pos > 2.5:
-            raw += '0'
-        else:
+        if pos > 1.5:
             raw += '1'
+        else:
+            raw += '0'
     return raw
 
 
