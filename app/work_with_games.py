@@ -35,10 +35,6 @@ def _get_draw(data, game_type):
     else:
         DIGITS = re.compile(r'<span class="zone">([\d ]+)</span>')
 
-
-
-
-
     results = ()
     text = data.replace('\n', ''
                         ).replace('  ', ' '
@@ -54,7 +50,7 @@ def _get_draw(data, game_type):
     if game_type == '2' and draw_items:
         draw_items = [' '.join(list(item)) for item in draw_items]
     if game_type in ('4', '5'):
-        draw_items = [(item[0].replace('<b >','').replace('<','')+ item[2]) for item in draw_items]
+        draw_items = [(item[0].replace('<b >', '').replace('<', '') + item[2]) for item in draw_items]
     if len(date_items) == len(draw_items):
         draw_items = _convert_items(draw_items)
         results = [[a, *b] for a, b in list(zip(str_dates, draw_items))]
@@ -244,22 +240,36 @@ def get_groups(count: int, game_type: str) -> dict:
     return groups
 
 
-def calc_best_notice(full_stat):
+def calc_best_notice(full_stat, game_type='0'):
     res = {}
     for dig, ser in full_stat.items():
-        res[dig] = {'W':{}, 'L':{}}
+        res[dig] = {'W': {}, 'L': {}}
         for ser, games in ser.items():
             data = [v for k, v in games.items()]
-            res[dig][ser] = _calc_kf(data)
+            res[dig][ser] = _calc_kf(data, ser, dig, game_type)
     return res
 
 
-
-def _calc_kf(data: list):
+def _calc_kf(data: list, ser, dig, game_type='0'):
     res = []
+    t = 1 if ser == 'W' else 0
+    tt = 'Y' if ser == 'W' else 'N'
+    standart = {
+        '1': {1: 1.92, 0: 1.92},
+        '2': {1: 5.75, 0: 1.14},
+        '3': {1: 3.45, 0: 1.33},
+        '4': {1: 2.38, 0: 1.61},
+        '41': {1: 1.75, 0: 2.13},
+        '5': {1: 2.38, 0: 1.61},
+        '51': {1: 1.75, 0: 2.13},
+    }
+    if game_type in ('4', '5') and dig in (1, 2, 3, 4):
+        game_type = game_type + '1'
+    k = standart.get(game_type, {}).get(t) or constants.SPEC_MAP.get(dig).get('kf').get(tt)
     while data:
-        a1 = data.pop(0)
+        a = data.pop(0)
         if data:
-            k = round(a1 / sum(data), 2)
-            res.append(k)
+            b = sum(data)
+            s = round((a * k - a - b) / (a + b) * 100, 2)
+            res.append(s)
     return res

@@ -76,7 +76,7 @@
         </table>
     </div>
     <br>
-        <div style="overflow-x: scroll;">
+    <div style="overflow-x: scroll;">
         <table border="1">
             <tr>
                 <td></td>
@@ -94,8 +94,12 @@
                     <td><b>{{ j }}</b></td>
                     {% for gg, digs in kf_stat[j].items() %}
 
-                        {% for i in range(1,max_ser[gg] + 1) %}
-                            <td>{{ digs[i] }}</td>
+                        {% for i in range(0,max_ser[gg] + 1) %}
+                            {% if digs[i] and digs[i] >10 %}
+                                <td style="background-color: #6dfc7d">{{ digs[i] }}</td>
+                            {% else %}
+                                <td>{{ digs[i] }}</td>
+                            {% endif %}
                         {% endfor %}
                         <td></td>
 
@@ -125,8 +129,13 @@
                     <td><b>{{ j }}</b></td>
                     {% for gg, digs in kf_event[j].items() %}
 
-                        {% for i in range(1,max_event_ser[gg] + 1) %}
+                        {% for i in range(0,max_event_ser[gg] + 1) %}
+                            {% if digs[i] and digs[i] >10 %}
+                                <td style="background-color: #6dfc7d">{{ digs[i] }}</td>
+                            {% else %}
                                 <td>{{ digs[i] }}</td>
+                            {% endif %}
+
                         {% endfor %}
                         <td></td>
 

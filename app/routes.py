@@ -167,7 +167,7 @@ def charts():
     loto = Loto(game_type=game_type)
     lim = 0
     full_stat = loto.get_full_stat(limit=lim)
-    full_kf_stat = wwg.calc_best_notice(full_stat)
+    full_kf_stat = wwg.calc_best_notice(full_stat, game_type)
     full_event_stat = loto.get_full_events_stat(limit=lim)
     full_kf_event_stat = wwg.calc_best_notice(full_event_stat)
     count_games = wwg.get_max_games(game_type)
