@@ -41,6 +41,7 @@ SPEC_MAP = {
     'MXE1': {'func': special.get_max_p_odd, 'kf': {'Y': 1.56, 'N': 2.50}},
     'MXE2': {'func': special.get_max_p_odd, 'kf': {'Y': 1.56, 'N': 2.50}},
     'K152': {'func': special.get_sum_152, 'kf': {'Y': 2.16, 'N': 1.73}},
+    'K150': {'func': special.get_sum_150, 'kf': {'Y': 1.96, 'N': 1.88}},
     'K148': {'func': special.get_sum_148, 'kf': {'Y': 1.81, 'N': 2.04}},
     '1K84': {'func': special.get_sum_84, 'kf': {'Y': 1.72, 'N': 2.17}},
     '1K88': {'func': special.get_sum_88, 'kf': {'Y': 2.17, 'N': 1.72}},
@@ -79,7 +80,7 @@ GAME_MAP = {
         'tbl': 'game',
         'base_link': 'https://www.stoloto.ru/draw-results/12x24/load',
         'name': '12x24',
-        'event_list': ['K15', '---', 'E>O', 'MNE', 'MXE', 'K152', 'K148'],
+        'event_list': ['K15', '---', 'E>O', 'MNE', 'MXE', 'K152', 'K150', 'K148'],
     },
     '2': {
         'range': range(1, 27),

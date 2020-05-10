@@ -95,7 +95,7 @@
                     {% for gg, digs in kf_stat[j].items() %}
 
                         {% for i in range(0,max_ser[gg] + 1) %}
-                            {% if digs[i] and digs[i] >10 %}
+                            {% if digs[i] and digs[i] >0 %}
                                 <td style="background-color: #6dfc7d">{{ digs[i] }}</td>
                             {% else %}
                                 <td>{{ digs[i] }}</td>
@@ -130,7 +130,7 @@
                     {% for gg, digs in kf_event[j].items() %}
 
                         {% for i in range(0,max_event_ser[gg] + 1) %}
-                            {% if digs[i] and digs[i] >10 %}
+                            {% if digs[i] and digs[i] >0%}
                                 <td style="background-color: #6dfc7d">{{ digs[i] }}</td>
                             {% else %}
                                 <td>{{ digs[i] }}</td>
