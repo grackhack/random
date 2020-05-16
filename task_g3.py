@@ -112,16 +112,16 @@ if __name__ == '__main__':
                     message[user_id].extend(msg_list)
                 else:
                     message[user_id] = msg_list
-    try:
-        add_msg = quadro()
-        for user_id in (1, 2, 13, 18):
-            if add_msg:
-                if message and user_id in message:
-                    message[user_id].extend([add_msg, ])
-                else:
-                    message[user_id] = [add_msg, ]
-    except Exception:
-        pass
+    # try:
+    #     add_msg = quadro()
+    #     for user_id in (1, 2, 13, 18):
+    #         if add_msg:
+    #             if message and user_id in message:
+    #                 message[user_id].extend([add_msg, ])
+    #             else:
+    #                 message[user_id] = [add_msg, ]
+    # except Exception:
+    #     pass
 
     if message:
         print(message)
